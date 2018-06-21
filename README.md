@@ -14,6 +14,7 @@ We accept dataset contributions under 3 possible formats:
 - Matrix format
 - File format
 - TFRecord format
+
 Under **matrix format**, each example is represented as a *feature vector*, as is the case in many classic machine learning settings. If you are familiar with `scikit-learn`, you should be familiar with this matrix representation of datasets (`X`, `y`, etc). So if you want to contribute data in this format, the minimum kit would be two CSV files: `examples.csv` and `labels,csv`, containing respectively a matrix (`X`) with feature vectors and a matrix (`Y`) with labels.
 
 Note that, this is the standard [AutoML format](https://github.com/codalab/chalab/wiki/Help:-Wizard-%E2%80%90-Challenge-%E2%80%90-Data) used in prior AutoML challenges in [2015](https://competitions.codalab.org/competitions/2321) to [2018](http://prada-research.net/pakdd18/index.php/call-for-competition/).
