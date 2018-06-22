@@ -15,12 +15,20 @@ We accept dataset contributions under 3 possible formats:
 - File format
 - TFRecord format
 
-Under **matrix format**, each example is represented as a *feature vector*, as is the case in many classic machine learning settings. If you are familiar with `scikit-learn`, you should be familiar with this matrix representation of datasets (`X`, `y`, etc). So if you want to contribute data in this format, the minimum kit would be two CSV files: `examples.csv` and `labels,csv`, containing respectively a matrix (`X`) with feature vectors and a matrix (`Y`) with labels.
+### Matrix Format
+Under matrix format, each example is represented as a *feature vector*, as is the case in many classic machine learning settings. If you are familiar with `scikit-learn`, you should be familiar with this matrix representation of datasets (`X`, `y`, etc). So if you want to contribute data in this format, the minimum kit would be two CSV files: `examples.csv` and `labels,csv`, containing respectively a matrix (`X`) with feature vectors and a matrix (`Y`) with labels.
 
 Note that, this is the standard [AutoML format](https://github.com/codalab/chalab/wiki/Help:-Wizard-%E2%80%90-Challenge-%E2%80%90-Data) used in prior AutoML challenges in [2015](https://competitions.codalab.org/competitions/2321) to [2018](http://prada-research.net/pakdd18/index.php/call-for-competition/).
 
-Under **file format**, each example is an independent file (this is usually the case for large examples such as videos) and all labels are contained in another file.
-*TODO (Find some dataset examples in file format)*
-More details and an example dataset can be found in the sub-directory `file_format`.
+More details and an example dataset in matrix format can be found in the sub-directory [`matrix_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format).
 
-**TFRecord format**, is the final format we'll use in this challenge (so when you provide your data under matrix format or file format, thereafter we'll do the conversion job to have a dataset in TFRecord format). Data from all domains will be uniformly formatted to TFRecords following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L292) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview). More details and an example dataset can be found in the sub-directory `tfrecord_format`.
+### File Format
+Under file format, each example is an independent file (this is usually the case for large examples such as videos) and all labels are contained in another file.
+*TODO (Find some dataset examples in file format)*
+
+More details and an example dataset in file format can be found in the sub-directory [`file_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format).
+
+### TFRecord Format
+TFRecord format, is the final format we'll use in this challenge (so when you provide your data under matrix format or file format, thereafter we'll do the conversion job to have a dataset in TFRecord format). Data from all domains will be uniformly formatted to TFRecords following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L292) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview).
+
+More details and an example dataset in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
