@@ -1,7 +1,7 @@
 # How to Contribute Datasets to AutoDL Challenge
 This repo is intended for giving instructions and examples on how to contribute datasets to AutoDL, a new data science challenge on Automatic Deep Learning we are organizing with Google, ChaLearn and Inria.
 
-We strongly encourage different entities to contribute their own data to this challenge, augmenting the database of datasets and making the challenge's results more robust and convincing. In return, contributors of data can benefit from a direct machine learning solution for their own problems, after a competitive challenge of the state of the art. Lastly, being credited for a cool challenge like this one tends to be a pretty nice thing. :)
+We strongly encourage different entities to contribute their own data to this challenge, augmenting the database of datasets and making the challenge's results more robust and convincing. In return, contributors of data can benefit from a direct machine learning solution for their own problems, after a competitive challenge of the state of the art. Lastly, being credited for a cool challenge like this one tends to be a pretty nice thing to do. :)
 
 ## Two Words on AutoDL
 AutoDL challenge is going to be the next big thing in the field of automatic machine learning (AutoML). It challenges participants to find fully automatic solution for designing deep (machine) learning models. This means that participants' (one single) algorithm should be able to construct machine learning models for all tasks (i.e. dataset + metric) in this challenge.
