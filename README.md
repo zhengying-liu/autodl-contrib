@@ -3,19 +3,15 @@ This repo is intended for giving instructions and examples on how to contribute 
 
 We strongly encourage different entities to contribute their own data to this challenge, enriching the database of datasets and making the challenge's results more robust and convincing. In return, data donors can benefit from a direct machine learning solution for their own problems, after a competitive challenge of the state of the art. Lastly, being credited for a cool challenge like this one tends to be a pretty nice thing to do. :)
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
-
-- [How to Contribute Datasets to AutoDL Challenge](#how-to-contribute-datasets-to-autodl-challenge)
-	- [Two Words on AutoDL](#two-words-on-autodl)
-	- [What is needed?](#what-is-needed)
-	- [3 Possible Formats](#3-possible-formats)
-		- [Matrix Format](#matrix-format)
-		- [File Format](#file-format)
-		- [TFRecord Format](#tfrecord-format)
-	- [Carefully Name Your Files](#carefully-name-your-files)
-	- [Check the Integrity of a Dataset](#check-the-integrity-of-a-dataset)
-
-<!-- /TOC -->
+## Table of Contents
+- [Two Words on AutoDL](#two-words-on-autodl)
+- [What is needed?](#what-is-needed)
+- [3 Possible Formats](#3-possible-formats)
+	- [Matrix Format](#matrix-format)
+	- [File Format](#file-format)
+	- [TFRecord Format](#tfrecord-format)
+- [Carefully Name Your Files](#carefully-name-your-files)
+- [Check the Integrity of a Dataset](#check-the-integrity-of-a-dataset)
 
 ## Two Words on AutoDL
 AutoDL challenge is going to be the next big thing in the field of automatic machine learning (AutoML). It challenges participants to find fully automatic solution for designing deep (machine) learning models. This means that participants' (one single) algorithm should be able to construct machine learning models for all tasks (i.e. dataset + metric) in this challenge.
@@ -83,6 +79,17 @@ mnist/
 └── mnist-train-00011-of-00012.tfrecord
 ```
 
+We can see that above is a dataset in **TFRecord format**.
+
+A simpler example in **AutoML format** could be
+```
+iris/
+├── iris.data
+└── iris.solution
+```
+
+Note that no **metadata** is provided. And as no informative extension name is provided, the dataset will considered to be in `.csv` (!!) format, as is the case for all datasets in AutoML format.
+
 ## Check the Integrity of a Dataset
 We provide a Python script `dataset_manager.py` that can automatically
 - infer the dataset format (e.g. matrix format, file format or TFRecord format)
@@ -96,10 +103,12 @@ Data donors can follow these steps to check the integrity of their datasets to m
     git clone https://github.com/zhengying-liu/autodl-contrib.git
     cd autodl-contrib
     ```
-and use dataset manager to check dataset integrity and consistency
+    and use dataset manager to check dataset integrity and consistency
     ```
     python dataset_manager.py /path/to/your/dataset/
     ```
-3. This will create a YAML file `dataset_info.yaml` in the dataset directory. You can read this file and check if all inferred informations on the dataset are correct as expected;
+    After running the script, messages on whether the dataset is valid will be generated.
+
+3. The script will create a YAML file `dataset_info.yaml` in the dataset directory. You can read this file and check if all inferred informations on the dataset are correct as expected;
 
 4. If some info aren't correct, make sure there is no bug in your dataset directory. In some rare cases, you can modify the file `dataset_info.yaml` manually.
