@@ -3,6 +3,10 @@ This repo is intended for giving instructions and examples on how to contribute 
 
 We strongly encourage different entities to contribute their own data to this challenge, enriching the database of datasets and making the challenge's results more robust and convincing. In return, data donors can benefit from a direct machine learning solution for their own problems, after a competitive challenge of the state of the art. Lastly, being credited for a cool challenge like this one tends to be a pretty nice thing to do. :)
 
+## Table of Contents
+- [Two Words on AutoDL](## Two Words on AutoDL)
+- [What is needed?](## What is needed?)
+
 ## Two Words on AutoDL
 AutoDL challenge is going to be the next big thing in the field of automatic machine learning (AutoML). It challenges participants to find fully automatic solution for designing deep (machine) learning models. This means that participants' (one single) algorithm should be able to construct machine learning models for all tasks (i.e. dataset + metric) in this challenge.
 
@@ -44,7 +48,7 @@ Please name your files carefully such that dataset info (contained in `dataset_i
 - **test data** files should follow the glob pattern `*test*`;
 - **examples (or samples)** files should follow the glob pattern `*example*` or `*features*` or `*.data`;
 - **labels** files should follow the glob pattern `*label*` or `*.solution`;
-- Tye to use extension names to make the file type explicit (`*.csv`, `*.tfrecord`, `*.avi`, `*.jpg`, etc).
+- Try to use extension names to make the file type explicit (`*.csv`, `*.tfrecord`, `*.avi`, `*.jpg`, etc).
 
 In addition, it's recommended that the name of all files belonging to a given dataset begin with the dataset name.
 
@@ -78,14 +82,14 @@ We provide a Python script `dataset_manager.py` that can automatically
 Data donors can follow these steps to check the integrity of their datasets to make sure that these datasets are valid for the challenge:
 1. Prepare and format the dataset in one of the possible formats (matrix format, file format, TFRecord format, etc) and put all files into a single directory called `<dataset_name>/`, for example `mnist/`
 2. Clone this GitHub repo
-```
-git clone https://github.com/zhengying-liu/autodl-contrib.git
-cd autodl-contrib
-```
+    ```
+    git clone https://github.com/zhengying-liu/autodl-contrib.git
+    cd autodl-contrib
+    ```
 and use dataset manager to check dataset integrity and consistency
-```
-python dataset_manager.py /path/to/your/dataset/
-```
+    ```
+    python dataset_manager.py /path/to/your/dataset/
+    ```
 3. This will create a YAML file `dataset_info.yaml` in the dataset directory. You can read this file and check if all inferred informations on the dataset are correct as expected;
 
 4. If some info aren't correct, make sure there is no bug in your dataset directory. In some rare cases, you can modify the file `dataset_info.yaml` manually.
