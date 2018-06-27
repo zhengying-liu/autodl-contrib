@@ -36,13 +36,46 @@ TFRecord format is the final format we'll actually use in this AutoDL challenge 
 More details and an example dataset in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
 
 
+## Carefully Name Your Files
+
+Please name your files carefully such that dataset info (contained in `dataset_info.yaml`) can be inferred correctly. Some simple rules apply:
+- **metadata** files should follow the glob pattern `*metadata*`;
+- **training data** files should follow the glob pattern `*train*`;
+- **test data** files should follow the glob pattern `*test*`;
+- **examples (or samples)** files should follow the glob pattern `*example*` or `*features*` or `*.data`;
+- **labels** files should follow the glob pattern `*label*` or `*.solution`;
+- Tye to use extension names to make the file type explicit (`*.csv`, `*.tfrecord`, `*.avi`, `*.jpg`, etc).
+
+In addition, it's recommended that the name of all files belonging to a given dataset begin with the dataset name.
+
+The following directory `mnist/` gives a valid example:
+```
+mnist/
+├── metadata.textproto
+├── mnist-test-examples-00000-of-00002.tfrecord
+├── mnist-test-examples-00001-of-00002.tfrecord
+├── mnist-test-labels.tfrecord
+├── mnist-train-00000-of-00012.tfrecord
+├── mnist-train-00001-of-00012.tfrecord
+├── mnist-train-00002-of-00012.tfrecord
+├── mnist-train-00003-of-00012.tfrecord
+├── mnist-train-00004-of-00012.tfrecord
+├── mnist-train-00005-of-00012.tfrecord
+├── mnist-train-00006-of-00012.tfrecord
+├── mnist-train-00007-of-00012.tfrecord
+├── mnist-train-00008-of-00012.tfrecord
+├── mnist-train-00009-of-00012.tfrecord
+├── mnist-train-00010-of-00012.tfrecord
+└── mnist-train-00011-of-00012.tfrecord
+```
+
 ## Check the Integrity of a Dataset
 We provide a Python script `dataset_manager.py` that can automatically
 - infer the dataset format (e.g. matrix format, file format or TFRecord format)
 - infer different components of a dataset (e.g. training data, test data, metadata, etc)
 - extract some basic metadata (e.g. `num_examples`, `num_features`) and other info on the dataset
 
-Donors of data can follow these steps to check the integrity of his/her datasets to make sure that these datasets are valid for the challenge:
+Data donors can follow these steps to check the integrity of their datasets to make sure that these datasets are valid for the challenge:
 1. Prepare and format the dataset in one of the possible formats (matrix format, file format, TFRecord format, etc) and put all files into a single directory called `<dataset_name>/`, for example `mnist/`
 2. Clone this GitHub repo
 ```
@@ -51,6 +84,8 @@ cd autodl-contrib
 ```
 and use dataset manager to check dataset integrity and consistency
 ```
-python dataset_manager.py /path/to/your/dataset
+python dataset_manager.py /path/to/your/dataset/
 ```
-3. This will create a YAML file `dataset_info.yaml` in the dataset directory. You can read this file and check if all inferred info on the dataset are correct
+3. This will create a YAML file `dataset_info.yaml` in the dataset directory. You can read this file and check if all inferred informations on the dataset are correct as expected;
+
+4. If some info aren't correct, make sure there is no bug in your dataset directory. In some rare cases, you can modify the file `dataset_info.yaml` manually.
