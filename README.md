@@ -3,9 +3,19 @@ This repo is intended for giving instructions and examples on how to contribute 
 
 We strongly encourage different entities to contribute their own data to this challenge, enriching the database of datasets and making the challenge's results more robust and convincing. In return, data donors can benefit from a direct machine learning solution for their own problems, after a competitive challenge of the state of the art. Lastly, being credited for a cool challenge like this one tends to be a pretty nice thing to do. :)
 
-## Table of Contents
-- [Two Words on AutoDL](## Two Words on AutoDL)
-- [What is needed?](## What is needed?)
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [How to Contribute Datasets to AutoDL Challenge](#how-to-contribute-datasets-to-autodl-challenge)
+	- [Two Words on AutoDL](#two-words-on-autodl)
+	- [What is needed?](#what-is-needed)
+	- [3 Possible Formats](#3-possible-formats)
+		- [Matrix Format](#matrix-format)
+		- [File Format](#file-format)
+		- [TFRecord Format](#tfrecord-format)
+	- [Carefully Name Your Files](#carefully-name-your-files)
+	- [Check the Integrity of a Dataset](#check-the-integrity-of-a-dataset)
+
+<!-- /TOC -->
 
 ## Two Words on AutoDL
 AutoDL challenge is going to be the next big thing in the field of automatic machine learning (AutoML). It challenges participants to find fully automatic solution for designing deep (machine) learning models. This means that participants' (one single) algorithm should be able to construct machine learning models for all tasks (i.e. dataset + metric) in this challenge.
