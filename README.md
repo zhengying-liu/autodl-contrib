@@ -36,7 +36,6 @@ More details and an example dataset in matrix format can be found in the sub-dir
 
 ### File Format
 Under file format, each example is an independent file (this is usually the case for large examples such as videos) and all labels are contained in another file.
-*TODO (Find some dataset examples in file format)*
 
 More details and an example dataset in file format can be found in the sub-directory [`file_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format).
 
