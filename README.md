@@ -53,8 +53,8 @@ Please name your files carefully such that dataset info (contained in `dataset_i
 - **test data** files should follow the glob pattern `*test*`;
 - **examples (or samples)** files should follow the glob pattern `*example*` or `*features*` or `*.data`;
 - **labels** files should follow the glob pattern `*label*` or `*.solution`;
-- Try to use extension names to make the file type explicit (`*.csv`, `*.tfrecord`, `*.avi`, `*.jpg`, etc).
-- If
+- Try to use extension names to make the file type explicit (`*.csv`, `*.tfrecord`, `*.avi`, `*.jpg`, etc);
+- If no `*example*` or `*label*` is specified in the file names of data, these files contain both examples and labels.
 
 In addition, it's recommended that the name of all files belonging to a given dataset begin with the dataset name.
 
@@ -110,6 +110,7 @@ Data donors can follow following steps to check the integrity of their datasets 
     python dataset_manager.py /path/to/your/dataset/
     ```
     (*TODO: this script doesn't work yet*)
+
     After running the script, messages on whether the dataset is valid will be generated.
 
 3. The script will create a YAML file `dataset_info.yaml` in the dataset directory. You can read this file and check if all inferred informations on the dataset are correct as expected;
