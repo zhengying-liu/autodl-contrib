@@ -79,7 +79,7 @@ mnist/
 └── mnist-train-00011-of-00012.tfrecord
 ```
 
-We can see that above is a dataset in **TFRecord format**.
+We can see that above is a dataset in **TFRecord format**. Note that TFRecord format is the final format we will really use for the challenge. Data donors don't have to format their data in this form.
 
 A simpler example in **AutoML format** could be
 ```
@@ -88,7 +88,9 @@ iris/
 └── iris.solution
 ```
 
-Note that no **metadata** is provided. And as no informative extension name is provided, the dataset will considered to be in `.csv` (!!) format, as is the case for all datasets in AutoML format.
+Note that in this case, no **metadata** is provided and no train/test split is done yet. However, these two files suffice to construct a valid dataset for AutoDL challenge.
+
+WARNING: as no informative extension name is provided, the dataset will considered to be in `.csv` (!!!) format, as is the case for all datasets in AutoML format.
 
 ## Check the Integrity of a Dataset
 We provide a Python script `dataset_manager.py` that can automatically
@@ -96,7 +98,7 @@ We provide a Python script `dataset_manager.py` that can automatically
 - infer different components of a dataset (e.g. training data, test data, metadata, etc)
 - extract some basic metadata (e.g. `num_examples`, `num_features`) and other info on the dataset
 
-Data donors can follow these steps to check the integrity of their datasets to make sure that these datasets are valid for the challenge:
+Data donors can follow following steps to check the integrity of their datasets to make sure that these datasets are valid for the challenge:
 1. Prepare and format the dataset in one of the possible formats (matrix format, file format, TFRecord format, etc) and put all files into a single directory called `<dataset_name>/`, for example `mnist/`
 2. Clone this GitHub repo
     ```
@@ -111,4 +113,4 @@ Data donors can follow these steps to check the integrity of their datasets to m
 
 3. The script will create a YAML file `dataset_info.yaml` in the dataset directory. You can read this file and check if all inferred informations on the dataset are correct as expected;
 
-4. If some info aren't correct, make sure there is no bug in your dataset directory. In some rare cases, you can modify the file `dataset_info.yaml` manually.
+4. If some info aren't correct, make sure there is no bug in your dataset directory. In some rare cases, you are allowed to modify the file `dataset_info.yaml` manually.

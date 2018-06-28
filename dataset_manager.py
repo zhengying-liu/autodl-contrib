@@ -18,12 +18,13 @@ import sys
 import tensorflow as tf
 from tfrecord_utils import check_files_consistency
 
-class DatasetManager(object):
+# Important YAML file assigned to save and load dataset info.
+# This file can be edited at first but should be automatically generated
+# once processed. So be really careful when using this file.
+DATASET_INFO_FILENAME = 'dataset_info.yaml'
 
-  # Important YAML file assigned to save and load dataset info.
-  # This file can be edited at first but should be automatically generated
-  # once processed. So be really careful when using this file.
-  global_filename = 'dataset_info.yaml'
+
+class DatasetManager(object):
 
   def __init__(self, dataset_dir, dataset_name=None):
 
@@ -40,8 +41,7 @@ class DatasetManager(object):
         "Failed to create dataset manager. {} is not a directory!"\
                        .format(dataset_dir))
 
-    self._path_to_yaml = os.path.join(self._dataset_dir,
-                                      DatasetManager.global_filename)
+    self._path_to_yaml = os.path.join(self._dataset_dir, DATASET_INFO_FILENAME)
 
     # Set or infer dataset name
     if dataset_name:
@@ -60,39 +60,43 @@ class DatasetManager(object):
     else:
       self.infer_dataset_info()
 
+
+
   def save_dataset_info(self):
     with open(self._path_to_yaml, 'w') as f:
-      print("Saving dataset info to the file {}."\
-            .format(self._path_to_yaml), end='')
+      # print("Saving dataset info to the file {}."\
+      #       .format(self._path_to_yaml), end='')
       yaml.dump(self._dataset_info, f)
-      print("Done!")
+      # print("Done!")
 
   def load_dataset_info(self):
+    """Load dataset info from the file DATASET_INFO"""
     assert(os.path.exists(self._path_to_yaml))
     with open(self._path_to_yaml, 'r') as f:
-      print("Loading dataset info with found file {}."\
-            .format(self._path_to_yaml))
+      # print("Loading dataset info with found file {}."\
+      #       .format(self._path_to_yaml))
       self._dataset_info = yaml.load(f)
-      print("Done!")
+      # print("Done!")
 
   def get_dataset_info(self):
     return self._dataset_info
 
   def get_default_dataset_info(self):
-    default_dataset_info = {'dataset_name': self._dataset_name,
-                            'metadata': None,
-                            'training_data': {'examples': [],
-                                              'labels': [],
-                                              'format': 'tfrecord',
-                                              'labels_separated': False
-                                              },
-                            'test_data': {'examples': [],
-                                          'labels': [],
-                                          'format': 'tfrecord',
-                                          'labels_separated': True
-                                          },
-                            'consistency_check_done': False
-                            }
+    default_dataset_info =\
+        {'dataset_name': self._dataset_name,
+        'metadata': None,
+        'training_data': {'examples': [],
+                          'labels': [],
+                          'format': 'tfrecord',
+                          'labels_separated': False
+                          },
+        'test_data': {'examples': [],
+                      'labels': [],
+                      'format': 'tfrecord',
+                      'labels_separated': True
+                      },
+        'consistency_check_done': False
+        }
     return default_dataset_info
 
   def infer_dataset_info(self):
