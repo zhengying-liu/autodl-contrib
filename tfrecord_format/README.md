@@ -2,9 +2,9 @@
 
 We accept dataset contributions under **TFRecord format**.
 
-TFRecord format is the final format we'll actually use in this AutoDL challenge (so when you provide your data under matrix format or file format, thereafter we'll do the conversion job to have a dataset in TFRecord format). Data from all domains will be uniformly formatted to TFRecords following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L292) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview).
+TFRecord format is the final format we'll actually use in this AutoDL challenge (so when you provide your data under matrix format or file format, thereafter we'll do the conversion job to have a dataset in TFRecord format). Data from all domains will be uniformly formatted to TFRecords following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L292) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)).
 
-WARNING: Formatting data into valid TFRecord format requires solid understanding of TFRecord and SequenceExample protocol buffers. Thus providing data in this format is actually NOT recommended.
+WARNING: Formatting data into valid TFRecord format requires solid understanding of TFRecord and SequenceExample protocol buffers, as well as the design of dataset API we provide in this challenge. Thus providing data in this format is actually NOT recommended.
 
 ## Carefully Name Your Files
 Remember, you need to be careful about naming your files in a dataset and follow our [file naming rules](https://github.com/zhengying-liu/autodl-contrib#carefully-name-your-files).
@@ -35,8 +35,7 @@ mnist/
 Note that this directory has already **train/test split** and **separated labels**, which are NOT required for data donors.
 
 Each example looks like
-<pre><code>
-context {
+<pre><code>context {
   feature {
     key: "id"
     value {

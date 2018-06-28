@@ -53,7 +53,7 @@ Please name your files carefully such that dataset info (contained in `dataset_i
 - **test data** files should follow the glob pattern `*test*`;
 - **examples (or samples)** files should follow the glob pattern `*example*` or `*features*` or `*.data`;
 - **labels** files should follow the glob pattern `*label*` or `*.solution`;
-- Try to use extension names to make the file type explicit (`*.csv`, `*.tfrecord`, `*.avi`, `*.jpg`, etc);
+- Try to use extension names to make the file type explicit (`*.csv`, `*.tfrecord`, `*.avi`, `*.jpg`, `*.txt`, etc);
 - If no `*example*` or `*label*` is specified in the file names of data, these files contain both examples and labels.
 
 In addition, it's recommended that the name of all files belonging to a given dataset begin with the dataset name.
