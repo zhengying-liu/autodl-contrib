@@ -170,10 +170,18 @@ class DatasetManager(object):
     self._dataset_info['consistency_check_done'] = True
 
 
-  def convert_AutoML_to_AutoDL(self, *arg, **kwarg):
-    """Convert a dataset in AutoML format to AutoDL format.
+  def convert_AutoML_format_to_tfrecord(self, *arg, **kwarg):
+    """Convert a dataset in AutoML format to TFRecord format.
 
-    This facilitates the process of generating new datasets in AutoDL format,
+    This facilitates the process of generating new datasets in TFRecord format,
+    since there exists a big database of datasets in AutoML format.
+    """
+    pass
+
+  def convert_file_format_to_tfrecord(self, *arg, **kwarg):
+    """Convert a dataset in AutoML format to file format.
+
+    This facilitates the process of generating new datasets in file format,
     since there exists a big database of datasets in AutoML format.
     """
     pass

@@ -34,7 +34,7 @@ mnist/
 
 Note that this directory has already **train/test split** and **separated labels**, which are NOT required for data donors.
 
-Each example looks like
+In the TFRecord file `mnist-train-00000-of-00012.tfrecord`, each example looks like
 <pre><code>context {
   feature {
     key: "id"

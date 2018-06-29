@@ -12,7 +12,7 @@ Remember, you need to be careful about naming your files in a dataset and follow
 The directory of a valid dataset in file format looks like
 ```
 monkeys/
-├── monkey_labels.csv
+├── monkeys_labels_file_format.csv
 ├── n0159.jpg
 ├── n0165.jpg
 ├── n0167.jpg
@@ -45,14 +45,15 @@ monkeys/
 └── n9162.jpg
 ```
 
-Note that the labels contained in `monkey_labels.csv` can have **sparse representation**. This means that we can have **label-confidence pairs**. For example,
+Well yes, the files don't really follow our naming rules (with no `*example*` pattern etc). You are allowed to do this only if **you precise that the dataset is in file format in the file name of lables**, as in `monkeys_labels_file_format.csv`. And in this CSV file, there should be a column called `FileName` to indicate the corresponding files.
+
+Note that besides having dense representation (e.g. 0-1 vectors), the labels can also have **sparse representation**. This means that we can have **label-confidence pairs**. For example,
 ```
 FileName,LabelConfidencePairs
 n0159.jpg,2 0.488458 9 0.48776 0 0.486832
 n7031.jpg,1 0.544249 0 0.53526 7 0.490038 3 0.48924 2 0.485278 6 0.481826
 ...
 ```
-
 
 ## Providing More Info Is Always Well-received
 You are of course welcome to add more informations in your dataset directory.

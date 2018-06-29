@@ -47,7 +47,7 @@ More details and an example dataset in TFRecord format can be found in the sub-d
 
 ## Carefully Name Your Files
 
-Please name your files carefully such that dataset info (contained in `dataset_info.yaml`) can be inferred correctly. Some simple rules apply:
+Please name your files carefully such that dataset info can be inferred correctly (by `dataset_manager.py`). Some simple rules apply:
 - **metadata** files should follow the glob pattern `*metadata*`;
 - **training data** files should follow the glob pattern `*train*`;
 - **test data** files should follow the glob pattern `*test*`;
