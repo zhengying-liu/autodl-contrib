@@ -98,7 +98,7 @@ We provide a Python script `dataset_manager.py` that can automatically
 - infer different components of a dataset (e.g. training data, test data, metadata, etc)
 - extract some basic metadata (e.g. `num_examples`, `num_features`) and other info on the dataset
 
-Data donors can follow following steps to check the integrity of their datasets to make sure that these datasets are valid for the challenge:
+Data donors can follow next steps to check the integrity of their datasets to make sure that these datasets are valid for the challenge:
 1. Prepare and format the dataset in one of the possible formats (matrix format, file format, TFRecord format, etc) and put all files into a single directory called `<dataset_name>/`, for example `mnist/`
 2. Clone this GitHub repo
     ```

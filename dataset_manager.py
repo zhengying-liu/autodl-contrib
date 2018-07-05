@@ -16,12 +16,14 @@ import yaml
 import os
 import sys
 import tensorflow as tf
-from tfrecord_utils import check_files_consistency
 
 # Important YAML file assigned to save and load dataset info.
 # This file can be edited at first but should be automatically generated
 # once processed. So be really careful when using this file.
 DATASET_INFO_FILENAME = 'dataset_info.yaml'
+
+# 3 possible dataset formats given by data donors
+DATASET_FORMATS = ['matrix', 'file', 'tfrecord']
 
 
 class DatasetManager(object):
@@ -49,18 +51,20 @@ class DatasetManager(object):
     else:
       self._dataset_name = os.path.basename(dataset_dir)
 
+    # Infer dataset format
+    dataset_format = self.get_dataset_format()
+    print("Dataset format:", dataset_format)
+
     # Load or infer dataset info
     if os.path.exists(self._path_to_yaml):
       self.load_dataset_info()
-      # If loaded void YAML
+      # If loaded void YAML, infer dataset info anyway
       if not self._dataset_info:
         self.infer_dataset_info()
       if self._dataset_name != self._dataset_info['dataset_name']:
         print("WARNING: inconsistent dataset names!")
     else:
       self.infer_dataset_info()
-
-
 
   def save_dataset_info(self):
     with open(self._path_to_yaml, 'w') as f:
@@ -81,26 +85,71 @@ class DatasetManager(object):
   def get_dataset_info(self):
     return self._dataset_info
 
-  def get_default_dataset_info(self):
+  def generate_default_dataset_info(self):
     default_dataset_info =\
         {'dataset_name': self._dataset_name,
+        'dataset_format': None, # "matrix", "file" or "tfrecord"
+        'domain': None, # text, image, video
         'metadata': None,
+        'train_test_split_done': False,
         'training_data': {'examples': [],
                           'labels': [],
-                          'format': 'tfrecord',
                           'labels_separated': False
                           },
         'test_data': {'examples': [],
                       'labels': [],
-                      'format': 'tfrecord',
                       'labels_separated': True
                       },
-        'consistency_check_done': False
+        'integrity_check_done': False,
+        'donor_name': "To be filled by hand"
         }
     return default_dataset_info
 
+  def get_dataset_format(self):
+    """Infer dataset format according to file names and extension names in
+    dataset directory.
+    """
+    files = os.listdir(self._dataset_dir)
+    extensions = [os.path.splitext(file)[1] for file in files]
+
+    # Matrix format
+    if '.data' in extensions and '.solution' in extensions:
+      return DATASET_FORMATS[0]
+    if any(['example' in x and '.csv' in x for x in files]):
+      return DATASET_FORMATS[0]
+
+    # File format
+    if any(['label' in x and 'file_format' in x for x in files]):
+      return DATASET_FORMATS[1]
+    for file in files:
+      if 'label' in file:
+        print("Possible label file found: {}".format(file))
+        abspath = os.path.join(self._dataset_dir, file)
+        with open(abspath, 'rb') as f:
+          first_line = f.readline()
+          # if "FileName" appears in the first line of the label file
+          if b'filename' in first_line.lower():
+            return DATASET_FORMATS[1]
+
+    # TFRecord
+    if '.tfrecord' in extensions:
+      return DATASET_FORMATS[2]
+    if '.textproto' in extensions:
+      return DATASET_FORMATS[2]
+
+    # Else
+    raise ValueError("""Oops! Cannot infer dataset format! Make sure that
+      you followed file naming rules at
+      https://github.com/zhengying-liu/autodl-contrib#carefully-name-your-files
+    """)
+
+
+
   def infer_dataset_info(self):
-    dataset_info = self.get_default_dataset_info()
+    pass
+
+  def infer_tfrecord_dataset_info(self):
+    dataset_info = self.generate_default_dataset_info()
 
     def is_sharded(path_to_tfrecord):
       return "-of-" in path_to_tfrecord
@@ -145,29 +194,11 @@ class DatasetManager(object):
 
     self._dataset_info = dataset_info
 
-
-  def check_consistency(self):
-    """Data Checker"""
-    summary = {}
-    for s in ['training_data', 'test_data']:
-      summary[s + '_format'] = self._dataset_info[s]['format']
-      for t in ['examples', 'labels']:
-        abspaths = [os.path.join(self._dataset_dir, x)
-                    for x in self._dataset_info[s][t]]
-        n, c, f = check_files_consistency(abspaths)
-        summary['num_' + t + '_of_' + s] = n
-        summary['context_' + t + '_of_' + s] = c
-        summary['feature_lists_' + t + '_of_' + s] = f
-
-    # Check that num examples and num labels are consistent
-    for s in ['training_data', 'test_data']:
-      assert(summary['num_examples_of_' + s] == summary['num_labels_of_' + s])
-
-    print("Consistency check done for the dataset {}, here's the summary: "\
-          .format(self._dataset_name))
-    from pprint import pprint
-    pprint(summary)
-    self._dataset_info['consistency_check_done'] = True
+  def check_integrity(self):
+    """Check that all file paths are valid and the  dataset is a valid dataset
+    with everything and all. This parsing process could be a bit tedious.
+    """
+    pass
 
 
   def convert_AutoML_format_to_tfrecord(self, *arg, **kwarg):
@@ -194,8 +225,12 @@ class DatasetManager(object):
   def remove_all_irrelevant_files_in_dataset_dir(self):
     pass
 
-def main():
+  def separate_labels_from_examples(self, part='test'):
+    pass
+
+def main(*argv):
   pass
 
 if __name__ == '__main__':
-  main()
+  dataset_dir = './file_format/monkeys'
+  dm = DatasetManager(dataset_dir=dataset_dir)
