@@ -138,7 +138,7 @@ class DatasetManager(object):
       return DATASET_FORMATS[2]
 
     # Else
-    raise ValueError("""Oops! Cannot infer dataset format! Make sure that
+    raise ValueError("""Oops! Cannot infer dataset format... Make sure that
       you followed file naming rules at
       https://github.com/zhengying-liu/autodl-contrib#carefully-name-your-files
     """)
