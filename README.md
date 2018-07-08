@@ -5,6 +5,8 @@ We strongly encourage different entities to contribute their own data to this ch
 
 ## Table of Contents
 - [Two Words on AutoDL](#two-words-on-autodl)
+- [Reward for Data Donors](#reward-for-data-donors)
+- [Rights of Data](#rights-of-data)
 - [What is needed?](#what-is-needed)
 - [3 Possible Formats](#3-possible-formats)
 	- [Matrix Format](#matrix-format)
