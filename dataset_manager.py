@@ -26,6 +26,17 @@ DATASET_INFO_FILENAME = 'dataset_info.yaml'
 DATASET_FORMATS = ['matrix', 'file', 'tfrecord']
 
 
+class BaseDatasetFormat(object):
+
+  def load_from_dict(self, var_dict):
+    raise NotImplementedError("Cannot load from dictionary. This method is not"
+                              "implemented for this class.")
+
+  def to_dict(self):
+    raise NotImplementedError("Cannot dump to dictionary. This method is not"
+                              "implemented for this class.")
+
+
 class DatasetManager(object):
 
   def __init__(self, dataset_dir, dataset_name=None):
@@ -52,7 +63,7 @@ class DatasetManager(object):
       self._dataset_name = os.path.basename(dataset_dir)
 
     # Infer dataset format
-    dataset_format = self.get_dataset_format()
+    dataset_format = self.infer_dataset_format()
     print("Dataset format:", dataset_format)
 
     # Load or infer dataset info
@@ -68,19 +79,19 @@ class DatasetManager(object):
 
   def save_dataset_info(self):
     with open(self._path_to_yaml, 'w') as f:
-      # print("Saving dataset info to the file {}."\
-      #       .format(self._path_to_yaml), end='')
+      print("Saving dataset info to the file {}."\
+            .format(self._path_to_yaml), end="")
       yaml.dump(self._dataset_info, f)
-      # print("Done!")
+      print("Done!")
 
   def load_dataset_info(self):
-    """Load dataset info from the file DATASET_INFO"""
+    """Load dataset info from the file <DATASET_INFO>"""
     assert(os.path.exists(self._path_to_yaml))
     with open(self._path_to_yaml, 'r') as f:
-      # print("Loading dataset info with found file {}."\
-      #       .format(self._path_to_yaml))
+      print("Loading dataset info from file {}."\
+            .format(self._path_to_yaml), end="")
       self._dataset_info = yaml.load(f)
-      # print("Done!")
+      print("Done!")
 
   def get_dataset_info(self):
     return self._dataset_info
@@ -89,7 +100,7 @@ class DatasetManager(object):
     default_dataset_info =\
         {'dataset_name': self._dataset_name,
         'dataset_format': None, # "matrix", "file" or "tfrecord"
-        'domain': None, # text, image, video
+        'domain': None, # text, image, video, speech, etc
         'metadata': None,
         'train_test_split_done': False,
         'training_data': {'examples': [],
@@ -101,11 +112,11 @@ class DatasetManager(object):
                       'labels_separated': True
                       },
         'integrity_check_done': False,
-        'donor_name': "To be filled by hand"
+        'donor_name': "<To be filled by hand>"
         }
     return default_dataset_info
 
-  def get_dataset_format(self):
+  def infer_dataset_format(self):
     """Infer dataset format according to file names and extension names in
     dataset directory.
     """
@@ -142,7 +153,6 @@ class DatasetManager(object):
       you followed file naming rules at
       https://github.com/zhengying-liu/autodl-contrib#carefully-name-your-files
     """)
-
 
 
   def infer_dataset_info(self):
