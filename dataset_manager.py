@@ -26,7 +26,31 @@ DATASET_INFO_FILENAME = 'dataset_info.yaml'
 DATASET_FORMATS = ['matrix', 'file', 'tfrecord']
 
 
-class BaseDatasetFormat(object):
+class BaseDataset(object):
+
+  def __init__(self, dataset_dir, dataset_name=None):
+
+    # Assert `dataset_dir` is valid
+    if os.path.isdir(dataset_dir):
+      self.dataset_dir = dataset_dir
+    else:
+      raise ValueError(
+        "Failed to create dataset object. {} is not a directory!"\
+                       .format(dataset_dir))
+
+    # Set or infer dataset name
+    if dataset_name:
+      self.dataset_name = dataset_name
+    else:
+      self.dataset_name = os.path.basename(dataset_dir)
+
+  def get_num_examples(self):
+    raise NotImplementedError("Cannot get number of examples. This method is"
+                              "not implemented for this class.")
+
+  def get_num_labels(self):
+    raise NotImplementedError("Cannot get number of labels. This method is"
+                              "not implemented for this class.")
 
   def load_from_dict(self, var_dict):
     raise NotImplementedError("Cannot load from dictionary. This method is not"
@@ -157,6 +181,8 @@ class DatasetManager(object):
 
   def infer_dataset_info(self):
     pass
+
+
 
   def infer_tfrecord_dataset_info(self):
     dataset_info = self.generate_default_dataset_info()

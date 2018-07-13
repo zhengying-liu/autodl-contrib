@@ -9,7 +9,7 @@ Remember, you need to be careful about naming your files in a dataset and follow
 
 ## How Should These Files Look Like?
 
-The directory of a valid dataset in file format looks like
+The directory of a valid dataset in file format may look like
 ```
 monkeys/
 ├── monkeys_labels_file_format.csv

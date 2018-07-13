@@ -33,7 +33,7 @@ All datasets will ultimately be formatted into a uniform format (TFRecords) then
 
 For a given dataset, all its files should be under the **same directory**. And note that **no train/test split is required**. The organizers can carry out train/test split themselves.
 
-There is **no size limit** for datasets in this challenge (not as in previous AutoML challenges). (*TODO: but computing resource is very limited, right? Good thing is that using metric such as area under learning curve doesn't require complete convergence of participants' algorithm.*) All data will be stored on Google Cloud Platform and we accept and even welcome large datasets. On the other hand, this means that participants are challenged to write algorithms that are able to deal with tasks of very different scales.
+There is **no size limit** for datasets in this challenge (not as in previous AutoML challenges). (*TODO: but computing resource is very limited. Good thing is that using metric such as area under learning curve doesn't require complete convergence of participants' algorithm.*) All data will be stored on Google Cloud Platform and we accept and even welcome large datasets. On the other hand, this means that participants are challenged to write algorithms that are able to deal with tasks of very different scales.
 
 ## 3 Possible Formats
 We accept dataset contributions under 3 possible formats:
@@ -54,7 +54,7 @@ Under file format, each example is an independent file (this is usually the case
 More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format/monkeys) in file format can be found in the sub-directory [`file_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format).
 
 ### TFRecord Format
-TFRecord format is the final format we'll actually use in this AutoDL challenge (so when you provide your data under matrix format or file format, thereafter we'll do the conversion job to have a dataset in TFRecord format). Data from all domains will be uniformly formatted to TFRecords following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L292) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)).
+TFRecord format is the final format we'll actually use in this AutoDL challenge (so when you provide your data under matrix format or file format, thereafter we'll do the conversion job to have a dataset in TFRecord format). Data from all domains will be uniformly formatted to TFRecords following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L92) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)).
 
 More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format/mnist) in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
 
