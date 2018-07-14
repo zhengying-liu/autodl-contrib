@@ -45,7 +45,9 @@ monkeys/
 └── n9162.jpg
 ```
 
-Well yes, the files don't really follow our naming rules (with no `*example*` pattern etc). You are allowed to do this only if **you precise that the dataset is in file format in the file name of lables**, as in `monkeys_labels_file_format.csv`. And in this CSV file, there should be a column called `FileName` to indicate the corresponding files.
+Well yes, the files don't really follow our naming rules (with no `*example*` pattern etc). You are allowed to do this only if **you precise that the dataset is in file format in the file name of lables**, as in `monkeys_labels_file_format.csv`. 
+
+**WARNING**: in this CSV file, there should be a column called `FileName` to indicate the corresponding files.
 
 Note that besides having dense representation (e.g. 0-1 vectors), the labels can also have **sparse representation**. This means that we can have **label-confidence pairs**. For example,
 ```
