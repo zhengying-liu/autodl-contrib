@@ -133,5 +133,7 @@ Data donors can follow next steps to check the integrity of their datasets to ma
 
 ## Contacts
 Please contact us via email:
+
 Zhengying Liu <zhengying.liu@inria.fr>
+
 Isabelle Guyon <guyon@chalearn.org>
