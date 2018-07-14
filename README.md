@@ -14,6 +14,7 @@ We strongly encourage different entities to contribute their own data to this ch
 	- [TFRecord Format](#tfrecord-format)
 - [Carefully Name Your Files](#carefully-name-your-files)
 - [Check the Integrity of a Dataset](#check-the-integrity-of-a-dataset)
+- [Contacts](#contacts)
 
 ## Two Words on AutoDL
 AutoDL challenge is going to be the next big thing in the field of automatic machine learning (AutoML). It challenges participants to find fully automatic solution for designing deep (machine) learning models. This means that participants' (one single) algorithm should be able to construct machine learning models for all tasks (i.e. dataset + metric) in this challenge.
@@ -132,8 +133,6 @@ Data donors can follow next steps to check the integrity of their datasets to ma
 4. If some info aren't correct, make sure there is no bug in your dataset directory. In some rare cases, you are allowed to modify the file `dataset_info.yaml` manually.
 
 ## Contacts
-Please contact us via email:
-
-
-| Zhengying Liu  | <zhengying.liu@inria.fr>  |
-| Isabelle Guyon  | <guyon@chalearn.org>  |
+Please contact us via email:  
+Zhengying Liu	<zhengying.liu@inria.fr>  
+Isabelle Guyon	<guyon@chalearn.org>
