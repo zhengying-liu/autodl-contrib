@@ -130,9 +130,9 @@ Data donors can follow next steps to check the integrity of their datasets to ma
 
 3. The script will create a YAML file `dataset_info.yaml` in the dataset directory. You can read this file and check if all inferred informations on the dataset are correct as expected;
 
-4. If some info aren't correct, make sure there is no bug in your dataset directory. In some rare cases, you are allowed to modify the file `dataset_info.yaml` manually.
+4. If some info isn't correct, make sure there is no bug in your dataset directory. In some rare cases, you are allowed to modify the file `dataset_info.yaml` manually.
 
 ## Contact us
 Please contact us via email:  
-Zhengying Liu	<zhengying.liu@inria.fr>  
-Isabelle Guyon	<guyon@chalearn.org>
+Zhengying Liu   <zhengying.liu@inria.fr>  
+Isabelle Guyon  <guyon@chalearn.org>
