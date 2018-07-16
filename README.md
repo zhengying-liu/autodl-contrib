@@ -22,7 +22,8 @@ AutoDL challenge is going to be the next big thing in the field of automatic mac
 ## Reward for Data Donors
 By contributing datasets to this challenge, data donors can benefit from:
 1. being credited for an event important in both academy and industry;
-2. using directly winning methods to solve their own problems, under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) (*@Isabelle: TODO. Not quite sure*).
+2. probable joint publication(s) on important journals in the field of ML/AI;
+3. using directly winning methods to solve their own problems, under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) (*@Isabelle: TODO. Not quite sure*).
 
 ## Rights of Data
 Data donors' datasets will be properly **anonymized** and **be exclusively used for this challenge** (*TODO: perhaps for later AutoML/AutoDL challenges too?*). Final data provided to participants will only contain numbers and no column names will be given. This means that, for example, datasets in text will contain no explicit words and instead words will be replaced by their index.
