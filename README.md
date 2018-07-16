@@ -31,7 +31,7 @@ Data donors' datasets will be properly **anonymized** and **be exclusively used 
 ## What is needed?
 As the tasks in this first edition of AutoDL challenge will all be **multi-label classification** tasks, all you need to provide is **examples** (a.k.a samples or features) with corresponding **labels**, and optionally some **metadata**. Datasets used in AutoDL cover all kinds of different domains such as video, image, text, speech, etc. You are thus welcome to contribute any datasets of any kinds.
 
-All datasets will ultimately be formatted into a uniform format (TFRecords) then provided to participants of the challenge. However, to facilitate the work of data donors, we accept [3 possible formats](https://github.com/zhengying-liu/autodl-contrib#3-possible-formats). Some of existing datasets are already in one of these 3 formats or require very few modification.
+All datasets will ultimately be formatted into a uniform format (TFRecords) then provided to participants of the challenge. However, to facilitate the work of data donors, we accept [3 possible formats](https://github.com/zhengying-liu/autodl-contrib#3-possible-formats). Quite many existing datasets are already in one of these 3 formats or require very few modification.
 
 For a given dataset, all its files should be under the **same directory**. And note that **no train/test split is required**. The organizers can carry out train/test split themselves.
 
