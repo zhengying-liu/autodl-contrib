@@ -22,7 +22,7 @@ AutoDL challenge is going to be the next big thing in the field of automatic mac
 ## Reward for Data Donors
 By contributing datasets to this challenge, data donors can benefit from:
 1. being credited for an event important in both academy and industry;
-2. probable joint publication(s) on important journals in the field of ML/AI;
+2. probable joint publication(s) on important journals/conferences in the field of ML/AI;
 3. using directly winning methods to solve their own problems, under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) (*@Isabelle: TODO. Not quite sure*).
 
 ## Rights of Data
