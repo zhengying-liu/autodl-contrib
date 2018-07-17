@@ -90,6 +90,14 @@ python convert_mnist_to_tfrecords.py
 ```
 in the current directory. The script contains more technical details on how to format dataset in TFRecord format.
 
+## Readings
+In order to understand better what TFRecords are and how to work with them, we strongly recommend to read the following references if you really want to contribute data in TFRecord format:
+- A [basic introduction](https://developers.google.com/protocol-buffers/docs/pythontutorial) on **Protocol Buffers** for Python programmers;
+- After reading above introduction, you can find the definition of two important `proto`'s (short for Protocol Buffers) in the source code of TensorFlow:
+  - [Feature](https://www.tensorflow.org/code/tensorflow/core/example/feature.proto) proto;
+  - [Example](https://www.tensorflow.org/code/tensorflow/core/example/example.proto) proto, in which we find the extremely important definition of **SequenceExample** proto that we'll use in this challenge.
+- The [Consuming TFRecord data](https://www.tensorflow.org/programmers_guide/datasets#consuming_tfrecord_data) section of TensorFlow's official documentation;
+- Other blog articles on this topics, for example [this article](https://planspace.org/20170323-tfrecords_for_humans/).
 
 ## Providing More Info Is Always Well-received
 You are of course welcome to add more informations in your dataset directory.
