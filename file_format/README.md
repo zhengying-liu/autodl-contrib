@@ -5,7 +5,7 @@ We accept dataset contributions under **file format**.
 Under file format, each example is an independent file (this is usually the case for large examples such as videos) and all labels are contained in another file.
 
 ## Supported File Types
-File format is extremely convenient when examples in the dataset are indeed *files*. This is the case when you already have a database of files (e.g. images, videos, audios) with corresponding labels. If you want to contribute data in file format, you can simply provide these files plus the labels contained in a CSV file. We'll further format these files into TFRecords using `dataset_manager.py`. Some preferred file types are:
+File format is extremely convenient when examples in the dataset are indeed *files*. This is the case when one already has a database of files (e.g. images, videos, audios) with corresponding labels. If you want to contribute data in file format, you can simply provide these files plus the labels contained in a CSV file. We'll further format these files into TFRecords using `dataset_manager.py`. Some preferred file types are:
 - images: `.jpg`, `.png`, `.gif`
 - videos: `.avi`, `.mp4`
 - audios: `.mp3`, `.wav`
