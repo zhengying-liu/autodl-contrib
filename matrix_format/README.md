@@ -51,7 +51,7 @@ is valid.
 
 Once again, sparse representation is accepted. This means that in `labels.csv`, we can have **label-confidence pairs**. For example,
 ```
-VideoId,LabelConfidencePairs
+Id,LabelConfidencePairs
 JVEF,2377 0.488458 2105 0.48776 3346 0.486832
 JoEF,1 0.544249 0 0.53526 14 0.490038 36 0.48924 94 0.485278 153 0.481826
 ...
