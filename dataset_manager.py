@@ -18,6 +18,8 @@ import sys
 import tensorflow as tf
 import pandas as pd
 
+debug = True
+
 # Important YAML file assigned to save and load dataset info.
 # This file can be edited at first but should be automatically generated
 # once processed. So be really careful when using this file.
@@ -50,7 +52,7 @@ class DatasetManager(object):
     if dataset_name:
       self._dataset_name = dataset_name
     else:
-      self._dataset_name = os.path.basename(dataset_dir)
+      self._dataset_name = os.path.basename(os.path.dirname(dataset_dir))
 
     # Load or infer dataset info
     if os.path.exists(self._path_to_yaml):
@@ -65,7 +67,7 @@ class DatasetManager(object):
 
   def save_dataset_info(self):
     with open(self._path_to_yaml, 'w') as f:
-      print("Saving dataset info to the file {}."\
+      print("Saving dataset info to the file {}..."\
             .format(self._path_to_yaml), end="")
       yaml.dump(self._dataset_info, f)
       print("Done!")
@@ -74,7 +76,7 @@ class DatasetManager(object):
     """Load dataset info from the file <DATASET_INFO>"""
     assert(os.path.exists(self._path_to_yaml))
     with open(self._path_to_yaml, 'r') as f:
-      print("Loading dataset info from file {}."\
+      print("Loading dataset info from file `{}`..."\
             .format(self._path_to_yaml), end="")
       self._dataset_info = yaml.load(f)
       print("Done!")
@@ -93,16 +95,14 @@ class DatasetManager(object):
                           'labels': [],
                           'num_examples': None,
                           'num_labels': None,
-                          'labels_separated': False
                           },
         'test_data': {'examples': [],
                       'labels': [],
                       'num_examples': None,
                       'num_labels': None,
-                      'labels_separated': True
                       },
         'integrity_check_done': False,
-        'donor_name': "<To be filled by hand>"
+        'donor_info': {}
         }
     return default_dataset_info
 
@@ -110,6 +110,9 @@ class DatasetManager(object):
     """Infer dataset format according to file names and extension names in
     dataset directory.
     """
+
+    self._dataset_info = self.generate_default_dataset_info()
+
     files = os.listdir(self._dataset_dir)
     extensions = [os.path.splitext(file)[1] for file in files]
 
@@ -150,11 +153,14 @@ class DatasetManager(object):
       https://github.com/zhengying-liu/autodl-contrib#carefully-name-your-files
     """)
 
+  def get_dataset_format(self):
+    return self._dataset_info['dataset_format']
 
   def infer_dataset_info(self):
     # Infer dataset format
     try:
-      dataset_format = self.infer_dataset_format()
+      self.infer_dataset_format()
+      dataset_format = self.get_dataset_format()
       print("Inferred dataset format: ", dataset_format)
     except:
       print("Cannot infer dataset format...")
@@ -171,11 +177,40 @@ class DatasetManager(object):
         print("Invalid answer! Please try again...")
 
     # Infer dataset info
+    print("Trying to infer dataset info under {} format..."\
+          .format(dataset_format))
+    if dataset_format == DATASET_FORMATS[0]: # Matrix format
+      self.infer_matrix_dataset_info()
+    elif dataset_format == DATASET_FORMATS[1]: # File format
+      self.infer_file_dataset_info()
+    elif dataset_format == DATASET_FORMATS[2]: # TFRecord format
+      self.infer_tfrecord_dataset_info()
+    else: # Not possible
+      raise ValueError("The format {} does not exist!".format(dataset_format))
 
+    print("Successfully inferred dataset info in {} format."\
+          .format(dataset_format))
+    print("Congratulations! Your dataset is valid for a contribution!")
+    self._dataset_info['dataset_format'] = dataset_format
+    self.collect_donor_info()
+    self.integrity_check_done()
+    self.save_dataset_info()
+    print("Now you can find inferred dataset info in the file `{}`."\
+          .format(DATASET_INFO_FILENAME))
 
+  def collect_donor_info(self):
+    donor_name = input("Please enter your name as data donor: ")
+    self._dataset_info['donor_info']['name'] = donor_name
 
+  def integrity_check_done(self):
+    self._dataset_info['integrity_check_done'] = True
+
+  def infer_matrix_dataset_info(self):
+    # TODO
+    raise NotImplementedError()
 
   def infer_file_dataset_info(self):
+    dataset_info = self.generate_default_dataset_info()
     files = os.listdir(self._dataset_dir)
 
     # Count the number of files in each extension and sort by number of files
@@ -195,36 +230,37 @@ class DatasetManager(object):
     # Find the file containing labels
     def is_label_file(filename):
       return 'label' in filename and filename.endswith('.csv')
-    files_label = self._dataset_info['training_data']['labels']
+    files_label = []
     for file in files:
       if is_label_file(file):
         files_label.append(file)
-    if len(files_label) != 1:
-      raise ValueError("Expected 1 file containing labels."
+    if len(files_label) < 1:
+      raise ValueError("Expected 1 file containing labels. "
+                       "But 0 was found.")
+    elif len(files_label) > 1:
+      raise ValueError("Expected 1 file containing labels. "
                        "But {} were found. They are {}"\
-                       .format(int(files_label), files_label))
+                       .format(len(files_label), files_label))
     file_label = files_label[0]
-    labels = pd.read_csv(file_label)
+    labels_df = pd.read_csv(os.path.join(self._dataset_dir, file_label))
 
     # Compare number of rows and number of files
-    n_rows = labels.shape[0]
+    n_rows = labels_df.shape[0]
     n_files = extensions[0][1]
+    ext = extensions[0][0]
     if n_rows == n_files:
-      ext = extensions[0][0]
-      self._dataset_info['domain'] = ext
-      self._dataset_info['training_data']['examples'] = ['*' + ext]
-      self._dataset_info['training_data']['labels'] = files_label
-      self._dataset_info['training_data']['num_examples'] = n_files
-      self._dataset_info['training_data']['num_labels'] = n_rows
+      dataset_info['domain'] = ext
+      dataset_info['training_data']['examples'] = ['*' + ext]
+      dataset_info['training_data']['labels'] = files_label
+      dataset_info['training_data']['num_examples'] = n_files
+      dataset_info['training_data']['num_labels'] = n_rows
 
-      print("Successfully inferred dataset info in file format!")
-      print("")
-
-
-
-
-
-
+      self._dataset_info = dataset_info
+    else:
+      print("WARNING: inconsistent number of files found! {} files with "
+            "extension {} are found "
+            "but {} rows of labels are found in the file "
+            "{}.".format(n_files, ext, n_rows, file_label))
 
   def infer_tfrecord_dataset_info(self):
     dataset_info = self.generate_default_dataset_info()
@@ -279,7 +315,6 @@ class DatasetManager(object):
     """
     pass
 
-
   def convert_AutoML_format_to_tfrecord(self, *arg, **kwarg):
     """Convert a dataset in AutoML format to TFRecord format.
 
@@ -313,7 +348,6 @@ def main(argv):
   else:
     dataset_dir = input("Please enter the path to your dataset: ")
   dm = DatasetManager(dataset_dir=dataset_dir)
-  dm.infer_file_dataset_info()
 
 if __name__ == '__main__':
   main(sys.argv)
