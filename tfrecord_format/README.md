@@ -84,6 +84,12 @@ feature_lists {
 }
 </code></pre>
 
+We provide a Python script to generate this example from scratch. You can do it by running
+```
+python convert_mnist_to_tfrecords.py
+```
+in the current directory. The script contains more technical details on how to format dataset in TFRecord format.
+
 
 ## Providing More Info Is Always Well-received
 You are of course welcome to add more informations in your dataset directory.
