@@ -4,6 +4,14 @@ We accept dataset contributions under **file format**.
 
 Under file format, each example is an independent file (this is usually the case for large examples such as videos) and all labels are contained in another file.
 
+## Supported File Types
+File format is extremely convenient when examples in the dataset are indeed *files*. This is the case when you already have a database of files (e.g. images, videos, audios) with corresponding labels. If you want to contribute data in file format, you can simply provide these files plus the labels contained in a CSV file. We'll further format these files into TFRecords using `dataset_manager.py`. Some preferred file types are:
+- images: `.jpg`, `.png`, `.gif`
+- videos: `.avi`, `.mp4`
+- audios: `.mp3`, `.wav`
+
+If you want to contribute data in `.txt` type, you need to provide **tokenized data**, after some typical pre-processing in NLP (stemming, lemmatization, stopwords removing, argumentation, etc). Then each examples is represented by a **series of integers** which are indexes of words.
+
 ## Carefully Name Your Files
 Remember, you need to be careful about naming your files in a dataset and follow our [file naming rules](https://github.com/zhengying-liu/autodl-contrib#carefully-name-your-files).
 
@@ -45,7 +53,7 @@ monkeys/
 └── n9162.jpg
 ```
 
-Well yes, the files don't really follow our naming rules (with no `*example*` pattern etc). You are allowed to do this only if **you precise that the dataset is in file format in the file name of lables**, as in `monkeys_labels_file_format.csv`. 
+Well yes, the files don't really follow our naming rules (with no `*example*` pattern etc). You are allowed to do this only if **you precise that the dataset is in file format in the file name of lables**, as in `monkeys_labels_file_format.csv`.
 
 **WARNING**: in this CSV file, there should be a column called `FileName` to indicate the corresponding files.
 
