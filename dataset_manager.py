@@ -207,7 +207,8 @@ class DatasetManager(object):
 
   def infer_matrix_dataset_info(self):
     # TODO
-    raise NotImplementedError()
+    raise NotImplementedError("Sorry, the integrity check of matrix format "
+                              "will be implemented soon.")
 
   def infer_file_dataset_info(self):
     dataset_info = self.generate_default_dataset_info()

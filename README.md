@@ -26,7 +26,7 @@ By contributing datasets to this challenge, data donors can benefit from:
 3. using directly winning methods to solve their own problems, under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) (*@Isabelle: TODO. Not quite sure*).
 
 ## Rights of Data
-Data donors' datasets will be properly **anonymized** and **be exclusively used for this challenge** (*TODO: perhaps for later AutoML/AutoDL challenges too?*). Final data provided to participants will only contain numbers and no column names will be given. This means that, for example, datasets in text will contain no explicit words and instead words will be replaced by their index.
+Data donors' datasets will be properly **anonymized** and **be exclusively used for this challenge** (*@Isabelle: perhaps for later AutoML/AutoDL challenges too?*). Final data provided to participants will only contain numbers and no column names will be given. This means that, for example, datasets in text will contain no explicit words and instead words will be replaced by their index.
 
 ## What is needed?
 As the tasks in this first edition of AutoDL challenge will all be **multi-label classification** tasks, all you need to provide is **examples** (a.k.a samples or features) with corresponding **labels**, and optionally some **metadata**. Datasets used in AutoDL cover all kinds of different domains such as video, image, text, speech, etc. You are thus welcome to contribute any datasets of any kinds.
@@ -35,7 +35,7 @@ All datasets will ultimately be formatted into a uniform format (TFRecords) then
 
 For a given dataset, all its files should be under the **same directory**. And note that **no train/test split is required**. The organizers can carry out train/test split themselves.
 
-There is **no size limit** for datasets in this challenge (not as in previous AutoML challenges). (*TODO: but computing resource is very limited. Good thing is that using metric such as area under learning curve doesn't require complete convergence of participants' algorithm.*) All data will be stored on Google Cloud Platform and we accept and even welcome large datasets. On the other hand, this means that participants are challenged to write algorithms that are able to deal with tasks of very different scales.
+There is **no size limit** for datasets in this challenge (not as in previous AutoML challenges). (*@Isabelle: but computing resource is very limited. Good thing is that using metric such as area under learning curve doesn't require complete convergence of participants' algorithm.*) All data will be stored on Google Cloud Platform and we accept and even welcome large datasets. On the other hand, this means that participants are challenged to write algorithms that are able to deal with tasks of very different scales.
 
 ## 3 Possible Formats
 We accept dataset contributions under 3 possible formats:
@@ -125,7 +125,7 @@ Data donors can follow next steps to check the integrity of their datasets to ma
     ```
     python dataset_manager.py /path/to/your/dataset/
     ```
-    (*TODO: this script doesn't work yet*)
+    (*For now, this script only works for datasets under file format.*)
 
     After running the script, messages on whether the dataset is valid will be generated.
 
