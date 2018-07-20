@@ -10,6 +10,8 @@ File format is extremely convenient when examples in the dataset are indeed *fil
 - videos: `.avi`, `.mp4`
 - audios: `.mp3`, `.wav`
 
+It is preferred that all examples in one dataset share the **same size** (e.g. height and width). If the examples are sequences, they don't have to share the same length. In all cases, please try to indicate these info (at least the shared height and width of the examples) in a file containing metadata, with filename following glob pattern `*metadata*`.
+
 If you want to contribute data in `.txt` type, you need to provide **tokenized data**, after some typical pre-processing in NLP (stemming, lemmatization, stopwords removing, argumentation, etc). Then each examples is represented by a **series of integers** which are indexes of words. [An example](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format/randomtext) of such text datasets can be found in this directory too.
 
 ## Carefully Name Your Files
