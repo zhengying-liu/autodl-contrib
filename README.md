@@ -1,7 +1,6 @@
 # How to Contribute Datasets to AutoDL Challenge
 This repo is intended for giving instructions and examples on how to contribute datasets to AutoDL, a new data science challenge on Automatic Deep Learning we are organizing with Google, ChaLearn and Inria.
 
-We strongly encourage different entities to contribute their own data to this challenge, enriching the database of datasets and making the challenge's results more robust and convincing. In return, data donors can benefit from a direct machine learning solution for their own problems, after a competitive challenge of the state of the art. Lastly, being credited for a cool challenge like this one tends to be a pretty nice thing to do. :)
 
 ## Table of Contents
 - [Two Words on AutoDL](#two-words-on-autodl)
@@ -17,13 +16,14 @@ We strongly encourage different entities to contribute their own data to this ch
 - [Contact us](#contact-us)
 
 ## Two Words on AutoDL
-AutoDL challenge is going to be the next big thing in the field of automatic machine learning (AutoML). It challenges participants to find fully automatic solution for designing deep (machine) learning models. This means that participants' (one single) algorithm should be able to construct machine learning models for all tasks (i.e. dataset + metric) in this challenge.
+The AutoDL challenge (planned for 2019, hopefully) is going to be the next big thing in the field of automatic machine learning (AutoML). It challenges participants to find fully automatic solution for designing deep (machine) learning models. This means that participants' (one single) algorithm should be able to construct machine learning models for all tasks (i.e. dataset + metric) in this challenge.
 
 ## Reward for Data Donors
-By contributing datasets to this challenge, data donors can benefit from:
-1. being credited for an event important in both academy and industry;
-2. probable joint publication(s) on important journals/conferences in the field of ML/AI;
-3. using directly winning methods to solve their own problems, under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) (*@Isabelle: TODO. Not quite sure*).
+By contributing datasets to this challenge, data donors will benefit from:
+1. Having their datasets published to our repository [LINK TBA]
+2. Being invited to write a joint paper on the repository [to be submitted to the JMLR MLOSS track or elsewhere]
+3. Being invited to contribute to the paper on analyses of the challenge [to be published in a book in the Springer CiML series or elsewhere]
+4. Being acknowledged in presentations and publications on the challenge.
 
 ## Rights of Data
 Data donors' datasets will be properly **anonymized** and **be exclusively used for this challenge** (*@Isabelle: perhaps for later AutoML/AutoDL challenges too?*). Final data provided to participants will only contain numbers and no column names will be given. This means that, for example, datasets in text will contain no explicit words and instead words will be replaced by their index.
