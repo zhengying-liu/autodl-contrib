@@ -26,7 +26,7 @@ By contributing datasets to this challenge, data donors will benefit from:
 4. Being acknowledged in presentations and publications on the challenge.
 
 ## Rights of Data
-Data donors' datasets will be properly **anonymized** and **be exclusively used for this challenge** (*@Isabelle: perhaps for later AutoML/AutoDL challenges too?*). Final data provided to participants will only contain numbers and no column names will be given. This means that, for example, datasets in text will contain no explicit words and instead words will be replaced by their index.
+Data donors are are responsible for properly anonimizing their data and should release it under an open data license [SUGGESTION LIST]. The data will remain available in the repository beyond the challenge termination.
 
 ## What is needed?
 As the tasks in this first edition of AutoDL challenge will all be **multi-label classification** tasks, all you need to provide is **examples** (a.k.a samples or features) with corresponding **labels**, and optionally some **metadata**. Datasets used in AutoDL cover all kinds of different domains such as video, image, text, speech, etc. You are thus welcome to contribute any datasets of any kinds.
@@ -37,7 +37,7 @@ For a given dataset, all its files should be under the **same directory**. And n
 
 There is **no size limit** for datasets in this challenge (not as in previous AutoML challenges). (*@Isabelle: but computing resource is very limited. Good thing is that using metric such as area under learning curve doesn't require complete convergence of participants' algorithm.*) All data will be stored on Google Cloud Platform and we accept and even welcome large datasets. On the other hand, this means that participants are challenged to write algorithms that are able to deal with tasks of very different scales.
 
-## 3 Possible Formats
+## Three Possible Formats
 We accept dataset contributions under 3 possible formats:
 - Matrix format
 - File format
