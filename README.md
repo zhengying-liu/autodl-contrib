@@ -38,6 +38,10 @@ For a given dataset, all files should be in the **same directory**. And note tha
 
 There is in priciple **no size limit** for datasets in this challenge. However, because of practical reasons of data transmission and storage, if your dataset exceed 10 GB, please [Contact us](mailto:autodl@chalearn.org).
 
+## Where to submit
+
+**Isabelle: we should see whether we can create a Codalab competition in which the entries are submitted datasets. Otherwise, we can go through "My Datasets", but we need to ask eric for a ne feature: share dataset with someone else**
+
 ## Three Possible Formats
 We accept dataset contributions in 3 possible formats:
 - Matrix format
@@ -68,6 +72,8 @@ More details and [an example dataset](https://github.com/zhengying-liu/autodl-co
 * feat_type = { 'Numerical' 'Categorical' 'Binary' } # do not change that
 * label_names = { 'label1' 'label2' etc. 'labeln' } # Column header of the solution files indicating the names of the labels in multi-label or multi-class tasks.
 
+**I suggest you change iris.m in [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format/iris-AutoML) by an example dataset.info file having this required metadata information.
+
 **
 
 ### File Format
@@ -75,11 +81,14 @@ Under file format, each example is an independent file (this is usually the case
 
 More details and [2 example datasets](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format/monkeys) in file format can be found in the sub-directory [`file_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format).
 
+**Isabelle: the info file with metadata is still needed **
+
 ### TFRecord Format
 TFRecord format is the final format we'll actually use in this AutoDL challenge (so when you provide your data under matrix format or file format, thereafter we'll do the conversion job to have a dataset in TFRecord format). Data from all domains will be uniformly formatted to TFRecords following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L92) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)).
 
 More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format/mnist) in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
 
+**Isabelle: the info file with metadata is still needed **
 
 ## Carefully Name Your Files
 
@@ -91,6 +100,8 @@ Please name your files carefully such that dataset info can be inferred correctl
 - **labels** files should follow the glob pattern `*label*` or `*.solution`;
 - Try to use extension names to make the file type explicit (`*.csv`, `*.tfrecord`, `*.avi`, `*.jpg`, `*.txt`, etc);
 - If no `*example*` or `*label*` is specified in the file names of data, these files contain both examples and labels.
+
+**Isabelle: I do not understand these guidelines**
 
 In addition, it's recommended that the name of all files belonging to a given dataset begin with the dataset name.
 
@@ -126,7 +137,11 @@ iris/
 
 Note that in this case, no **metadata** is provided and no train/test split is done yet. However, these two files suffice to construct a valid dataset for AutoDL challenge.
 
+**Isabelle: why do you have inconsistent instructions: sometimes there is a train/test split and sometimes not**
+
 WARNING: as no informative extension name is provided, the dataset will considered to be in `.csv` (!!!) format, as is the case for all datasets in AutoML format.
+
+**Isabelle: this should not be allowed.**
 
 ## Check the Integrity of a Dataset
 We provide a Python script `dataset_manager.py` that can automatically
