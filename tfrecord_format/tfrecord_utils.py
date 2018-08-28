@@ -186,6 +186,12 @@ def separate_examples_and_labels(path_to_tfrecord, keep_old_file=True):
 
   return path_to_examples, path_to_labels
 
+def print_first_sequence_example(path_to_tfrecord):
+  for bytes in tf.python_io.tf_record_iterator(path_to_tfrecord):
+    sequence_example = tf.train.SequenceExample.FromString(bytes)
+    print(sequence_example)
+    break
+
 
 def _get_context_keys(sequence_example):
   return [x for x in sequence_example.context.feature]
