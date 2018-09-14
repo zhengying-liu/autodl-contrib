@@ -92,7 +92,7 @@ in the current directory. The script contains more technical details on how to f
 
 ## Explain SequenceExample in natural language
 If you haven't looked at what SequenceExample proto is in the official [code](https://www.tensorflow.org/code/tensorflow/core/example/example.proto),
-you can look at this paragraph have a general idea.
+you can look at this paragraph to have a general idea.
 
 SequenceExample proto is a kind of protocol to store data. This protocol can be
 followed to format dataset in TFRecord format (TensorFlow's official data format).
@@ -107,8 +107,12 @@ To know more (very important) details about how to start hands-on experience
 on formatting datasets in TFRecord format, please do readings in the following
 section and read the codes in the directory `autodl-format-definition`. Some
 important paragraphs would be:
-- the whole file `data.proto`, which defines the final challenge format;
 - the function `_parse_function` in the class `AutoDLDataset` in the script `dataset.py`;
+- the whole file `data.proto`, which defines the final challenge format.
+But be aware: **we don't want to format datasets following this proto.** Instead,
+we'll do this following SequenceExample proto and then do some parsing using
+`_parse_function`;
+
 Notice that the script `data_pb2.py` is automatically generated with the
 compiler `protoc` from `data.proto`. It's not recommended to read, but you can
 read it anyway if interested.
