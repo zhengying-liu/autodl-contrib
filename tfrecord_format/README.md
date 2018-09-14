@@ -110,7 +110,7 @@ important paragraphs would be:
 - the function `_parse_function` in the class `AutoDLDataset` in the script `dataset.py`;
 - the whole file `data.proto`, which defines the final challenge format.
 But be aware: **we don't want to format datasets following this proto.** Instead,
-we'll do this following SequenceExample proto and then do some parsing using
+we'll follow SequenceExample proto and then do some parsing using
 `_parse_function`;
 
 Notice that the script `data_pb2.py` is automatically generated with the
@@ -125,6 +125,9 @@ In order to understand better what TFRecords are and how to work with them, we s
   - [Example](https://www.tensorflow.org/code/tensorflow/core/example/example.proto) proto, in which we find the extremely important definition of **SequenceExample** proto that we'll use in this challenge.
 - The [Consuming TFRecord data](https://www.tensorflow.org/programmers_guide/datasets#consuming_tfrecord_data) section of TensorFlow's official documentation;
 - Other blog articles on this topics, for example [this article](https://planspace.org/20170323-tfrecords_for_humans/).
+
+## Notes on SequenceExample formatting convention for AutoDL
+TODO: add more details here.
 
 ## Providing More Info Is Always Well-received
 You are of course welcome to add more informations in your dataset directory.
