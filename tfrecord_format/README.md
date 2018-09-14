@@ -96,7 +96,7 @@ you can look at this paragraph have a general idea.
 
 SequenceExample proto is a kind of protocol to store data. This protocol can be
 followed to format dataset in TFRecord format (TensorFlow's official data format).
-One such dataset consists of a series of sequence examples.
+One such dataset consists of a list of **sequence examples**.
 Each sequence example has two components: `context` and `feature_lists`.
 In a Python-like jargon, `context` can be considered as a dict mapping
 each feature name to feature (i.e. a list of numbers). `feature_list` is then
