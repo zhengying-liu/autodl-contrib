@@ -103,6 +103,16 @@ each feature name to feature (i.e. a list of numbers). `feature_list` is then
 considered as a dict mapping each feature name to a list of features
 (i.e. a list of lists of numbers).
 
+To know more (very important) details about how to start hands-on experience
+on formatting datasets in TFRecord format, please do readings in the following
+section and read the codes in the directory `autodl-format-definition`. Some
+important paragraphs would be:
+- the whole file `data.proto`, which defines the final challenge format;
+- the function `_parse_function` in the class `AutoDLDataset` in the script `dataset.py`;
+Notice that the script `data_pb2.py` is automatically generated with the
+compiler `protoc` from `data.proto`. It's not recommended to read, but you can
+read it anyway if interested.
+
 ## Readings
 In order to understand better what TFRecords are and how to work with them, we strongly recommend to read the following references if you really want to contribute data in TFRecord format:
 - A [basic introduction](https://developers.google.com/protocol-buffers/docs/pythontutorial) on **Protocol Buffers** for Python programmers;
