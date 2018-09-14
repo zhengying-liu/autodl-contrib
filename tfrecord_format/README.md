@@ -90,6 +90,19 @@ python convert_mnist_to_tfrecords.py
 ```
 in the current directory. The script contains more technical details on how to format dataset in TFRecord format.
 
+## Explain SequenceExample in natural language
+If you haven't looked at what SequenceExample proto is in the official [code](https://www.tensorflow.org/code/tensorflow/core/example/example.proto),
+you can look at this paragraph have a general idea.
+
+SequenceExample proto is a kind of protocol to store data. This protocol can be
+followed to format dataset in TFRecord format (TensorFlow's official data format).
+One such dataset consists of a series of sequence examples.
+Each sequence example has two components: `context` and `feature_lists`.
+In a Python-like jargon, `context` can be considered as a dict mapping
+each feature name to feature (i.e. a list of numbers). `feature_list` is then
+considered as a dict mapping each feature name to a list of features
+(i.e. a list of lists of numbers).
+
 ## Readings
 In order to understand better what TFRecords are and how to work with them, we strongly recommend to read the following references if you really want to contribute data in TFRecord format:
 - A [basic introduction](https://developers.google.com/protocol-buffers/docs/pythontutorial) on **Protocol Buffers** for Python programmers;
