@@ -127,7 +127,19 @@ In order to understand better what TFRecords are and how to work with them, we s
 - Other blog articles on this topics, for example [this article](https://planspace.org/20170323-tfrecords_for_humans/).
 
 ## Notes on SequenceExample formatting convention for AutoDL
-TODO: add more details here.
+This section is dedicated to explain how to format datasets following
+AutoDL-specific SequenceExample proto. The conventions are:
+- For a dataset in AutoDL challenge, each example is a *matrix bundle*, which
+is a list of matrices (see `data.proto`);
+- Each matrix in a matrix bundle can be in *dense*, *sparse* or *compressed*
+format;
+- The feature name (in SequenceExample format) follows the pattern
+`<bundle_index>_<type>` (see `_parse_function` in `dataset.py`). For example,
+the bundle 0 in dense format has feature name `0_dense_input`.
+We can also have for example `1_compressed` or
+`2_sparse_col_index`, `2_sparse_row_index`, `2_sparse_value`;
+- All matrix bundles should share the same structure, i.e. the nth matrices in
+each bundle should have the same specification;
 
 ## Providing More Info Is Always Well-received
 You are of course welcome to add more informations in your dataset directory.
