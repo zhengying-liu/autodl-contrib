@@ -257,7 +257,8 @@ def time_series_to_sequence_example_df(merged_df, labels_df, filepath,
       if not first_index:
         first_index = index
       counter = index - first_index
-      if max_num_examples and counter >= max_num_examples:
+      # to have exactly `max_num_examples` examples
+      if max_num_examples and counter + 1 >= max_num_examples:
         break
       if index % 100 == 0:
         print("Writing example of index: ", index)
@@ -372,7 +373,7 @@ def print_first_sequence_example(path_to_tfrecord):
     break
 
 if __name__ == '__main__':
-  timit_dir = FLAGS.timit_dir
+  timit_dir = FLAGS.timit_dir # WARNING: you should change this to your own directory containing TIMIT dataset.
   output_dir = FLAGS.output_dir
   tmp_dir = FLAGS.tmp_dir
   level = FLAGS.level
