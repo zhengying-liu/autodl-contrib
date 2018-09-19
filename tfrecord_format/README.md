@@ -129,8 +129,11 @@ In order to understand better what TFRecords are and how to work with them, we s
 ## Notes on SequenceExample formatting convention for AutoDL
 This section is dedicated to explain how to format datasets following
 AutoDL-specific SequenceExample proto. The conventions are:
-- For a dataset in AutoDL challenge, each example is a *matrix bundle*, which
-is a list of matrices (see `data.proto`);
+- For a dataset in AutoDL challenge, each example (or sample) is a
+*matrix bundle*, which is a list of (3D) matrices (see `data.proto`);
+- The first dimension of each 3D matrix is the timestamp (for a static setting
+  with no time axis, this dimension is reduced to 1, naturally), hence the name
+  SequenceExample (compared to Example);
 - Each matrix in a matrix bundle can be in *dense*, *sparse* or *compressed*
 format;
 - The feature name (in SequenceExample format) follows the pattern
@@ -140,6 +143,7 @@ We can also have for example `1_compressed` or
 `2_sparse_col_index`, `2_sparse_row_index`, `2_sparse_value`;
 - All matrix bundles should share the same structure, i.e. the nth matrices in
 each bundle should have the same specification;
+- For a dense matrix, \\TODO
 
 ## Providing More Info Is Always Well-received
 You are of course welcome to add more informations in your dataset directory.
