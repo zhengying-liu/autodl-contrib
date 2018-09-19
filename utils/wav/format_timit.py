@@ -1,5 +1,5 @@
 # Author: Zhengying LIU
-# Date: 19 Sep 2018
+# Creation date: 18 Sep 2018
 # Description: generate AutoDL datasets (SequenceExample TFRecords)
 #              from TIMIT dataset.
 
