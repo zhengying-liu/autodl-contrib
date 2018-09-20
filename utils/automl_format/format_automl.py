@@ -158,7 +158,10 @@ def _write_metadata_textproto(counter, metadata, D_info, filepath):
   sequence_size = metadata.sequence_size
   output_dim = metadata.output_dim
   col_count = metadata.col_count
-  _format = D_info['format'].upper()
+  if D_info['format'] == 'dense':
+    _format = 'DENSE'
+  else:
+    _format = 'SPARSE'
   metadata_filename = 'metadata.textproto'
   metadata_filepath = os.path.join(os.path.dirname(filepath), metadata_filename)
   metadata_textproto = """is_sequence: false
