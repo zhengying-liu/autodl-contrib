@@ -1,0 +1,36 @@
+name,feat_num,feat_type,format,has_categorical,has_missing,is_sparse,label_num,metric,target_num,target_type,task,test_num,time_budget,train_num,usage,valid_num
+madeline,259,Numerical,dense,0,0,0,2,bac_metric,1,Binary,binary.classification,3240,1200,3140,AutoML challenge 2015,1080
+ada,48,Numerical,dense,0,0,0,2,auc_metric,1,Binary,binary.classification,41471,600,4147,AutoML challenge 2014,415
+tania,47236,Numerical,sparse,0,0,1,95,pac_metric,95,Binary,multilabel.classification,44635,1200,157599,AutoML challenge 2014,22514
+albert,78,Numerical,dense,1,1,0,2,f1_metric,1,Categorical,binary.classification,51048,1200,425240,AutoML challenge 2014,25526
+arturo,400,Numerical,dense,0,0,0,20,f1_metric,20,Categorical,multiclass.classification,2733,1200,9565,AutoML challenge 2014,1366
+arcene,10000,Numerical,dense,0,0,0,2,auc_metric,1,Binary,binary.classification,700,	600,100,AutoML challenge 2014,100
+volkert,180,Numerical,dense,0,0,0,10,pac_metric,10,Categorical,multiclass.classification,7000,1200,58310,AutoML challenge 2014,3500
+wallis,193731,Numerical,sparse,0,0,1,11,auc_metric,11,Categorical,multiclass.classification,8196,1200,10000,AutoML challenge 2014,4098
+pablo,120,Numerical,dense,0,0,0,0,a_metric,1,Numerical,regression,23565,1200,188524,AutoML challenge 2014,23565
+alexis,5000,Numerical,sparse,0,0,1,18,auc_metric,18,Binary,multilabel.classification,15569,1200,54491,AutoML challenge 2014,7784
+dilbert,2000,Numerical,dense,0,0,0,5,pac_metric,5,Categorical,multiclass.classification,9720,1200,10000,AutoML challenge 2014,4860
+yolanda,100,Numerical,dense,0,0,0,0,r2_metric,1,Numerical,regression,30000,1200,400000,AutoML challenge 2014,30000
+robert,7200,Numerical,dense,0,0,0,10,bac_metric,10,Binary,multiclass.classification,5000,1200,10000,AutoML challenge 2014,2000
+flora,200000,Numerical,sparse,0,0,1,0,a_metric,1,Numerical,regression,2000,1200,15000,AutoML challenge 2014,2000
+‘nova’,24000,Binary,dense,0,0,0,2,auc_metric,1,Binary,binary.classification,1022,600,8166,AutoML challenge 2015,1020
+gina,970,Numerical,dense,0,0,0,2,auc_metric,1,Binary,binary.classification,31532,	600,3153,AutoML challenge 2014,315
+dexter,20000,Numerical,sparse,0,0,1,2,auc_metric,1,Binary,binary.classification,2000,600,300,AutoML challenge 2014,300
+cadata,16,Numerical,dense,0,0,0,0,r2_metric,1,Numerical,regression,10640,200,5000,AutoML challenge 2014,5000
+philippine,308,Numerical,dense,0,0,0,2,bac_metric,1,Binary,binary.classification,4664,1200,5832,AutoML challenge 2015,1166
+helena,27,Numerical,dense,0,0,0,100,bac_metric,100,Categorical,multiclass.classification,18628,1200,65196,AutoML challenge 2014,9314
+fabert,800,Numerical,dense,0,0,0,7,pac_metric,7,Categorical,multiclass.classification,2354,1200,8237,AutoML challenge 2014,1177
+dorothea,100000,Binary,sparse_binary,0,0,1,2,auc_metric,1,Binary,binary.classification,800,100,800,AutoML challenge 2014,350
+christine,1636,Numerical,dense,0,0,0,2,bac_metric,1,Binary,binary.classification,2084,1200,5418,AutoML challenge 2015,834
+digits,1568,Numerical,dense,0,0,0,10,bac_metric,10,Categorical,multiclass.classification,35000,300,15000,AutoML challenge 2014,20000
+evita,3000,Binary,sparse_binary,0,0,1,2,auc_metric,1,Categorical,binary.classification,14000,1200,20000,AutoML challenge 2014,8000
+carlo,1070,Numerical,dense,0,0,0,2,pac_metric,1,Binary,binary.classification,10000,1200,50000,AutoML challenge 2014,10000
+sylvine,20,Numerical,dense,0,0,0,2,bac_metric,1,Binary,binary.classification,10244,1200,5124,AutoML challenge 2015,5124
+grigoris,301561,Numerical,sparse,0,0,1,91,auc_metric,91,Categorical,multilabel.classification,9920,1200,45400,AutoML challenge 2014,6486
+newsgroups,61188,Numerical,sparse,0,0,1,20,pac_metric,20,Numerical,multiclass.classification,3755,300,13142,AutoML challenge 2014,1877
+dionis,60,Numerical,dense,0,0,0,355,bac_metric,355,Categorical,multiclass.classification,12000,1200,416188,AutoML challenge 2014,6000
+marco,15299,Numerical,sparse,0,0,1,24,auc_metric,24,Categorical,multilabel.classification,20482,1200,163860,AutoML challenge 2014,20482
+adult,24,Mixed,dense,1,1,0,3,f1_metric,3,Binary,multilabel.classification,9768,300,34190,AutoML challenge 2014,4884
+jasmine,144,Numerical,dense,0,0,0,2,bac_metric,1,Binary,binary.classification,1756,1200,2984,AutoML challenge 2015,526
+jannis,54,Numerical,dense,0,0,0,4,bac_metric,4,Categorical,multiclass.classification,9851,1200,83733,AutoML challenge 2014,4926
+waldo,270,Mixed,dense,1,0,0,4,bac_metric,4,Categorical,multiclass.classification,2430,1200,19439,AutoML challenge 2014,2430
