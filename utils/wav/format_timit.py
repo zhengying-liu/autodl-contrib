@@ -388,10 +388,10 @@ if __name__ == '__main__':
     print("Error parsing max_num_examples_test...setting to None.")
     max_num_examples_test = None
   try:
-    print("Error parsing num_shards...setting to None.")
+    print("Error parsing num_shards...setting to 1.")
     num_shards = int(FLAGS.num_shards)
   except:
-    num_shards = None
+    num_shards = 1
 
   label_lvl = 3 # for labels: ['gender', 'region', 'level_label']
 
