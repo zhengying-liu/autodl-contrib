@@ -4,7 +4,7 @@
 """Generate AutoDL datasets from datasets in AutoML format.
 
 Run a command line (in the current directory) with something like:
-`python format_automl.py -input_dir='../../datasets/automl/' -dataset_name=adult -max_num_examples_train=600 -max_num_examples_test=100`
+`python format_automl.py -input_dir='../../raw_datasets/automl/' -output_dir='./' -dataset_name=adult -max_num_examples_train=600 -max_num_examples_test=100`
 
 Please change `input_dir` to the right directory on your disk containing the AutoML datasets.
 """
@@ -24,7 +24,7 @@ tf.flags.DEFINE_string('input_dir', '../../raw_datasets/automl/',
 
 tf.flags.DEFINE_string("dataset_name", "adult", "Basename of dataset.")
 
-tf.flags.DEFINE_string("output_dir", "./", "Output data directory.")
+tf.flags.DEFINE_string("output_dir", "../../formatted_datasets/", "Output data directory.")
 
 tf.flags.DEFINE_string('max_num_examples_train', '600',
                        "Number of examples in training set we want to format.")
