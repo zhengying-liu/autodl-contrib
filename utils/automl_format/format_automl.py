@@ -335,7 +335,7 @@ def press_a_button_and_give_me_an_AutoDL_dataset(input_dir,
 
 if __name__ == '__main__':
   input_dir = FLAGS.input_dir
-  dataset_name = FLAGS.dataset_name # Default: `adult`
+  dataset_name = FLAGS.dataset_name
   output_dir = FLAGS.output_dir
   try:
     max_num_examples_train = int(FLAGS.max_num_examples_train)
