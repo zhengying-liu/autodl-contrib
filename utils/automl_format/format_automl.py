@@ -19,7 +19,7 @@ from pprint import pprint
 sys.path.append('./ingestion_program/')
 from data_manager import DataManager
 
-tf.flags.DEFINE_string('input_dir', '../../datasets/automl/',
+tf.flags.DEFINE_string('input_dir', '../../raw_datasets/automl/',
                        "Directory containing all AutoML datasets.")
 
 tf.flags.DEFINE_string("dataset_name", "adult", "Basename of dataset.")
@@ -310,7 +310,7 @@ def press_a_button_and_give_me_an_AutoDL_dataset(input_dir,
   test_dir = os.path.join(dataset_data_dir, set_type)
   if not os.path.isdir(test_dir):
     os.mkdir(test_dir)
-  filepath = os.path.join(dataset_data_dir, set_type, "sample-{}.tfrecord".format(set_type))
+  filepath = os.path.join(dataset_data_dir, set_type, "sample-{}-{}.tfrecord".format(dataset_name, set_type))
   metadata, features, labels = _prepare_metadata_features_and_labels(D, set_type=set_type)
   convert_vectors_to_sequence_example(filepath, metadata, features, labels, D.info,
                                       max_num_examples=max_num_examples_test)
@@ -319,12 +319,12 @@ def press_a_button_and_give_me_an_AutoDL_dataset(input_dir,
   train_dir = os.path.join(dataset_data_dir, set_type)
   if not os.path.isdir(train_dir):
     os.mkdir(train_dir)
-  filepath = os.path.join(dataset_data_dir, set_type, "sample-{}.tfrecord".format(set_type))
+  filepath = os.path.join(dataset_data_dir, set_type, "sample-{}-{}.tfrecord".format(dataset_name, set_type))
   metadata, features, labels = _prepare_metadata_features_and_labels(D, set_type=set_type)
   convert_vectors_to_sequence_example(filepath, metadata, features, labels, D.info,
                                       max_num_examples=max_num_examples_train)
 
-  # Move solution file to grand parent directory
+  # Move solution file to grand-parent directory
   solution_filepath = os.path.join(dataset_data_dir, 'test',
                                    dataset_name + '.solution')
   new_solution_filepath = os.path.join(dataset_dir,
