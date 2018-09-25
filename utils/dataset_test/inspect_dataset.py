@@ -1,7 +1,11 @@
 # Author: Zhengying LIU
 # Creation date: 21 Sep 2018
 # Description: for formatted AutoDL datasets, inspect, retrieve information
-#   and check its integrety
+#   and check its integrity
+"""To check the integrity of a dataset, run following command line:
+`python inspect_dataset.py -input_dir='../../formatted_datasets/' -dataset_name=adult_600_100`
+where you need to change `input_dir` and `dataset_name`.
+"""
 
 import tensorflow as tf
 import pandas as pd
@@ -25,7 +29,8 @@ tf.flags.DEFINE_string('dataset_name', 'adult_600_100', "Basename of dataset.")
 
 tf.flags.DEFINE_string('definition_dir',
                        '../../tfrecord_format/autodl_format_definition',
-                       "Basename of dataset.")
+                       "Definition of AutoDL dataset"
+                       "(with `dataset.py`, `data.proto` etc).")
 
 FLAGS = tf.flags.FLAGS
 
@@ -303,16 +308,11 @@ def check_integrity(input_dir, dataset_name):
       print("Inconsistent number of classes.",
             "But this might be due to too few examples",
             "and the program cannot infer num_classes correctly")
-  return consistent_dataset, num_examples_existing_train,
+  return consistent_dataset, dataset_name, num_examples_existing_train,\
          num_examples_existing_test, num_classes_existing_train
 
 
 if __name__ == "__main__":
   input_dir = FLAGS.input_dir
   dataset_name = FLAGS.dataset_name
-  # D_train, D_test = get_train_and_test_data(input_dir, dataset_name,)
-  # num_examples_train = get_num_examples(D_train)
-  # num_examples_test = get_num_examples(D_test)
-  # print(num_examples_train)
-  # test_extract_info_from_sequence_example()
   check_integrity(input_dir, dataset_name)
