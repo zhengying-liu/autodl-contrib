@@ -4,7 +4,7 @@
 """Generate AutoDL datasets from datasets in AutoML format.
 
 Run a command line (in the current directory) with something like:
-`python format_automl.py -input_dir='../../raw_datasets/automl/' -output_dir='./' -dataset_name=adult -max_num_examples_train=600 -max_num_examples_test=100`
+`python format_automl.py -input_dir='../../raw_datasets/automl/' -output_dir='../../formatted_datasets/' -dataset_name=adult -max_num_examples_train=600 -max_num_examples_test=100`
 
 Please change `input_dir` to the right directory on your disk containing the AutoML datasets.
 """
@@ -328,7 +328,7 @@ def press_a_button_and_give_me_an_AutoDL_dataset(input_dir,
   solution_filepath = os.path.join(dataset_data_dir, 'test',
                                    dataset_name + '.solution')
   new_solution_filepath = os.path.join(dataset_dir,
-                                   dataset_name + '.solution')
+                                   new_dataset_name + '.solution')
   os.rename(solution_filepath, new_solution_filepath)
   return dataset_dir, new_dataset_name
 
