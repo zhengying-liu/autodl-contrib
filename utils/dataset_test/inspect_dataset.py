@@ -5,6 +5,11 @@
 """To check the integrity of a dataset, run following command line:
 `python inspect_dataset.py -input_dir='../../formatted_datasets/' -dataset_name=adult_600_100`
 where you need to change `input_dir` and `dataset_name`.
+
+After checking the integrity, 2 hidden files are be generated for each tfrecord
+file in `train/` and also in `test/`. These hidden files contain information
+extracted from pure iteration of examples. You can check these files if you want
+to know more information on the dataset.
 """
 
 import tensorflow as tf
@@ -197,15 +202,20 @@ def extract_info_from_sequence_example(path_to_tfrecord, from_scratch=False):
                                   'num_labels': num_labels})
 
     sequence_sizes = examples_info['num_timestamps']
+    sequence_size_max = int(sequence_sizes.max())
+    sequence_size_min = int(sequence_sizes.min())
+    sequence_size_median = sequence_sizes.median()
+
+    print("Sequencesize max:::::::: ", type(sequence_size_max)) #TODO
 
     dataset_info = {'matrix_bundle_fields': matrix_bundle_fields,
                     'classes': list(classes),
                     'num_bundles': num_bundles,
                     'num_classes': len(classes),
                     'num_examples': examples_info.shape[0],
-                    'sequence_size_max': sequence_sizes.max(),
-                    'sequence_size_min': sequence_sizes.min(),
-                    'sequence_size_median': sequence_sizes.median(),
+                    'sequence_size_max': sequence_size_max,
+                    'sequence_size_min': sequence_size_min,
+                    'sequence_size_median': sequence_size_median,
                     'is_sparse': is_sparse
                     }
     examples_info.to_csv(csv_filepath, index=False)
@@ -230,9 +240,9 @@ def check_integrity(input_dir, dataset_name):
   train_metadata, test_metadata = get_metadata(input_dir, dataset_name)
   train_file, test_file = get_tfrecord_paths(input_dir, dataset_name)
   dataset_info_train, examples_info_train =\
-    extract_info_from_sequence_example(train_file)
+    extract_info_from_sequence_example(train_file, from_scratch=True)
   dataset_info_test, examples_info_test =\
-    extract_info_from_sequence_example(test_file)
+    extract_info_from_sequence_example(test_file, from_scratch=True)
   print("INTEGRITY CHECK: comparing existing metadata and inferred metadata...")
   # show training set info
   print("INTEGRITY CHECK: existing metadata for TRAINING:")
