@@ -2,6 +2,10 @@
 # Creation date: 18 Sep 2018
 # Description: generate AutoDL datasets (SequenceExample TFRecords)
 #              from TIMIT dataset.
+"""Run
+`python format_timit.py -level=sentence -max_num_examples_train=120 -max_num_examples_test=20`
+to generate TIMIT datasets in AutoDL format.
+"""
 
 import tensorflow as tf
 import pandas as pd
@@ -10,12 +14,12 @@ import os
 import sys
 from scipy.io import wavfile
 
-tf.flags.DEFINE_string('timit_dir', '../../datasets/speech/timit/',
+tf.flags.DEFINE_string('timit_dir', '../../raw_datasets/speech/timit/',
                        "Directory containing the whole TIMIT dataset.")
 
 tf.flags.DEFINE_string("tmp_dir", "/tmp/", "Temporary directory.")
 
-tf.flags.DEFINE_string("output_dir", "./", "Output data directory.")
+tf.flags.DEFINE_string("output_dir", "../../formatted_datasets/", "Output data directory.")
 
 tf.flags.DEFINE_string('level', 'phonetic',
                        "Level of labels, must be one of `phonetic`, `word` or `sentence`.")
@@ -30,9 +34,9 @@ tf.flags.DEFINE_string('num_shards', '1', "Number of shards.")
 
 FLAGS = tf.flags.FLAGS
 
-def get_timit_info_df(timit_dir, tmp_dir):
+def get_timit_info_df(timit_dir, tmp_dir, from_scratch=False):
   filepath = os.path.join(tmp_dir, 'timit_files_info.csv')
-  if os.path.isfile(filepath):
+  if not from_scratch and os.path.isfile(filepath):
     timit_df = pd.read_csv(filepath)
     print("Successfully loaded existing info table. Now life is easier.")
     return timit_df
@@ -252,14 +256,11 @@ def time_series_to_sequence_example_df(merged_df, labels_df, filepath,
   label_arrays = []
   max_sequence_size = 0
   avg_sequence_size = 0
+  counter = 0
   with tf.python_io.TFRecordWriter(filepath) as writer:
     for (index, feature_row), (_, label_row) in feature_label_generator:
       if not first_index:
         first_index = index
-      counter = index - first_index
-      # to have exactly `max_num_examples` examples
-      if max_num_examples and counter + 1 >= max_num_examples:
-        break
       if index % 100 == 0:
         print("Writing example of index: ", index)
       le = len(label_row) # number of labels in this line
@@ -293,6 +294,10 @@ def time_series_to_sequence_example_df(merged_df, labels_df, filepath,
           context=context,
           feature_lists=feature_lists)
       writer.write(sequence_example.SerializeToString())
+      # to have exactly `max_num_examples` examples
+      counter += 1
+      if max_num_examples and counter >= max_num_examples:
+        break
     if is_test_set:
       all_labels = np.concatenate(label_arrays)
       solution_dir = os.path.abspath(os.path.join(os.path.dirname(filepath),
@@ -374,6 +379,7 @@ def print_first_sequence_example(path_to_tfrecord):
 
 if __name__ == '__main__':
   timit_dir = FLAGS.timit_dir # WARNING: you should change this to your own directory containing TIMIT dataset.
+  assert(os.path.isdir(timit_dir))
   output_dir = FLAGS.output_dir
   tmp_dir = FLAGS.tmp_dir
   level = FLAGS.level
