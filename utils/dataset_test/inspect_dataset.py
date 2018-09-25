@@ -32,6 +32,10 @@ FLAGS = tf.flags.FLAGS
 verbose = True
 
 def get_train_and_test_data(input_dir, dataset_name, repeat=False):
+  """
+  Returns:
+    D_train, D_test: 2 AutoDLDataset objects (defined in `dataset.py`)
+  """
   train_path = os.path.join(input_dir, dataset_name,
                             dataset_name + '.data', 'train')
   test_path = os.path.join(input_dir, dataset_name,
@@ -42,12 +46,25 @@ def get_train_and_test_data(input_dir, dataset_name, repeat=False):
   D_test.init(repeat=repeat)
   return D_train, D_test
 
-def print_metadata():
+def get_tfrecord_paths(input_dir, dataset_name):
+  """For now this only works for num_shards = 1!"""
+  tfrecord_glob_pattern = "sample*"
+  data_path = os.path.join(input_dir, dataset_name, dataset_name + '.data')
+  train_pattern = os.path.join(data_path, 'train', tfrecord_glob_pattern)
+  test_pattern = os.path.join(data_path, 'test', tfrecord_glob_pattern)
+  train_file = tf.gfile.Glob(train_pattern)[0]
+  test_file = tf.gfile.Glob(test_pattern)[0]
+  return train_file, test_file
+
+def get_metadata(input_dir, dataset_name):
+  """
+  Returns:
+   train_metadata, test_metadata: 2 AutoDLMetadata objects (defined in
+    `dataset.py`)
+  """
   D_train, D_test = get_train_and_test_data(input_dir, dataset_name)
   train_metadata = D_train.get_metadata()
   test_metadata = D_test.get_metadata()
-  print("Training set's metadata:\n", train_metadata.metadata_)
-  print("Test set's metadata:\n", test_metadata.metadata_)
   return train_metadata, test_metadata
 
 def _len_feature_list(tf_feature_list):
@@ -103,7 +120,8 @@ def extract_info_from_sequence_example(path_to_tfrecord, from_scratch=False):
     return dataset_info, examples_info
   else: # from scratch
     if verbose:
-      print("Extracting dataset info and examples info from scratch.")
+      print("Extracting dataset info and examples info from scratch",
+            "(by iterating the sequence examples).")
 
     # Some basic information on the dataset
     matrix_bundle_fields = []
@@ -203,6 +221,91 @@ def test_extract_info_from_sequence_example():
   print('examples_info:')
   print(examples_info)
 
+def check_integrity(input_dir, dataset_name):
+  train_metadata, test_metadata = get_metadata(input_dir, dataset_name)
+  train_file, test_file = get_tfrecord_paths(input_dir, dataset_name)
+  dataset_info_train, examples_info_train =\
+    extract_info_from_sequence_example(train_file)
+  dataset_info_test, examples_info_test =\
+    extract_info_from_sequence_example(test_file)
+  print("INTEGRITY CHECK: comparing existing metadata and inferred metadata...")
+  # show training set info
+  print("INTEGRITY CHECK: existing metadata for TRAINING:")
+  print(train_metadata.metadata_)
+  print("INTEGRITY CHECK: inferred metadata for TRAINING:")
+  pprint(dataset_info_train)
+  # show test set info
+  print("INTEGRITY CHECK: existing metadata for TEST:")
+  print(test_metadata.metadata_)
+  print("INTEGRITY CHECK: inferred metadata for TEST:")
+  pprint(dataset_info_test)
+
+  # Check the consistency on number of examples
+  num_examples_existing_train = train_metadata.size()
+  num_examples_inferred_train =  dataset_info_train['num_examples']
+  num_examples_existing_test = test_metadata.size()
+  num_examples_inferred_test =  dataset_info_test['num_examples']
+  consistent_num_examples_train =\
+    (num_examples_existing_train == num_examples_inferred_train)
+  print("INTEGRITY CHECK: number of training examples: {} and {}"\
+        .format(num_examples_existing_train, num_examples_inferred_train))
+  print("INTEGRITY CHECK: num_examples_train consistent: ",
+        consistent_num_examples_train)
+  if not consistent_num_examples_train:
+    for i in range(10):
+      print("WARNING: inconsistent number of examples for training set!!!")
+  consistent_num_examples_test =\
+    (num_examples_existing_test == num_examples_inferred_test)
+  print("INTEGRITY CHECK: number of test examples: {} and {}"\
+        .format(num_examples_existing_test, num_examples_inferred_test))
+  print("INTEGRITY CHECK: num_examples_test consistent: ",
+        consistent_num_examples_test)
+  if not consistent_num_examples_test:
+    for i in range(10):
+      print("WARNING: inconsistent number of examples for test set!!!")
+
+  # Check the consistency on number of classes
+  num_classes_existing_train = train_metadata.get_output_size()
+  num_classes_inferred_train =  dataset_info_train['num_classes']
+  num_classes_existing_test = test_metadata.get_output_size()
+  num_classes_inferred_test =  dataset_info_test['num_classes']
+  print("INTEGRITY CHECK: number of classes: {}, {}, {} and {}."\
+        .format(num_classes_existing_train,
+                num_classes_inferred_train,
+                num_classes_existing_test,
+                num_classes_inferred_test),
+        "(it's normal to have number of classes = 0 for test",
+        "since we don't know the true labels)")
+  consistent_num_classes =\
+    (num_classes_existing_train==num_classes_inferred_train) and \
+    (num_classes_inferred_train==num_classes_existing_test)
+  print("INTEGRITY CHECK: consistent number of classes:",
+        consistent_num_classes)
+
+  consistent_dataset = consistent_num_examples_train and \
+                       consistent_num_examples_test and \
+                       consistent_num_classes
+  if consistent_dataset:
+    print("\nCongratulations! Your dataset is CONSISTENT with {}"\
+          .format(num_examples_existing_train),
+          "training examples, {} test examples,"\
+          .format(num_examples_existing_test),
+          "and {} classes.".format(num_classes_existing_train))
+  else:
+    print("Holy shit! Your dataset is NOT consistent!")
+    if not consistent_num_examples_train:
+      print("Inconsistent number of training examples: {} and {}"\
+            .format(num_examples_existing_train, num_examples_inferred_train))
+    if not consistent_num_examples_test:
+      print("Inconsistent number of test examples: {} and {}"\
+            .format(num_examples_existing_test, num_examples_inferred_test))
+    if not consistent_num_classes:
+      print("Inconsistent number of classes.",
+            "But this might be due to too few examples",
+            "and the program cannot infer num_classes correctly")
+  return consistent_dataset, num_examples_existing_train,
+         num_examples_existing_test, num_classes_existing_train
+
 
 if __name__ == "__main__":
   input_dir = FLAGS.input_dir
@@ -211,4 +314,5 @@ if __name__ == "__main__":
   # num_examples_train = get_num_examples(D_train)
   # num_examples_test = get_num_examples(D_test)
   # print(num_examples_train)
-  test_extract_info_from_sequence_example()
+  # test_extract_info_from_sequence_example()
+  check_integrity(input_dir, dataset_name)
