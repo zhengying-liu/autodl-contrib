@@ -27,7 +27,7 @@ Contributing datasets to this challenge is a good deed in itself, but to further
 4. Data donors will will be acknowledged in presentations and publications on the challenge.
 
 ## Rights of Data
-Data donors are are responsible for properly anonymizing their data and should release it under a standard OpenSource license from the https://opensource.org/licenses. If the donors are not the originators of the data, they should give proper credit to the originators and are responsible for obtaining permission to publish the data. The data will remain available in the repository beyond the challenge termination.
+Data donors are responsible for properly anonymizing their data and should release it under a standard OpenSource license from the https://opensource.org/licenses. If the donors are not the originators of the data, they should give proper credit to the originators and are responsible for obtaining permission to publish the data. The data will remain available in the repository beyond the challenge termination.
 
 ## What is needed?
 All tasks in this first edition AutoDL will be **multi-label (or multi-class) classification** tasks. All you need is to provide data **samples**, their corresponding **labels**, and some **metadata**, in some simple standard format described below. Data types of interest include (but are not limited to) video, image, text, speech, time series, and even tabular data.
