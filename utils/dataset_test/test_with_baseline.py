@@ -46,7 +46,6 @@ if __name__ == '__main__':
   starting_kit_dir = FLAGS.starting_kit_dir
   path_ingestion = get_path_to_ingestion_program(starting_kit_dir)
   path_scoring = get_path_to_scoring_program(starting_kit_dir)
-  dataset_dir = '../../formatted_datasets/cifar100/'
 
   # Run ingestion and scoring at the same time
   command_ingestion = 'python {} {}'.format(path_ingestion, dataset_dir)
