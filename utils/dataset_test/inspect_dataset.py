@@ -206,8 +206,6 @@ def extract_info_from_sequence_example(path_to_tfrecord, from_scratch=False):
     sequence_size_min = int(sequence_sizes.min())
     sequence_size_median = sequence_sizes.median()
 
-    print("Sequencesize max:::::::: ", type(sequence_size_max)) #TODO
-
     dataset_info = {'matrix_bundle_fields': matrix_bundle_fields,
                     'classes': list(classes),
                     'num_bundles': num_bundles,
