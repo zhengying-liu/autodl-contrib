@@ -319,8 +319,26 @@ def check_integrity(input_dir, dataset_name):
   return consistent_dataset, dataset_name, num_examples_existing_train,\
          num_examples_existing_test, num_classes_existing_train
 
+def print_first_tensor(autodl_dataset):
+  """
+  Args:
+    autodl_dataset: an AutoDLDataset object (defined in `dataset.py`)
+  """
+  tf_dataset = autodl_dataset.get_dataset()
+  iterator = tf_dataset.make_one_shot_iterator()
+  next_element = iterator.get_next()
+  print(next_element)
+  with tf.Session() as sess:
+    value = sess.run(next_element)
+  print(value)
+  print("The shape of the first sampel is: ", [x.shape for x in value])
+  return value
+
 
 if __name__ == "__main__":
   input_dir = FLAGS.input_dir
   dataset_name = FLAGS.dataset_name
   check_integrity(input_dir, dataset_name)
+  # D_train, D_test =\
+  #   get_train_and_test_data(input_dir, dataset_name, repeat=False)
+  # print_first_tensor(D_train)
