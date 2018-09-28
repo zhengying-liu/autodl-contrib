@@ -24,7 +24,7 @@ Contributing datasets to this challenge is a good deed in itself, but to further
 1. Selected datasets will be published in our repository (after review) and you will be given credit for your donation.
 2. Data donors will be invited to join a paper on the repository [to be submitted to the JMLR MLOSS track or elsewhere]
 3. Data donors will also be invited to contribute to a paper on analyses of the challenge [to be published in a book in the Springer CiML series or elsewhere]
-4. Data donors will will be acknowledged in presentations and publications on the challenge.
+4. Data donors will be acknowledged in presentations and publications on the challenge.
 
 ## Rights of Data
 Data donors are responsible for properly anonymizing their data and should release it under a standard OpenSource license from the https://opensource.org/licenses. If the donors are not the originators of the data, they should give proper credit to the originators and are responsible for obtaining permission to publish the data. The data will remain available in the repository beyond the challenge termination.
@@ -40,7 +40,7 @@ There is in priciple **no size limit** for datasets in this challenge. However, 
 
 ## Where to submit
 
-**Isabelle: we should see whether we can create a Codalab competition in which the entries are submitted datasets. Otherwise, we can go through "My Datasets", but we need to ask eric for a ne feature: share dataset with someone else**
+**Isabelle: we should see whether we can create a Codalab competition in which the entries are submitted datasets. Otherwise, we can go through "My Datasets", but we need to ask eric for a new feature: share dataset with someone else**
 
 ## Three Possible Formats
 We accept dataset contributions in 3 possible formats:
@@ -86,7 +86,7 @@ More details and [2 example datasets](https://github.com/zhengying-liu/autodl-co
 ### TFRecord Format
 TFRecord format is the final format we'll actually use in this AutoDL challenge (so when you provide your data under matrix format or file format, thereafter we'll do the conversion job to have a dataset in TFRecord format). Data from all domains will be uniformly formatted to TFRecords following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L92) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)).
 
-More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format/mnist) in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
+More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format/mini-mnist) in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
 
 **Isabelle: the info file with metadata is still needed **
 

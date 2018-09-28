@@ -8,11 +8,11 @@ to first have the starting kit at hand. If not, please git clone the GitHub repo
   `cd <path_to_autodl-contrib>/..`
   `git clone https://github.com/zhengying-liu/autodl.git`
 Then you can use the default `starting_kit_dir` value. But you still need to
-configure your `dataset_dir` which is the dataset directory. Then you should be
+configure your `input_dir` which is the dataset directory. Then you should be
 ready to run the command line:
   `cd <dir_of_this_script>`
-  `python test_with_baseline.py -dataset_dir='../../formatted_datasets/adult_600_100/' -starting_kit_dir='../../../autodl/codalab_competition_bundle/AutoDL_starting_kit/'`
-Remember to change the value of `dataset_dir`.
+  `python test_with_baseline.py -input_dir='../../formatted_datasets/' -dataset_name='adult_600_100' -starting_kit_dir='../../../autodl/codalab_competition_bundle/AutoDL_starting_kit/'`
+Remember to change the value of `dataset_name`.
 """
 
 import tensorflow as tf
@@ -21,8 +21,10 @@ import time
 import webbrowser
 from multiprocessing import Process
 
-tf.flags.DEFINE_string('dataset_dir', '../../formatted_datasets/adult_600_100/',
+tf.flags.DEFINE_string('input_dir', '../../formatted_datasets/',
                        "Directory containing the formatted AutoDL dataset.")
+
+tf.flags.DEFINE_string('dataset_name', 'adult_600_100', "Basename of dataset.")
 
 tf.flags.DEFINE_string('starting_kit_dir', '../../../autodl/codalab_competition_bundle/AutoDL_starting_kit/',
                        "Directory containing ingestion program "
@@ -42,7 +44,7 @@ def get_path_to_scoring_program(starting_kit_dir):
                       'AutoDL_scoring_program', 'score.py')
 
 if __name__ == '__main__':
-  dataset_dir = FLAGS.dataset_dir
+  dataset_dir = FLAGS.input_dir + FLAGS.dataset_name
   starting_kit_dir = FLAGS.starting_kit_dir
   path_ingestion = get_path_to_ingestion_program(starting_kit_dir)
   path_scoring = get_path_to_scoring_program(starting_kit_dir)
