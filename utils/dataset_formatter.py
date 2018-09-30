@@ -73,8 +73,8 @@ class UniMediaDatasetFormatter():
     # Some computed properties
     self.dataset_dir = self.get_dataset_dir()
     self.dataset_data_dir = self.get_dataset_data_dir()
-    self.num_examples_train = self.get_num_examples(set='train')
-    self.num_examples_test = self.get_num_examples(set='test')
+    self.num_examples_train = self.get_num_examples(subset='train')
+    self.num_examples_test = self.get_num_examples(subset='test')
 
   def get_dataset_dir(self):
     dataset_dir = os.path.join(self.output_dir, self.dataset_name)
@@ -85,26 +85,26 @@ class UniMediaDatasetFormatter():
                                     self.dataset_name + '.data')
     return dataset_data_dir
 
-  def get_num_examples(self, set='train'):
-    if set == 'train':
+  def get_num_examples(self, subset='train'):
+    if subset == 'train':
       data = self.feature_labels_pairs_train
-    elif set == 'test':
+    elif subset == 'test':
       data = self.feature_labels_pairs_test
     else:
-      raise ValueError("Wrong key `set`! Should be 'train' or 'test'.")
+      raise ValueError("Wrong key `subset`! Should be 'train' or 'test'.")
     if hasattr(data, '__len__'):
       return len(data)
     else:
       return sum([1 for x in data]) # This step could be slow.
 
-  def get_metadata_filename(self, set='train'):
+  def get_metadata_filename(self, subset='train'):
     filename = 'metadata.textproto'
-    path = os.path.join(self.dataset_data_dir, set, filename)
+    path = os.path.join(self.dataset_data_dir, subset, filename)
     return path
 
-  def get_data_filename(self, set='train'):
+  def get_data_filename(self, subset='train'):
     filename = 'sample-' + dataset_name + '.tfrecord'
-    path = os.path.join(self.dataset_data_dir, set, filename)
+    path = os.path.join(self.dataset_data_dir, subset, filename)
     return path
 
   def get_solution_filename(self): # solution file only for solution
@@ -119,7 +119,7 @@ class UniMediaDatasetFormatter():
     length_all = length_train + length_test
     return func(length_all)
 
-  def get_metadata(self, set='train'):
+  def get_metadata(self, subset='train'):
     metadata = """is_sequence: <is_sequence>
 sample_count: <sample_count>
 sequence_size: <sequence_size>
@@ -134,7 +134,7 @@ matrix_spec {
   format: <format>
 }
 """
-    if set == 'train':
+    if subset == 'train':
       sample_count = self.num_examples_train
     else:
       sample_count = self.num_examples_test
@@ -150,7 +150,7 @@ matrix_spec {
     metadata = metadata.replace('<format>', str(self.format))
     return metadata
 
-  def write_tfrecord_and_metadata(self, set='train'):
+  def write_tfrecord_and_metadata(self, subset='train'):
     # Make directories if necessary
     if not os.path.isdir(self.output_dir):
       os.mkdir(self.output_dir)
@@ -158,19 +158,19 @@ matrix_spec {
       os.mkdir(self.dataset_dir)
     if not os.path.isdir(self.dataset_data_dir):
       os.mkdir(self.dataset_data_dir)
-    set_dir = os.path.join(self.dataset_data_dir, set)
-    if not os.path.isdir(set_dir):
-      os.mkdir(set_dir)
+    subset_dir = os.path.join(self.dataset_data_dir, subset)
+    if not os.path.isdir(subset_dir):
+      os.mkdir(subset_dir)
 
     # Write metadata
-    path_to_metadata = self.get_metadata_filename(set=set)
+    path_to_metadata = self.get_metadata_filename(subset=subset)
     metadata = self.get_metadata()
     with open(path_to_metadata, 'r') as f:
       f.write(metadata)
 
     # Write TFRecords
-    path_to_tfrecord = self.get_data_filename(set=set)
-    is_test_set = (set == 'test')
+    path_to_tfrecord = self.get_data_filename(subset=subset)
+    is_test_set = (subset == 'test')
     if is_test_set:
       id_translation = 0
       data = self.feature_labels_pairs_test
@@ -227,5 +227,5 @@ matrix_spec {
       np.savetxt(path_to_solution, labels_array, fmt='%.0f')
 
   def press_a_button_and_give_me_an_AutoDL_dataset(self):
-    self.write_tfrecord_and_metadata(set='test')
-    self.write_tfrecord_and_metadata(set='train')
+    self.write_tfrecord_and_metadata(subset='test')
+    self.write_tfrecord_and_metadata(subset='train')
