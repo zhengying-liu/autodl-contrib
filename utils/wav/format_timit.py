@@ -19,10 +19,12 @@ tf.flags.DEFINE_string('timit_dir', '../../raw_datasets/speech/timit/',
 
 tf.flags.DEFINE_string("tmp_dir", "/tmp/", "Temporary directory.")
 
-tf.flags.DEFINE_string("output_dir", "../../formatted_datasets/", "Output data directory.")
+tf.flags.DEFINE_string("output_dir", "../../formatted_datasets/",
+                       "Output data directory.")
 
 tf.flags.DEFINE_string('level', 'phonetic',
-                       "Level of labels, must be one of `phonetic`, `word` or `sentence`.")
+                       "Level of labels, must be one of "
+                       "`phonetic`, `word` or `sentence`.")
 
 tf.flags.DEFINE_string('max_num_examples_train', '120', #TODO: to be changed.
                        "Number of examples in training set we want to format.")
@@ -195,7 +197,8 @@ def sphere_to_data(sphere_filepath):
     res = wav_to_data(tmp_filepath)
     return res
   except:
-    raise ValueError("Converting SPHERE files requires SoX installed. For Max OS, run 'brew install sox'.")
+    raise ValueError("Converting SPHERE files requires SoX installed."
+                     " For Max OS, run 'brew install sox'.")
 
 def get_interval_data(wav_filepath, begin, end):
   data = sphere_to_data(wav_filepath)
@@ -251,7 +254,8 @@ def time_series_to_sequence_example_df(merged_df, labels_df, filepath,
                      .format(num_examples, num_labels))
 
   feature_label_generator = zip(merged_df.iterrows(), labels_df.iterrows())
-  print("Writing to: {}... Total number of examples: {:d}".format(filepath, num_examples))
+  print("Writing to: {}... Total number of examples: {:d}".format(filepath,
+                                                                  num_examples))
   first_index = None
   label_arrays = []
   max_sequence_size = 0
@@ -266,7 +270,8 @@ def time_series_to_sequence_example_df(merged_df, labels_df, filepath,
       le = len(label_row) # number of labels in this line
       label_array = label_row.values
       if is_test_set:
-        label_arrays.append(label_sparse_to_dense(label_array, output_dim)[None, :])
+        label_arrays.append(label_sparse_to_dense(label_array,
+                                                  output_dim)[None, :])
         label_index = _int64_feature([])
         label_score = _float_feature([])
       else:
@@ -306,12 +311,15 @@ def time_series_to_sequence_example_df(merged_df, labels_df, filepath,
       solution_name = solution_dir.split(os.path.sep)[-1] + '.solution'
       solution_path = os.path.join(solution_dir, solution_name)
       np.savetxt(solution_path, all_labels, fmt='%.0f')
-    num_examples = min(num_examples, max_num_examples)
+    if max_num_examples:
+      num_examples = min(num_examples, max_num_examples)
     return num_examples, max_sequence_size, avg_sequence_size
 
 def timit_to_autodl(timit_dir, level, label_lvl, max_num_examples,
-                    is_test_set, num_shards, tmp_dir, output_dir, sequence_size):
-  """Convert TIMIT dataset to AutoDL datasets (TFRecords following SequenceExample proto).
+                    is_test_set, num_shards, tmp_dir, output_dir,
+                    sequence_size):
+  """Convert TIMIT dataset to AutoDL datasets (TFRecords following
+  SequenceExample proto).
 
   Args:
     label_lvl: a number from 1 to 4, indicating labels: gender, region,
@@ -416,14 +424,15 @@ if __name__ == '__main__':
     os.mkdir(new_dataset_data_dir)
 
   # Format test set
-  is_test_set = True
-  filepath, sequence_size = timit_to_autodl(timit_dir, level, label_lvl,
-                              max_num_examples_test,
-                              is_test_set, num_shards, tmp_dir,
-                              new_dataset_data_dir, None)
+  # is_test_set = True
+  # filepath, sequence_size = timit_to_autodl(timit_dir, level, label_lvl,
+  #                             max_num_examples_test,
+  #                             is_test_set, num_shards, tmp_dir,
+  #                             new_dataset_data_dir, None)
+  sequence_size = 1934
   # Format training set
   is_test_set = False
   filepath, _ = timit_to_autodl(timit_dir, level, label_lvl,
                                max_num_examples_train,
                                is_test_set, num_shards, tmp_dir,
-                               new_dataset_data_dir, sequence_size)
+                               new_dataset_data_dir, sequence_size) # Using the sequence_size computed in formatting test set

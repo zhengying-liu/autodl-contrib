@@ -131,7 +131,7 @@ def extract_info_from_sequence_example(path_to_tfrecord, from_scratch=False):
   else: # from scratch
     if verbose:
       print("Extracting dataset info and examples info from scratch",
-            "(by iterating the sequence examples).")
+            "(by iterating the sequence examples)...")
 
     # Some basic information on the dataset
     matrix_bundle_fields = []
@@ -342,3 +342,7 @@ if __name__ == "__main__":
   # D_train, D_test =\
   #   get_train_and_test_data(input_dir, dataset_name, repeat=False)
   # print_first_tensor(D_train)
+  # dataset_info, examples_info =\
+  #   extract_info_from_sequence_example('../../formatted_datasets/timit-phonetic/timit-phonetic.data/test/sample-test')
+  # print(dataset_info, examples_info)
+  # print(int(examples_info['num_timestamps'].mean() * 1.5))
