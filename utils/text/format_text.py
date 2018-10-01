@@ -6,7 +6,9 @@
 current directory) with for example:
 `python format_text.py -input_dir='../../raw_datasets/text/' -output_dir='../../formatted_datasets/' -dataset_name='20newsgroup' -max_num_examples_train=None -max_num_examples_test=None`
 
-You need to configure
+You might need to configure the arguments (`input_dir`, `output_dir`, etc),
+install some packages (sklearn, nltk, etc) or download some files (GloVe
+pre-trained weights) before this script works on your machine.
 
 If you haven't installed nltk packages, you need to run
 `pip install nltk`
