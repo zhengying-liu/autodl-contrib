@@ -3,9 +3,14 @@
 # Description: format text datasets to TFRecords (SequenceExample proto)
 #   for AutoDL challenge.
 """To generate an AutoDL dataset from text datasets, run a command line (in the
-current directory) with something like:
+current directory) with for example:
 `python format_text.py -input_dir='../../raw_datasets/text/' -output_dir='../../formatted_datasets/' -dataset_name='20newsgroup' -max_num_examples_train=None -max_num_examples_test=None`
 
+If you haven't installed nltk packages, you need to run
+`pip install nltk`
+and then run the downloader
+`sudo python -m nltk.downloader -d /usr/local/share/nltk_data all`
+more details on: https://www.nltk.org/data.html
 """
 
 import tensorflow as tf
@@ -27,6 +32,21 @@ EMBEDDING_DIMENSION = 50
 GLOVE_DIR = '/usr/local/share/glove'
 GLOVE_WEIGHTS_FILE_PATH = os.path.join(GLOVE_DIR,
                                        f'glove.6B.{EMBEDDING_DIMENSION}d.txt')
+
+if not os.path.isdir(data_directory):
+    print(f"Creating directory {data_directory}")
+    os.mkdir(data_directory)
+
+if not os.path.isfile(GLOVE_WEIGHTS_FILE_PATH):
+    # Glove embedding weights can be downloaded from https://nlp.stanford.edu/projects/glove/
+    glove_fallback_url = 'http://nlp.stanford.edu/data/glove.6B.zip'
+    local_zip_file_path = os.path.join(data_directory, os.path.basename(glove_fallback_url))
+    if not os.path.isfile(local_zip_file_path):
+        print(f'Retreiving glove weights from {glove_fallback_url}')
+        urllib.request.urlretrieve(glove_fallback_url, local_zip_file_path)
+        with zipfile.ZipFile(local_zip_file_path, 'r') as z:
+            print(f'Extracting glove weights from {local_zip_file_path}')
+            z.extractall(path=data_directory)
 
 tf.flags.DEFINE_string('input_dir', '../../raw_datasets/text/',
                        "Directory containing text datasets.")
