@@ -12,9 +12,12 @@ import tensorflow as tf
 import numpy as np
 import os
 import sys
+sys.path.append('../')
+from dataset_formatter import UniMediaDatasetFormatter
 
 import urllib
 import zipfile
+from pprint import pprint
 
 # NLP
 import nltk
@@ -49,27 +52,19 @@ FLAGS = tf.flags.FLAGS
 
 verbose = False
 
-def get_text_label_pairs(dataset_name):
+def get_text_labels_pairs(dataset_name, subset='train'):
   """
   Return:
     pairs_train:  an iterable of (text, labels) pairs for training set, where
       `text` is a string and `labels` is a list of integers.
-    pairs_test:   same as pairs_train, but for test set.
   """
   if dataset_name == '20newsgroup':
-    twenty_train = fetch_20newsgroups(subset='train',
-                                      shuffle=True,
-                                      random_state=42)
-    twenty_test = fetch_20newsgroups(subset='test',
-                                     shuffle=True,
-                                     random_state=42)
-    text_train = twenty_train.data
-    labels_train = [[label] for label in twenty_train.target] # should be a list
-    text_test = twenty_test.data
-    labels_test = [[label] for label in twenty_test.target]
-    pairs_train = zip(text_train, labels_train)
-    pairs_test = zip(text_test, labels_test)
-    return pairs_train, pairs_test
+    dataset = fetch_20newsgroups(subset=subset,
+                                 shuffle=True,
+                                 random_state=42)
+    text = dataset.data
+    labels = [[label] for label in dataset.target] # should be a list of lists
+    return zip(text, labels)
   else:
     raise ValueError(f"Unknown dataset name: {dataset_name}")
 
@@ -101,6 +96,7 @@ def download_GloVe_pretrained_weights():
       idx2word.append(word)
       weights.append(coefs)
   weights = np.array(weights)
+  print("Done constructing GloVe weight matrix!")
   return word2idx, idx2word, weights
 
 def tokenize(document):
@@ -150,8 +146,13 @@ def doc2vecs(document, window_size=3, strides=2):
   vecs = np.array(vecs)
   return vecs
 
-def get_features_labels_pairs(dataset_name):
-  pass
+def get_features_labels_pairs(text_labels_pairs):
+  def func(x):
+    text, labels = x
+    features = doc2vecs(text)
+    return features, labels
+  print("Transforming text to features...")
+  return list(map(func, text_labels_pairs))
 
 
 if __name__ == '__main__':
@@ -169,11 +170,36 @@ if __name__ == '__main__':
     print("Couldn't parse max_num_examples_test...setting to None.")
     max_num_examples_test = None
 
-  pairs_train, pairs_test = get_text_label_pairs(dataset_name)
   word2idx, idx2word, weights =\
     download_GloVe_pretrained_weights()
-  for doc, label in pairs_train:
-    print(doc)
-    print(doc2vecs(doc).shape)
-    print(doc2vecs(doc))
-    break
+  text_labels_pairs_train = get_text_labels_pairs(dataset_name, subset='train')
+  features_labels_pairs_train =\
+    get_features_labels_pairs(text_labels_pairs_train)
+  text_labels_pairs_test = get_text_labels_pairs(dataset_name, subset='test')
+  features_labels_pairs_test =\
+    get_features_labels_pairs(text_labels_pairs_test)
+
+  output_dim = 20
+  col_count = EMBEDDING_DIMENSION
+  row_count = 1
+  dataset_formatter =  UniMediaDatasetFormatter(dataset_name,
+                                                output_dir,
+                                                features_labels_pairs_train,
+                                                features_labels_pairs_test,
+                                                output_dim,
+                                                col_count,
+                                                row_count,
+                                                sequence_size=None,
+                                                is_sequence_col='false',
+                                                is_sequence_row='false',
+                                                has_locality_col='false',
+                                                has_locality_row='false',
+                                                format='DENSE',
+                                                is_sequence='false')
+  print(f"Begin formatting dataset: {dataset_name}.")
+  print("Basic dataset info:")
+  dataset_info = dataset_formatter.__dict__.copy()
+  dataset_info.pop('features_labels_pairs_train', None)
+  dataset_info.pop('features_labels_pairs_test', None)
+  pprint(dataset_info)
+  dataset_formatter.press_a_button_and_give_me_an_AutoDL_dataset()
