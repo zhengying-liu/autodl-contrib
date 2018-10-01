@@ -6,6 +6,8 @@ import tensorflow as tf
 import os
 import numpy as np
 
+verbose = True
+
 def _int64_feature(value):
   # Here `value` is a list of integers
   return tf.train.Feature(int64_list=tf.train.Int64List(value=value))
@@ -53,8 +55,8 @@ class UniMediaDatasetFormatter():
     self.output_dir = os.path.abspath(output_dir)
     # Iterables containing (features, labels) pairs, where `features` is a list
     # of vectors in float. `labels` is a list of integers.
-    self.feature_labels_pairs_train = feature_labels_pairs_train
-    self.feature_labels_pairs_test = feature_labels_pairs_test
+    self.features_labels_pairs_train = features_labels_pairs_train
+    self.features_labels_pairs_test = features_labels_pairs_test
     # Some metadata on the dataset
     self.output_dim = output_dim
     self.col_count = col_count
@@ -87,9 +89,9 @@ class UniMediaDatasetFormatter():
 
   def get_num_examples(self, subset='train'):
     if subset == 'train':
-      data = self.feature_labels_pairs_train
+      data = self.features_labels_pairs_train
     elif subset == 'test':
-      data = self.feature_labels_pairs_test
+      data = self.features_labels_pairs_test
     else:
       raise ValueError("Wrong key `subset`! Should be 'train' or 'test'.")
     if hasattr(data, '__len__'):
@@ -103,7 +105,7 @@ class UniMediaDatasetFormatter():
     return path
 
   def get_data_filename(self, subset='train'):
-    filename = 'sample-' + dataset_name + '.tfrecord'
+    filename = 'sample-' + self.dataset_name + '.tfrecord'
     path = os.path.join(self.dataset_data_dir, subset, filename)
     return path
 
@@ -114,8 +116,8 @@ class UniMediaDatasetFormatter():
     return path
 
   def get_sequence_size(self, func=max):
-    length_train = [len(x) for x, _ self.feature_labels_pairs_train]
-    length_test = [len(x) for x, _ self.feature_labels_pairs_test]
+    length_train = [len(x) for x, _ in self.features_labels_pairs_train]
+    length_test = [len(x) for x, _ in self.features_labels_pairs_test]
     length_all = length_train + length_test
     return func(length_all)
 
@@ -141,6 +143,7 @@ matrix_spec {
     metadata = metadata.replace('<sample_count>', str(sample_count))
     metadata = metadata.replace('<is_sequence>', str(self.is_sequence))
     metadata = metadata.replace('<sequence_size>', str(self.sequence_size))
+    metadata = metadata.replace('<output_dim>', str(self.output_dim))
     metadata = metadata.replace('<col_count>', str(self.col_count))
     metadata = metadata.replace('<row_count>', str(self.row_count))
     metadata = metadata.replace('<is_sequence_col>', str(self.is_sequence_col))
@@ -164,8 +167,8 @@ matrix_spec {
 
     # Write metadata
     path_to_metadata = self.get_metadata_filename(subset=subset)
-    metadata = self.get_metadata()
-    with open(path_to_metadata, 'r') as f:
+    metadata = self.get_metadata(subset=subset)
+    with open(path_to_metadata, 'w') as f:
       f.write(metadata)
 
     # Write TFRecords
@@ -173,17 +176,19 @@ matrix_spec {
     is_test_set = (subset == 'test')
     if is_test_set:
       id_translation = 0
-      data = self.feature_labels_pairs_test
+      data = self.features_labels_pairs_test
       num_examples = self.num_examples_test
     else:
       id_translation = self.num_examples_test
-      data = self.feature_labels_pairs_train
+      data = self.features_labels_pairs_train
       num_examples = self.num_examples_train
 
     counter = 0
     labels_array = np.zeros((num_examples, self.output_dim))
     with tf.python_io.TFRecordWriter(path_to_tfrecord) as writer:
       for features, labels in data:
+        if verbose and counter % 100 == 0:
+          print(f"Formatting dataset: {self.dataset_name}, subset: {subset}, index: {counter + id_translation}, example {counter} of {num_examples}...")
         if is_test_set:
           label_index = _int64_feature([])
           label_score = _float_feature([])
