@@ -339,9 +339,11 @@ if __name__ == "__main__":
   input_dir = FLAGS.input_dir
   dataset_name = FLAGS.dataset_name
   check_integrity(input_dir, dataset_name)
+
   # D_train, D_test =\
   #   get_train_and_test_data(input_dir, dataset_name, repeat=False)
   # print_first_tensor(D_train)
+
   # dataset_info, examples_info =\
   #   extract_info_from_sequence_example('../../formatted_datasets/timit-phonetic/timit-phonetic.data/test/sample-test')
   # print(dataset_info, examples_info)
