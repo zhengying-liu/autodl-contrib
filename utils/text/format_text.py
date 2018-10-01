@@ -62,6 +62,7 @@ GLOVE_DIR = '/usr/local/share/glove'
 GLOVE_WEIGHTS_FILE_PATH = os.path.join(GLOVE_DIR,
                                        f'glove.6B.{EMBEDDING_DIMENSION}d.txt')
 
+# Download GloVe pre-trained weights if necessary
 if not os.path.isdir(data_directory):
     print(f"Creating directory {data_directory}")
     os.mkdir(data_directory)
