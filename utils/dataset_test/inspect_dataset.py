@@ -238,9 +238,9 @@ def check_integrity(input_dir, dataset_name):
   train_metadata, test_metadata = get_metadata(input_dir, dataset_name)
   train_file, test_file = get_tfrecord_paths(input_dir, dataset_name)
   dataset_info_train, examples_info_train =\
-    extract_info_from_sequence_example(train_file, from_scratch=True)
+    extract_info_from_sequence_example(train_file, from_scratch=False)
   dataset_info_test, examples_info_test =\
-    extract_info_from_sequence_example(test_file, from_scratch=True)
+    extract_info_from_sequence_example(test_file, from_scratch=False)
   print("INTEGRITY CHECK: comparing existing metadata and inferred metadata...")
   # show training set info
   print("INTEGRITY CHECK: existing metadata for TRAINING:")
@@ -338,13 +338,13 @@ def print_first_tensor(autodl_dataset):
 if __name__ == "__main__":
   input_dir = FLAGS.input_dir
   dataset_name = FLAGS.dataset_name
-  check_integrity(input_dir, dataset_name)
+  # check_integrity(input_dir, dataset_name)
 
   # D_train, D_test =\
   #   get_train_and_test_data(input_dir, dataset_name, repeat=False)
   # print_first_tensor(D_train)
 
-  # dataset_info, examples_info =\
-  #   extract_info_from_sequence_example('../../formatted_datasets/timit-phonetic/timit-phonetic.data/test/sample-test')
-  # print(dataset_info, examples_info)
-  # print(int(examples_info['num_timestamps'].mean() * 1.5))
+  dataset_info, examples_info =\
+    extract_info_from_sequence_example('../../formatted_datasets/kth/kth.data/train/sample-kth.tfrecord')
+  print(dataset_info, examples_info)
+  print(int(examples_info['num_timestamps'].max()))
