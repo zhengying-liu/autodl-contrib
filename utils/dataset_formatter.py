@@ -59,9 +59,14 @@ class UniMediaDatasetFormatter():
                has_locality_row='true',
                format='DENSE',
                is_sequence='false',
-               sequence_size_func=max):
+               sequence_size_func=max,
+               new_dataset_name=None):
     # Dataset basename, e.g. `adult`
     self.dataset_name = dataset_name
+    if new_dataset_name:
+      self.new_dataset_name = new_dataset_name
+    else:
+      self.new_dataset_name = dataset_name
     # Output directory, absolute path
     self.output_dir = os.path.abspath(output_dir)
     # Iterables containing (features, labels) pairs, where `features` is a list
@@ -96,12 +101,12 @@ class UniMediaDatasetFormatter():
       self.num_examples_test = self.get_num_examples(subset='test')
 
   def get_dataset_dir(self):
-    dataset_dir = os.path.join(self.output_dir, self.dataset_name)
+    dataset_dir = os.path.join(self.output_dir, self.new_dataset_name)
     return dataset_dir
 
   def get_dataset_data_dir(self):
     dataset_data_dir = os.path.join(self.dataset_dir,
-                                    self.dataset_name + '.data')
+                                    self.new_dataset_name + '.data')
     return dataset_data_dir
 
   def get_num_examples(self, subset='train'):
@@ -122,13 +127,13 @@ class UniMediaDatasetFormatter():
     return path
 
   def get_data_filename(self, subset='train'):
-    filename = 'sample-' + self.dataset_name + '.tfrecord'
+    filename = 'sample-' + self.new_dataset_name + '.tfrecord'
     path = os.path.join(self.dataset_data_dir, subset, filename)
     return path
 
   def get_solution_filename(self): # solution file only for solution
     output_dir = self.output_dir
-    dataset_name = self.dataset_name
+    dataset_name = self.new_dataset_name
     path = os.path.join(output_dir, dataset_name, dataset_name + '.solution')
     return path
 
