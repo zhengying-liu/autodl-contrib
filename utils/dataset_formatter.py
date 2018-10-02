@@ -5,6 +5,7 @@
 import tensorflow as tf
 import os
 import numpy as np
+from pprint import pprint
 
 verbose = True
 
@@ -33,6 +34,13 @@ def label_sparse_to_dense(li_label_nums, output_dim):
 def feature_sparse_to_dense(features): # TODO
   return features
 
+def avg_length_times_two(li):
+  """To be used as callable for `sequence_size_func` in
+  `UniMediaDatasetFormatter`.
+  """
+  li = np.array(li)
+  return int(li.mean() * 2)
+
 class UniMediaDatasetFormatter():
   def __init__(self,
                dataset_name,
@@ -43,12 +51,15 @@ class UniMediaDatasetFormatter():
                col_count,
                row_count,
                sequence_size=None,
+               num_examples_train=None,
+               num_examples_test=None,
                is_sequence_col='false',
                is_sequence_row='false',
                has_locality_col='true',
                has_locality_row='true',
                format='DENSE',
-               is_sequence='false'):
+               is_sequence='false',
+               sequence_size_func=max):
     # Dataset basename, e.g. `adult`
     self.dataset_name = dataset_name
     # Output directory, absolute path
@@ -64,7 +75,7 @@ class UniMediaDatasetFormatter():
     if isinstance(sequence_size, int):
       self.sequence_size = sequence_size
     else:
-      self.sequence_size = self.get_sequence_size(func=max)
+      self.sequence_size = self.get_sequence_size(func=sequence_size_func) # can be slow!
     self.is_sequence_col = is_sequence_col
     self.is_sequence_row = is_sequence_row
     self.has_locality_col = has_locality_col
@@ -75,8 +86,14 @@ class UniMediaDatasetFormatter():
     # Some computed properties
     self.dataset_dir = self.get_dataset_dir()
     self.dataset_data_dir = self.get_dataset_data_dir()
-    self.num_examples_train = self.get_num_examples(subset='train')
-    self.num_examples_test = self.get_num_examples(subset='test')
+    if num_examples_train:
+      self.num_examples_train = num_examples_train
+    else:
+      self.num_examples_train = self.get_num_examples(subset='train')
+    if num_examples_test:
+      self.num_examples_test = num_examples_test
+    else:
+      self.num_examples_test = self.get_num_examples(subset='test')
 
   def get_dataset_dir(self):
     dataset_dir = os.path.join(self.output_dir, self.dataset_name)
@@ -97,7 +114,7 @@ class UniMediaDatasetFormatter():
     if hasattr(data, '__len__'):
       return len(data)
     else:
-      return sum([1 for x in data]) # This step could be slow.
+      return sum([1 for x in data]) # WARNING: this step could be slow.
 
   def get_metadata_filename(self, subset='train'):
     filename = 'metadata.textproto'
@@ -232,5 +249,11 @@ matrix_spec {
       np.savetxt(path_to_solution, labels_array, fmt='%.0f')
 
   def press_a_button_and_give_me_an_AutoDL_dataset(self):
+    print(f"Begin formatting dataset: {self.dataset_name}.")
+    dataset_info = self.__dict__.copy()
+    dataset_info.pop('features_labels_pairs_train', None)
+    dataset_info.pop('features_labels_pairs_test', None)
+    print("Basic dataset info:")
+    pprint(dataset_info)
     self.write_tfrecord_and_metadata(subset='test')
     self.write_tfrecord_and_metadata(subset='train')
