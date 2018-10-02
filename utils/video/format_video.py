@@ -110,6 +110,9 @@ def get_kth_info_df(kth_dir, tmp_dir='/tmp/', from_scratch=False):
                            'subset':          [x[5] for x in li]})
     kth_df['action'] = kth_df['action'].astype('category')
     kth_df['action_num'] = kth_df['action'].cat.codes
+    kth_df['remark'] = kth_df['remark'].astype('category')
+    kth_df['remark_num'] = kth_df['remark'].cat.codes
+
     kth_df.to_csv(csv_filepath, index=False)
     return kth_df
 
@@ -133,15 +136,15 @@ def video_to_3d_features(video_filepath):
   features = np.array(features)
   return features
 
-def get_features_labels_pairs(merged_df, subset='train'):
+def get_features_labels_pairs(merged_df, subset='train', strides=2, label_col='action'):
   def func(x):
     index, row = x
     video_filepath = row['video_filepath']
     features_full = video_to_3d_features(video_filepath)
     begin = row['begin']
     end = row['end']
-    features = features_full[begin:end]
-    labels = [row['action_num']]
+    features = features_full[range(begin, end, strides)]
+    labels = [row[label_col + '_num']]
     return features, labels
   g = merged_df[merged_df['subset'] == subset].iterrows()
   features_labels_pairs = map(func, g)
@@ -183,6 +186,23 @@ def play_video_from_file(filename):
   plt.show()
   return ani, plt
 
+def play_video_from_features(features, row_count=120, col_count=160):
+  fig, ax = plt.subplots()
+  image = features[0].reshape((row_count, col_count))
+  screen = plt.imshow(image, cmap='gray')
+  def init():  # only required for blitting to give a clean slate.
+      screen.set_data(np.empty(image.shape))
+      return screen,
+  def animate(i):
+      if i < len(features):
+        image = features[i].reshape((row_count, col_count))
+        screen.set_data(image)
+      return screen,
+  ani = animation.FuncAnimation(
+      fig, animate, init_func=init, interval=80, blit=True, save_count=50, repeat=False) # interval=40 because 25fps
+  plt.show()
+  return ani, plt
+
 if __name__ == '__main__':
   input_dir = FLAGS.input_dir
   dataset_name = FLAGS.dataset_name
@@ -190,14 +210,25 @@ if __name__ == '__main__':
   tmp_dir = FLAGS.tmp_dir
   kth_dir = '../../raw_datasets/video/kth/'
   sequence_df = get_kth_sequence_df(kth_dir)
-  kth_df = get_kth_info_df(kth_dir, tmp_dir=tmp_dir, from_scratch=False)
+  kth_df = get_kth_info_df(kth_dir, tmp_dir=tmp_dir, from_scratch=True)
   merged_df = get_merged_df(sequence_df, kth_df)
-  features_labels_pairs_train =\
-    get_features_labels_pairs(merged_df, subset='train')
-  features_labels_pairs_test =\
-    get_features_labels_pairs(merged_df, subset='test')
 
-  output_dim = 6
+  label_col = 'remark' # Decide which label to use
+  # label_col = 'action'
+  if label_col == 'action':
+    new_dataset_name = 'katze'
+    output_dim = 6
+  elif label_col == 'remark':
+    new_dataset_name = 'kraut'
+    output_dim = 4
+  else:
+    raise ValueError(f"Wrong label_col: {label_col}! Should be 'action' or 'remark'.")
+
+  features_labels_pairs_train =\
+    get_features_labels_pairs(merged_df, subset='train', label_col=label_col)
+  features_labels_pairs_test =\
+    get_features_labels_pairs(merged_df, subset='test', label_col=label_col)
+
   row_count = 120
   col_count = 160
   dataset_formatter =  UniMediaDatasetFormatter(dataset_name,
@@ -207,7 +238,7 @@ if __name__ == '__main__':
                                                 output_dim,
                                                 col_count,
                                                 row_count,
-                                                sequence_size=2000,
+                                                sequence_size=181, # for strides=2
                                                 num_examples_train=1528,
                                                 num_examples_test=863,
                                                 is_sequence_col='false',
@@ -216,6 +247,7 @@ if __name__ == '__main__':
                                                 has_locality_row='true',
                                                 format='DENSE',
                                                 is_sequence='false',
-                                                sequence_size_func=max)
+                                                sequence_size_func=max,
+                                                new_dataset_name=new_dataset_name)
 
   dataset_formatter.press_a_button_and_give_me_an_AutoDL_dataset()
