@@ -338,13 +338,17 @@ def print_first_tensor(autodl_dataset):
 if __name__ == "__main__":
   input_dir = FLAGS.input_dir
   dataset_name = FLAGS.dataset_name
-  # check_integrity(input_dir, dataset_name)
+  check_integrity(input_dir, dataset_name)
 
   # D_train, D_test =\
   #   get_train_and_test_data(input_dir, dataset_name, repeat=False)
   # print_first_tensor(D_train)
 
-  dataset_info, examples_info =\
-    extract_info_from_sequence_example('../../formatted_datasets/kth/kth.data/train/sample-kth.tfrecord')
-  print(dataset_info, examples_info)
-  print(int(examples_info['num_timestamps'].max()))
+  # subset = 'train'
+  # path_to_tfrecord = f'../../formatted_datasets/{dataset_name}/{dataset_name}.data/{subset}/sample-{dataset_name}-{subset}.tfrecord'
+  # print(path_to_tfrecord)
+  # dataset_info, examples_info =\
+  #   extract_info_from_sequence_example(path_to_tfrecord)
+  # pprint(dataset_info)
+  # print(examples_info)
+  # print(int(examples_info['num_timestamps'].quantile(0.95)))
