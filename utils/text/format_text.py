@@ -27,6 +27,7 @@ from dataset_formatter import UniMediaDatasetFormatter
 import urllib
 import zipfile
 from pprint import pprint
+from collections import Counter
 
 # NLP packages
 import nltk
@@ -63,23 +64,23 @@ GLOVE_WEIGHTS_FILE_PATH = os.path.join(GLOVE_DIR,
                                        f'glove.6B.{EMBEDDING_DIMENSION}d.txt')
 
 # Download GloVe pre-trained weights if necessary
-if not os.path.isdir(data_directory):
-    print(f"Creating directory {data_directory}")
-    os.mkdir(data_directory)
+if not os.path.isdir(GLOVE_DIR):
+    print(f"Creating directory {GLOVE_DIR}")
+    os.mkdir(GLOVE_DIR)
 
 if not os.path.isfile(GLOVE_WEIGHTS_FILE_PATH):
     # Glove embedding weights can be downloaded from https://nlp.stanford.edu/projects/glove/
     glove_fallback_url = 'http://nlp.stanford.edu/data/glove.6B.zip'
-    local_zip_file_path = os.path.join(data_directory, os.path.basename(glove_fallback_url))
+    local_zip_file_path = os.path.join(GLOVE_DIR, os.path.basename(glove_fallback_url))
     if not os.path.isfile(local_zip_file_path):
         print(f'Retreiving glove weights from {glove_fallback_url}')
         urllib.request.urlretrieve(glove_fallback_url, local_zip_file_path)
         with zipfile.ZipFile(local_zip_file_path, 'r') as z:
             print(f'Extracting glove weights from {local_zip_file_path}')
-            z.extractall(path=data_directory)
+            z.extractall(path=GLOVE_DIR)
 
 
-def get_text_labels_pairs(dataset_name, subset='train'):
+def get_text_labels_pairs(dataset_name, subset='train', high_level_label=False):
   """
   Return:
     pairs_train:  an iterable of (text, labels) pairs for training set, where
@@ -90,7 +91,19 @@ def get_text_labels_pairs(dataset_name, subset='train'):
                                  shuffle=True,
                                  random_state=42)
     text = dataset.data
-    labels = [[label] for label in dataset.target] # should be a list of lists
+    if not high_level_label:
+      targets = dataset.target
+    else:
+      target_names = dataset.target_names
+      target_names_general = [x.split('.')[0] for x in target_names]
+      counter = Counter(target_names_general)
+      hist = np.array(list(counter.values()))
+      thresholds = np.cumsum(hist)
+      def bin_id(target):
+        return sum(thresholds <= target)
+      targets = list(map(bin_id, dataset.target))
+
+    labels = [[label] for label in targets] # should be a list of lists
     return zip(text, labels)
   else:
     raise ValueError(f"Unknown dataset name: {dataset_name}")
@@ -197,16 +210,27 @@ if __name__ == '__main__':
     print("Couldn't parse max_num_examples_test...setting to None.")
     max_num_examples_test = None
 
+  high_level_label = False # True for highest hierarchy level label
+  if not high_level_label:
+    output_dim = 20
+    new_dataset_name = 'tweet'
+  else:
+    output_dim = 7
+    new_dataset_name = 'tsunami'
   word2idx, idx2word, weights =\
     download_GloVe_pretrained_weights()
-  text_labels_pairs_train = get_text_labels_pairs(dataset_name, subset='train')
+  text_labels_pairs_train =\
+    get_text_labels_pairs(dataset_name, subset='train',
+                          high_level_label=high_level_label)
   features_labels_pairs_train =\
     get_features_labels_pairs(text_labels_pairs_train)
-  text_labels_pairs_test = get_text_labels_pairs(dataset_name, subset='test')
+  text_labels_pairs_test =\
+    get_text_labels_pairs(dataset_name, subset='test',
+                          high_level_label=high_level_label)
   features_labels_pairs_test =\
     get_features_labels_pairs(text_labels_pairs_test)
 
-  output_dim = 20
+
   col_count = EMBEDDING_DIMENSION
   row_count = 1
   dataset_formatter =  UniMediaDatasetFormatter(dataset_name,
@@ -222,7 +246,8 @@ if __name__ == '__main__':
                                                 has_locality_col='false',
                                                 has_locality_row='false',
                                                 format='DENSE',
-                                                is_sequence='false')
+                                                is_sequence='false',
+                                                new_dataset_name=new_dataset_name)
   print(f"Begin formatting dataset: {dataset_name}.")
   print("Basic dataset info:")
   dataset_info = dataset_formatter.__dict__.copy()
