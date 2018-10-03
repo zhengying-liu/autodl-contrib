@@ -143,6 +143,9 @@ def get_features_labels_pairs(merged_df, subset='train', strides=2, label_col='a
     features_full = video_to_3d_features(video_filepath)
     begin = row['begin']
     end = row['end']
+    if(end > len(features_full)):
+      print(f"WARNING: bizarre file with begin: {begin}, end: {end}, index: {index}, filename: {row['video_filepath']}, features_full.shape: {features_full.shape}!!")
+      end = len(features_full)
     features = features_full[range(begin, end, strides)]
     labels = [row[label_col + '_num']]
     return features, labels
@@ -213,8 +216,8 @@ if __name__ == '__main__':
   kth_df = get_kth_info_df(kth_dir, tmp_dir=tmp_dir, from_scratch=True)
   merged_df = get_merged_df(sequence_df, kth_df)
 
-  label_col = 'remark' # Decide which label to use
-  # label_col = 'action'
+  # label_col = 'remark' # Decide which label to use
+  label_col = 'action'
   if label_col == 'action':
     new_dataset_name = 'katze'
     output_dim = 6
