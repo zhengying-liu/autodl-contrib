@@ -41,6 +41,13 @@ def avg_length_times_two(li):
   li = np.array(li)
   return int(li.mean() * 2)
 
+def percentile_95(li):
+  """To be used as callable for `sequence_size_func` in
+  `UniMediaDatasetFormatter`.
+  """
+  li = np.array(li)
+  return int(np.percentile(li, 95))
+
 class UniMediaDatasetFormatter():
   def __init__(self,
                dataset_name,
@@ -59,7 +66,7 @@ class UniMediaDatasetFormatter():
                has_locality_row='true',
                format='DENSE',
                is_sequence='false',
-               sequence_size_func=max,
+               sequence_size_func=percentile_95,
                new_dataset_name=None):
     # Dataset basename, e.g. `adult`
     self.dataset_name = dataset_name
