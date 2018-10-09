@@ -14,28 +14,6 @@ import os
 import sys
 from scipy.io import wavfile
 
-tf.flags.DEFINE_string('timit_dir', '../../raw_datasets/speech/timit/',
-                       "Directory containing the whole TIMIT dataset.")
-
-tf.flags.DEFINE_string("tmp_dir", "/tmp/", "Temporary directory.")
-
-tf.flags.DEFINE_string("output_dir", "../../formatted_datasets/",
-                       "Output data directory.")
-
-tf.flags.DEFINE_string('level', 'phonetic',
-                       "Level of labels, must be one of "
-                       "`phonetic`, `word` or `sentence`.")
-
-tf.flags.DEFINE_string('max_num_examples_train', '120', #TODO: to be changed.
-                       "Number of examples in training set we want to format.")
-
-tf.flags.DEFINE_string('max_num_examples_test', '100', #TODO: to be changed.
-                       "Number of examples in test set we want to format.")
-
-tf.flags.DEFINE_string('num_shards', '1', "Number of shards.")
-
-FLAGS = tf.flags.FLAGS
-
 def get_timit_info_df(timit_dir, tmp_dir, from_scratch=False):
   filepath = os.path.join(tmp_dir, 'timit_files_info.csv')
   if not from_scratch and os.path.isfile(filepath):
@@ -386,6 +364,28 @@ def print_first_sequence_example(path_to_tfrecord):
     break
 
 if __name__ == '__main__':
+  tf.flags.DEFINE_string('timit_dir', '../../raw_datasets/speech/timit/',
+                         "Directory containing the whole TIMIT dataset.")
+
+  tf.flags.DEFINE_string("tmp_dir", "/tmp/", "Temporary directory.")
+
+  tf.flags.DEFINE_string("output_dir", "../../formatted_datasets/",
+                         "Output data directory.")
+
+  tf.flags.DEFINE_string('level', 'phonetic',
+                         "Level of labels, must be one of "
+                         "`phonetic`, `word` or `sentence`.")
+
+  tf.flags.DEFINE_string('max_num_examples_train', '120', #TODO: to be changed.
+                         "Number of examples in training set we want to format.")
+
+  tf.flags.DEFINE_string('max_num_examples_test', '100', #TODO: to be changed.
+                         "Number of examples in test set we want to format.")
+
+  tf.flags.DEFINE_string('num_shards', '1', "Number of shards.")
+
+  FLAGS = tf.flags.FLAGS
+  
   timit_dir = FLAGS.timit_dir # WARNING: you should change this to your own directory containing TIMIT dataset.
   assert(os.path.isdir(timit_dir))
   output_dir = FLAGS.output_dir
