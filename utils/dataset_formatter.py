@@ -94,18 +94,15 @@ class UniMediaDatasetFormatter():
     self.has_locality_row = has_locality_row
     self.format = format
     self.is_sequence = is_sequence
+    if num_examples_train:
+      self.num_examples_train = num_examples_train
+    if num_examples_test:
+      self.num_examples_test = num_examples_test
 
     # Some computed properties
     self.dataset_dir = self.get_dataset_dir()
     self.dataset_data_dir = self.get_dataset_data_dir()
-    if num_examples_train:
-      self.num_examples_train = num_examples_train
-    else:
-      self.num_examples_train = self.get_num_examples(subset='train')
-    if num_examples_test:
-      self.num_examples_test = num_examples_test
-    else:
-      self.num_examples_test = self.get_num_examples(subset='test')
+
 
   def get_dataset_dir(self):
     dataset_dir = os.path.join(self.output_dir, self.new_dataset_name)
@@ -213,6 +210,10 @@ matrix_spec {
       data = self.features_labels_pairs_train()
       num_examples = self.num_examples_train
 
+    if is_test_set:
+      self.num_examples_test = 0
+    else:
+      self.num_examples_train = 0
     counter = 0
     labels_array = np.zeros((num_examples, self.output_dim))
     with tf.python_io.TFRecordWriter(path_to_tfrecord) as writer:
@@ -255,6 +256,10 @@ matrix_spec {
             feature_lists=feature_lists)
         writer.write(sequence_example.SerializeToString())
         counter += 1
+        if is_test_set:
+          self.num_examples_test += 1
+        else:
+          self.num_examples_train += 1
 
     # Write solution file
     if is_test_set:
