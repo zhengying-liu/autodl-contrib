@@ -263,10 +263,10 @@ matrix_spec {
 
   def press_a_button_and_give_me_an_AutoDL_dataset(self):
     print(f"Begin formatting dataset: {self.dataset_name}.")
-    dataset_info = self.__dict__.copy()
-    # dataset_info.pop('features_labels_pairs_train', None)
-    # dataset_info.pop('features_labels_pairs_test', None)
-    print("Basic dataset info:")
-    pprint(dataset_info)
     self.write_tfrecord_and_metadata(subset='test')
     self.write_tfrecord_and_metadata(subset='train')
+    dataset_info = self.__dict__.copy()
+    dataset_info.pop('features_labels_pairs_train', None)
+    dataset_info.pop('features_labels_pairs_test', None)
+    print("Basic dataset info:")
+    pprint(dataset_info)
