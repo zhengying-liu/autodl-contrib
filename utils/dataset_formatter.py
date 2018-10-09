@@ -118,15 +118,16 @@ class UniMediaDatasetFormatter():
 
   def get_num_examples(self, subset='train'):
     if subset == 'train':
-      data = self.features_labels_pairs_train
+      data = self.features_labels_pairs_train()
     elif subset == 'test':
-      data = self.features_labels_pairs_test
+      data = self.features_labels_pairs_test()
     else:
       raise ValueError("Wrong key `subset`! Should be 'train' or 'test'.")
     if hasattr(data, '__len__'):
       return len(data)
     else:
-      return sum([1 for x in data]) # WARNING: this step could be slow.
+      count = sum([1 for x in data])
+      return count # WARNING: this step could be slow.
 
   def get_metadata_filename(self, subset='train'):
     filename = 'metadata.textproto'
@@ -145,8 +146,8 @@ class UniMediaDatasetFormatter():
     return path
 
   def get_sequence_size(self, func=max):
-    length_train = [len(x) for x, _ in self.features_labels_pairs_train]
-    length_test = [len(x) for x, _ in self.features_labels_pairs_test]
+    length_train = [len(x) for x, _ in self.features_labels_pairs_train()]
+    length_test = [len(x) for x, _ in self.features_labels_pairs_test()]
     length_all = length_train + length_test
     return func(length_all)
 
@@ -205,11 +206,11 @@ matrix_spec {
     is_test_set = (subset == 'test')
     if is_test_set:
       id_translation = 0
-      data = self.features_labels_pairs_test
+      data = self.features_labels_pairs_test()
       num_examples = self.num_examples_test
     else:
       id_translation = self.num_examples_test
-      data = self.features_labels_pairs_train
+      data = self.features_labels_pairs_train()
       num_examples = self.num_examples_train
 
     counter = 0
@@ -263,8 +264,8 @@ matrix_spec {
   def press_a_button_and_give_me_an_AutoDL_dataset(self):
     print(f"Begin formatting dataset: {self.dataset_name}.")
     dataset_info = self.__dict__.copy()
-    dataset_info.pop('features_labels_pairs_train', None)
-    dataset_info.pop('features_labels_pairs_test', None)
+    # dataset_info.pop('features_labels_pairs_train', None)
+    # dataset_info.pop('features_labels_pairs_test', None)
     print("Basic dataset info:")
     pprint(dataset_info)
     self.write_tfrecord_and_metadata(subset='test')
