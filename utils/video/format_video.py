@@ -149,8 +149,8 @@ def get_features_labels_pairs(merged_df, subset='train', strides=2, label_col='a
     features = features_full[range(begin, end, strides)]
     labels = [row[label_col + '_num']]
     return features, labels
-  g = merged_df[merged_df['subset'] == subset].iterrows()
-  features_labels_pairs = map(func, g)
+  g = merged_df[merged_df['subset'] == subset].iterrows
+  features_labels_pairs = lambda:map(func, g())
   return features_labels_pairs
 
 def parse_filename(filename):
