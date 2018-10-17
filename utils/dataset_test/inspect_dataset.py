@@ -342,7 +342,7 @@ if __name__ == "__main__":
 
   # D_train, D_test =\
   #   get_train_and_test_data(input_dir, dataset_name, repeat=False)
-  # print_first_tensor(D_train)
+  # print_first_tensor(D_test)
 
   # subset = 'train'
   # path_to_tfrecord = f'../../formatted_datasets/{dataset_name}/{dataset_name}.data/{subset}/sample-{dataset_name}-{subset}.tfrecord'
