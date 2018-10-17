@@ -77,7 +77,10 @@ def get_processed_df(info_df, classes=None, proba_keep=1.0, shuffled=True):
     info_df = shuffle(info_df)
   processed_df = info_df.copy()
   processed_df['label'] = processed_df['label'].astype('category')
-  processed_df['label_num'] = processed_df['label'].cat.codes
+  def get_label_num(label):
+    return classes.index(label)
+  processed_df['label_num'] = processed_df['label'].apply(get_label_num)
+  print(processed_df.head())
   return processed_df
 
 def get_features_labels_pairs_generator(processed_df, subset='train'):
@@ -109,11 +112,13 @@ def main():
   tmp_dir = FLAGS.tmp_dir
   output_dir = FLAGS.output_dir
   info_df = get_speech_commands_info_df(dataset_dir, from_scratch=False)
-  classes = ['zero', 'one', 'two', 'three', 'four',
-             'five', 'six', 'seven', 'eight', 'nine']
+  # classes_list = ['zero', 'one', 'two', 'three', 'four',
+  #                 'five', 'six', 'seven', 'eight', 'nine']
+  classes_list = ['yes', 'no', 'up', 'down', 'left',
+                  'right', 'on', 'off', 'stop', 'go']
   proba_keep = 1
   shuffled = True
-  processed_df = get_processed_df(info_df, classes=classes, proba_keep=proba_keep, shuffled=shuffled)
+  processed_df = get_processed_df(info_df, classes=classes_list, proba_keep=proba_keep, shuffled=shuffled)
   features_labels_pairs_train =\
     get_features_labels_pairs_generator(processed_df, subset='train')
   features_labels_pairs_test =\
@@ -121,9 +126,12 @@ def main():
 
   row_count = 1
   col_count = 1
-  output_dim = len(classes)
+  num_examples_train = 21115
+  num_examples_test = 2567
+  output_dim = len(classes_list)
   dataset_name = 'Speech Commands'
-  new_dataset_name = 'santaclaus'
+  new_dataset_name = 'starcraft'
+  sequence_size = 16000
   dataset_formatter =  UniMediaDatasetFormatter(dataset_name,
                                                 output_dir,
                                                 features_labels_pairs_train,
@@ -131,9 +139,9 @@ def main():
                                                 output_dim,
                                                 col_count,
                                                 row_count,
-                                                sequence_size=None, # for strides=2
-                                                num_examples_train=None,
-                                                num_examples_test=None,
+                                                sequence_size=sequence_size,
+                                                num_examples_train=num_examples_train,
+                                                num_examples_test=num_examples_test,
                                                 is_sequence_col='false',
                                                 is_sequence_row='false',
                                                 has_locality_col='true',
@@ -141,7 +149,8 @@ def main():
                                                 format='DENSE',
                                                 is_sequence='false',
                                                 sequence_size_func=max,
-                                                new_dataset_name=new_dataset_name)
+                                                new_dataset_name=new_dataset_name,
+                                                classes_list=classes_list)
 
   dataset_formatter.press_a_button_and_give_me_an_AutoDL_dataset()
 
