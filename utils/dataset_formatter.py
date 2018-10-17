@@ -25,6 +25,56 @@ def _feature_list(feature):
   # Here `feature` is a list of tf.train.Feature
   return tf.train.FeatureList(feature=feature)
 
+def dict_to_text_format(python_dict, map_name='label_to_index_map'):
+  """Convert a dict to string.
+
+  Args:
+    python_dict: contains key-value pairs, e.g. {'zero': 0, 'one': 1}
+  Returns:
+    text_format: a string that respects Protocol Buffers format, for example:
+
+      label_to_index_map {
+        key: 'zero'
+        value: 0
+      }
+      label_to_index_map {
+        key: 'one'
+        value: 1
+      }
+  """
+  template = """<label_to_index_map> {
+  key: <key>
+  value: <value>
+}
+"""
+  template = template.replace('<label_to_index_map>', map_name)
+  text_format = ''
+  for k, v in python_dict.items():
+    item = template.replace('<key>', "'" + str(k) + "'")
+    item = item.replace('<value>', str(v))
+    text_format += item
+  return text_format
+
+def list_to_text_format(classes):
+  """Convert a list to string.
+
+  Args:
+    classes: contains a list of class names, e.g. ['zero', 'one']
+  Returns:
+    text_format: a string that respects Protocol Buffers format, for example:
+
+      label_to_index_map {
+        key: 'zero'
+        value: 0
+      }
+      label_to_index_map {
+        key: 'one'
+        value: 1
+      }
+  """
+  python_dict = {s:i for i, s in enumerate(classes)}
+  return dict_to_text_format(python_dict)
+
 def label_sparse_to_dense(li_label_nums, output_dim):
   dense_label = np.zeros(output_dim)
   for label_num in li_label_nums:
@@ -67,7 +117,9 @@ class UniMediaDatasetFormatter():
                format='DENSE',
                is_sequence='false',
                sequence_size_func=percentile_95,
-               new_dataset_name=None):
+               new_dataset_name=None,
+               classes_dict=None,
+               classes_list=None):
     # Dataset basename, e.g. `adult`
     self.dataset_name = dataset_name
     if new_dataset_name:
@@ -76,12 +128,18 @@ class UniMediaDatasetFormatter():
       self.new_dataset_name = dataset_name
     # Output directory, absolute path
     self.output_dir = os.path.abspath(output_dir)
-    # Iterables containing (features, labels) pairs, where `features` is a list
-    # of vectors in float. `labels` is a list of integers.
+    # Functions giving generators containing (features, labels) pairs, where
+    # `features` is a list of vectors in float. `labels` is a list of integers.
     self.features_labels_pairs_train = features_labels_pairs_train
     self.features_labels_pairs_test = features_labels_pairs_test
     # Some metadata on the dataset
     self.output_dim = output_dim
+    if classes_dict:
+      self.label_to_index_map = dict_to_text_format(classes_dict) # Convert dict to string
+    elif classes_list:
+      self.label_to_index_map = list_to_text_format(classes_list) # Convert list to string
+    else:
+      self.label_to_index_map = '' # Empty if no information is provided
     self.col_count = col_count
     self.row_count = row_count
     if isinstance(sequence_size, int):
@@ -96,8 +154,12 @@ class UniMediaDatasetFormatter():
     self.is_sequence = is_sequence
     if num_examples_train:
       self.num_examples_train = num_examples_train
+    else:
+      self.num_examples_train = self.get_num_examples(subset='train') # Could be slow
     if num_examples_test:
       self.num_examples_test = num_examples_test
+    else:
+      self.num_examples_test = self.get_num_examples(subset='test') # Could be slow
 
     # Some computed properties
     self.dataset_dir = self.get_dataset_dir()
@@ -132,7 +194,7 @@ class UniMediaDatasetFormatter():
     return path
 
   def get_data_filename(self, subset='train'):
-    filename = 'sample-' + self.new_dataset_name + '.tfrecord'
+    filename = 'sample-' + self.new_dataset_name + '-' + subset + '.tfrecord'
     path = os.path.join(self.dataset_data_dir, subset, filename)
     return path
 
@@ -162,6 +224,7 @@ matrix_spec {
   has_locality_row: <has_locality_row>
   format: <format>
 }
+<label_to_index_map>
 """
     if subset == 'train':
       sample_count = self.num_examples_train
@@ -171,6 +234,7 @@ matrix_spec {
     metadata = metadata.replace('<is_sequence>', str(self.is_sequence))
     metadata = metadata.replace('<sequence_size>', str(self.sequence_size))
     metadata = metadata.replace('<output_dim>', str(self.output_dim))
+    metadata = metadata.replace('<label_to_index_map>', str(self.label_to_index_map))
     metadata = metadata.replace('<col_count>', str(self.col_count))
     metadata = metadata.replace('<row_count>', str(self.row_count))
     metadata = metadata.replace('<is_sequence_col>', str(self.is_sequence_col))
@@ -268,10 +332,11 @@ matrix_spec {
 
   def press_a_button_and_give_me_an_AutoDL_dataset(self):
     print(f"Begin formatting dataset: {self.dataset_name}.")
-    self.write_tfrecord_and_metadata(subset='test')
-    self.write_tfrecord_and_metadata(subset='train')
     dataset_info = self.__dict__.copy()
     dataset_info.pop('features_labels_pairs_train', None)
     dataset_info.pop('features_labels_pairs_test', None)
+    dataset_info.pop('label_to_index_map', None)
     print("Basic dataset info:")
     pprint(dataset_info)
+    self.write_tfrecord_and_metadata(subset='test')
+    self.write_tfrecord_and_metadata(subset='train')
