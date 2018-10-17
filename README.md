@@ -15,7 +15,7 @@ This repo provides instructions and examples to contribute datasets to a reposit
 - [Credits](#credits)
 
 ## Two Words on AutoDL
-AutoDL stands for Automatic Deep Learning. The AutoDL challenge (planned for 2019, hopefully) aims to push automatic machine learning (AutoML), i.e. training and testing predictive models on datasets never seen before, **without any human intervention.** This challenge goes further than previous [AutoML challenges](http://automl.chalearn.org/) by proposing datasets that are NOT all preprocessed in a feature-based representation (tabular data). Rather, images, time series, text, and spatio-temporal time series will be part of the challenge in a unified format presenving the spatio-temporal structure.
+AutoDL stands for Automatic Deep Learning. The AutoDL challenge (planned for 2019, hopefully) aims to push automatic machine learning (AutoML), i.e. training and testing predictive models on datasets never seen before, **without any human intervention.** This challenge goes further than previous [AutoML challenges](http://automl.chalearn.org/) by proposing datasets that are NOT at all preprocessed in a feature-based representation (tabular data). Rather, images, time series, text, and spatio-temporal time series will be part of the challenge in a unified format presenving the spatio-temporal structure.
 We believe such data lend themselves to a Deep Learning (DL) solutions. However, the participants will be free to use non DL methods.
 
 ## Reward for Data Donors
