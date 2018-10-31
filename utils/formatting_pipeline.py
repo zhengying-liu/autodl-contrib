@@ -35,7 +35,7 @@ num_shards_test = 1
 dataset_names = os.listdir(input_dir) # read the input folder
 dataset_names = [x for x in dataset_names if not (x.startswith('.') or x.startswith('__'))] # remove hidden files
 # Or specify values
-dataset_names = ['adult']
+#dataset_names = ['adult']
 
 
 ### Run ###

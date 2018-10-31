@@ -251,36 +251,44 @@ def compare_rows(path_to_tfrecord, dataset_name, number_to_check=5):
     consistent = True
     original_dir = FLAGS.original_dir
     
-    # Read original tabular data
-    train_data = pd.read_csv(original_dir+dataset_name+'/'+dataset_name+'_train.data', header=None, sep='\s+')
-  
-    counter = 0
-    for se in tf.python_io.tf_record_iterator(path_to_tfrecord):
-        
-        # Number of examples to compare
-        if counter < number_to_check:
-            # Values of row in original tabular data
-            row_values = list(train_data.iloc[counter])
+    try:
+        # Read original tabular data
+        train_data = pd.read_csv(original_dir+dataset_name+'/'+dataset_name+'_train.data', header=None, sep='\s+')
       
-            # TFRecord SequenceExample 
-            sequence_example = tf.train.SequenceExample.FromString(se)
-        
-            # Parsing values
-            sestr = str(sequence_example.feature_lists)
-            sestr = sestr.split('\n')
-            sestr = [item for item in sestr if ('value:' in item)]
+        counter = 0
+        for se in tf.python_io.tf_record_iterator(path_to_tfrecord):
             
-            row_values_tf = []
-            for e in sestr:
-                row_values_tf.append(float(e.split(': ')[1]))
-       
-            # Comparing rows, if one is different then it is not consistent
-            if(row_values != row_values_tf):
-                consistent = False
-                for i in range(10):
-                    print('ERROR: TFRecords data is different from original data: {} != {}'.format(row_values, row_values_tf))
-       
-        counter += 1
+            # Number of examples to compare
+            if counter < number_to_check:
+                # Values of row in original tabular data
+                row_values = list(train_data.iloc[counter])
+          
+                # TFRecord SequenceExample 
+                sequence_example = tf.train.SequenceExample.FromString(se)
+            
+                # Parsing values
+                sestr = str(sequence_example.feature_lists)
+                sestr = sestr.split('\n')
+                sestr = [item for item in sestr if ('value:' in item)]
+                
+                row_values_tf = []
+                for e in sestr:
+                    row_values_tf.append(float(e.split(': ')[1]))
+           
+                # Comparing rows, if one is different then it is not consistent
+                if(row_values != row_values_tf):
+                    consistent = False
+                    for i in range(10):
+                        print('ERROR: TFRecords data is different from original data: {} != {}'.format(row_values, row_values_tf))
+           
+            counter += 1
+           
+    except Exception as e:
+        print('WARNING: Unable read original tabular data, it may be SPARSE data.')
+        #log = open('log.txt', 'a')
+        #log.write('No first rows check: '+dataset_name+'\n')
+        #log.close()
+        
     return consistent
 
 

@@ -333,9 +333,9 @@ def press_a_button_and_give_me_an_AutoDL_dataset(input_dir,
   try:
     os.rename(solution_filepath, new_solution_filepath)
   except Exception as e:
-    print('Unable to move '+solution_filepath)
+    print('WARNING: Unable to move '+solution_filepath)
     #log = open('log.txt', 'a')
-    #log.write(dataset_name+'\n')
+    #log.write('Solution file not move: '+dataset_name+'\n')
     #log.close()
   
   # Copy original info file to formatted dataset
