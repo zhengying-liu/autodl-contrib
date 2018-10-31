@@ -18,6 +18,7 @@ import sys
 from pprint import pprint
 sys.path.append('./ingestion_program/')
 from data_manager import DataManager
+from shutil import copyfile
 
 tf.flags.DEFINE_string('input_dir', '../../raw_datasets/automl/',
                        "Directory containing all AutoML datasets.")
@@ -329,9 +330,25 @@ def press_a_button_and_give_me_an_AutoDL_dataset(input_dir,
                                    dataset_name + '.solution')
   new_solution_filepath = os.path.join(dataset_dir,
                                    new_dataset_name + '.solution')
-  os.rename(solution_filepath, new_solution_filepath)
+  try:
+    os.rename(solution_filepath, new_solution_filepath)
+  except Exception as e:
+    print('Unable to move '+solution_filepath)
+    #log = open('log.txt', 'a')
+    #log.write(dataset_name+'\n')
+    #log.close()
+  
+  # Copy original info file to formatted dataset
+  try:
+      for info_file_type in ['_public', '_private']:
+          info_filepath = os.path.join(input_dir, dataset_name, dataset_name + info_file_type + '.info')
+          new_info_filepath = os.path.join(dataset_dir, new_dataset_name + info_file_type + '.info')
+          copyfile(info_filepath, new_info_filepath)
+  except Exception as e:
+      print('Unable to copy info files')
+  
   return dataset_dir, new_dataset_name
-
+  
 
 if __name__ == '__main__':
   input_dir = FLAGS.input_dir

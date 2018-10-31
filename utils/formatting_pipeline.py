@@ -24,20 +24,18 @@ del_all_flags(tf.flags.FLAGS) # clear flags
 from inspect_dataset import check_integrity
 #from test_with_baseline
 
-
-### Read dataset names ###
-dataset_names = os.listdir(input_dir) # read the input folder
-dataset_names = [x for x in dataset_names if not (x.startswith('.') or x.startswith('__'))] # remove hidden files
-
-
 ### Parameters  ###
-#dataset_names = ['adult'] # specify values
 input_dir = '../raw_datasets/automl/'
 output_dir = '../formatted_datasets/'
 max_num_examples_train = None
 max_num_examples_test = None
 num_shards_train = 1
 num_shards_test = 1
+# Read dataset names
+dataset_names = os.listdir(input_dir) # read the input folder
+dataset_names = [x for x in dataset_names if not (x.startswith('.') or x.startswith('__'))] # remove hidden files
+# Or specify values
+dataset_names = ['adult']
 
 
 ### Run ###
@@ -63,8 +61,8 @@ for dataset_name in dataset_names:
 
     # Inspection: check integrity
     print('Checking integrity...')
-    check_integrity(output_dir, new_dataset_name)
+    check_integrity(output_dir, new_dataset_name, check_first_rows=True)
 
     # Test with baseline
-    # print()
-    #os.system(python utils/dataset_test/test_with_baseline.py)
+    #print('Running baseline...')
+    #os.system('python dataset_test/test_with_baseline.py -dataset_name='+dataset_name)
