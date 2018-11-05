@@ -38,7 +38,7 @@ num_shards_test = 1
 dataset_names = os.listdir(input_dir) # read the input folder
 dataset_names = [x for x in dataset_names if not (x.startswith('.') or x.startswith('__'))] # remove hidden files
 # Or specify values
-dataset_names = ['adult']
+dataset_names = ['HTRU2']
 
 def parse_info(tab, info):
     """ Return value associated to an information in info file 
@@ -48,7 +48,8 @@ def parse_info(tab, info):
     for row in tab:
         t = re.compile('(\s)+=(\s)+').split(row) # split ' =  '
         for i in range(len(t) - 2): # remove ' '
-            t.remove(' ')
+            while ' ' in t:
+                t.remove(' ')
 
         if t[0] == info:
             return t[1]
@@ -62,6 +63,7 @@ def init_tabular(filename='tabular.tex'):
     f = open(filename, 'a')
     f.write('\\hline\n')
     f.write('DATASET & Task & C & Sparse & Miss & Cat & Pte & Ptr & N & Ptr/N & Baseline Score \\\\\n') # Cbal ?
+    f.write('\\hline\n')
     f.close()
     
 def close_tabular(filename='tabular.tex'):
@@ -209,11 +211,18 @@ for dataset_name in dataset_names:
     # os.system('python dataset_test/test_with_baseline.py -dataset_name='+dataset_name)
     
     # LOGREG SKLEARN
-    score = run_baseline_automl(input_dir, dataset_name)
+    #score = run_baseline_automl(input_dir, dataset_name)
+    score = 0
     
     # Write LaTeX tabular
     print('Writing LaTeX statistics and documentation...')
-    add_entry_tabular(input_dir, dataset_name, score)
-    add_entry_doc(input_dir, dataset_name, score)
+    try:
+        add_entry_tabular(input_dir, dataset_name, score)
+        add_entry_doc(input_dir, dataset_name, score)
+    except:
+        print('Unable to read dataset information\n')
+        f = open('log.txt', 'a')
+        f.write('{} dataset: unable to read info files\n'.format(dataset_name))
+        f.close()
     
 close_tabular()

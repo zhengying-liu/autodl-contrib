@@ -276,7 +276,7 @@ def compare_rows(path_to_tfrecord, dataset_name, number_to_check=5):
                     row_values_tf.append(float(e.split(': ')[1]))
            
                 # Comparing rows, if one is different then it is not consistent
-                if(row_values != row_values_tf):
+                if(round(row_values[counter], 5) != round(row_values_tf[counter], 5)):
                     consistent = False
                     for i in range(10):
                         print('ERROR: TFRecords data is different from original data: {} != {}'.format(row_values, row_values_tf))
@@ -285,9 +285,10 @@ def compare_rows(path_to_tfrecord, dataset_name, number_to_check=5):
            
     except Exception as e:
         print('WARNING: Unable read original tabular data, it may be SPARSE data.')
-        #log = open('log.txt', 'a')
-        #log.write('No first rows check: '+dataset_name+'\n')
-        #log.close()
+        print(e)
+        log = open('log.txt', 'a')
+        log.write('No first rows check: '+dataset_name+'\n')
+        log.close()
         
     return consistent
 
@@ -372,6 +373,8 @@ def check_integrity(input_dir, dataset_name, check_first_rows=False):
           "and {} classes.".format(num_classes_existing_train))
   else:
     print("Holy shit! Your dataset is NOT consistent!")
+    log = open('log.txt', 'a')
+    log.write('NOT CONSISTENT: '+dataset_name+'\n')
     if not consistent_num_examples_train:
       print("Inconsistent number of training examples: {} and {}"\
             .format(num_examples_existing_train, num_examples_inferred_train))
@@ -384,6 +387,8 @@ def check_integrity(input_dir, dataset_name, check_first_rows=False):
             "and the program cannot infer num_classes correctly")
     if not consistent_first_rows:
       print('Inconsistent first rows. Train data were corrupted by the formatting !')
+      log.write('Integrity issue: rows comparison.\n')
+    log.close()
   return consistent_dataset, dataset_name, num_examples_existing_train,\
          num_examples_existing_test, num_classes_existing_train
 
