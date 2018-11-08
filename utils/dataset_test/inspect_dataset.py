@@ -29,6 +29,9 @@ from pprint import pprint
 # Add flags for command line argument parsing
 tf.flags.DEFINE_string('input_dir', '../../formatted_datasets/',
                        "Directory containing formatted AutoDL datasets.")
+                       
+tf.flags.DEFINE_string('original_dir', '../raw_datasets/automl/',
+                       "Directory containing original tabular datasets.")                       
 
 tf.flags.DEFINE_string('dataset_name', 'adult_600_100', "Basename of dataset.")
 
@@ -156,7 +159,7 @@ def extract_info_from_sequence_example(path_to_tfrecord, from_scratch=False):
     counter = 0
     for se in tf.python_io.tf_record_iterator(path_to_tfrecord):
       sequence_example = tf.train.SequenceExample.FromString(se)
-
+      
       context_feature = sequence_example.context.feature
       feature_lists_container = sequence_example.feature_lists.feature_list
       # Update num_labels
@@ -233,8 +236,64 @@ def test_extract_info_from_sequence_example():
   pprint(dataset_info)
   print('examples_info:')
   print(examples_info)
+  
 
-def check_integrity(input_dir, dataset_name):
+def compare_rows(path_to_tfrecord, dataset_name, number_to_check=5):
+    """ Check if the first rows of the dataset are the same in TFRecord format and in original tabular data.
+        WARNING: The code below is clearly not elegant.
+      
+        :param path_to_tfrecord: Path to TFRecord format dataset
+        :param dataset_name: Name of the dataset, required to read its original tabular form
+        :param number_to_check: Number of rows to compare
+        :rtype: bool
+        :return: True if every rows are consistent, False otherwise
+    """
+    consistent = True
+    original_dir = FLAGS.original_dir
+    
+    try:
+        # Read original tabular data
+        train_data = pd.read_csv(original_dir+dataset_name+'/'+dataset_name+'_train.data', header=None, sep='\s+')
+      
+        counter = 0
+        for se in tf.python_io.tf_record_iterator(path_to_tfrecord):
+            
+            # Number of examples to compare
+            if counter < number_to_check:
+                # Values of row in original tabular data
+                row_values = list(train_data.iloc[counter])
+          
+                # TFRecord SequenceExample 
+                sequence_example = tf.train.SequenceExample.FromString(se)
+            
+                # Parsing values
+                sestr = str(sequence_example.feature_lists)
+                sestr = sestr.split('\n')
+                sestr = [item for item in sestr if ('value:' in item)]
+                
+                row_values_tf = []
+                for e in sestr:
+                    row_values_tf.append(float(e.split(': ')[1]))
+           
+                # Comparing rows, if one is different then it is not consistent
+                if(round(row_values[counter], 5) != round(row_values_tf[counter], 5)):
+                    consistent = False
+                    for i in range(10):
+                        print('ERROR: TFRecords data is different from original data: {} != {}'.format(row_values, row_values_tf))
+           
+            counter += 1
+           
+    except Exception as e:
+        print('WARNING: Unable read original tabular data, it may be SPARSE data.')
+        print(e)
+        log = open('log.txt', 'a')
+        log.write('No first rows check: '+dataset_name+'\n')
+        log.close()
+        
+    return consistent
+
+
+def check_integrity(input_dir, dataset_name, check_first_rows=False):
   train_metadata, test_metadata = get_metadata(input_dir, dataset_name)
   train_file, test_file = get_tfrecord_paths(input_dir, dataset_name)
   dataset_info_train, examples_info_train =\
@@ -252,6 +311,13 @@ def check_integrity(input_dir, dataset_name):
   print(test_metadata.metadata_)
   print("INTEGRITY CHECK: inferred metadata for TEST:")
   pprint(dataset_info_test)
+  
+  # Check if first rows are the same in TFRecord format
+  # than in original tabular data
+  consistent_first_rows = True
+  if check_first_rows:
+    print("INTEGRITY CHECK: comparing first rows of TFRecords and original tabular data")
+    consistent_first_rows = compare_rows(train_file, dataset_name)
 
   # Check the consistency on number of examples
   num_examples_existing_train = train_metadata.size()
@@ -297,7 +363,8 @@ def check_integrity(input_dir, dataset_name):
 
   consistent_dataset = consistent_num_examples_train and \
                        consistent_num_examples_test and \
-                       consistent_num_classes
+                       consistent_num_classes and \
+                       consistent_first_rows
   if consistent_dataset:
     print("\nCongratulations! Your dataset is CONSISTENT with {}"\
           .format(num_examples_existing_train),
@@ -306,6 +373,8 @@ def check_integrity(input_dir, dataset_name):
           "and {} classes.".format(num_classes_existing_train))
   else:
     print("Holy shit! Your dataset is NOT consistent!")
+    log = open('log.txt', 'a')
+    log.write('NOT CONSISTENT: '+dataset_name+'\n')
     if not consistent_num_examples_train:
       print("Inconsistent number of training examples: {} and {}"\
             .format(num_examples_existing_train, num_examples_inferred_train))
@@ -316,6 +385,10 @@ def check_integrity(input_dir, dataset_name):
       print("Inconsistent number of classes.",
             "But this might be due to too few examples",
             "and the program cannot infer num_classes correctly")
+    if not consistent_first_rows:
+      print('Inconsistent first rows. Train data were corrupted by the formatting !')
+      log.write('Integrity issue: rows comparison.\n')
+    log.close()
   return consistent_dataset, dataset_name, num_examples_existing_train,\
          num_examples_existing_test, num_classes_existing_train
 
