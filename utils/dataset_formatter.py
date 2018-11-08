@@ -134,9 +134,9 @@ class UniMediaDatasetFormatter():
     self.features_labels_pairs_test = features_labels_pairs_test
     # Some metadata on the dataset
     self.output_dim = output_dim
-    if classes_dict:
+    if classes_dict is not None:
       self.label_to_index_map = dict_to_text_format(classes_dict) # Convert dict to string
-    elif classes_list:
+    elif classes_list is not None:
       self.label_to_index_map = list_to_text_format(classes_list) # Convert list to string
     else:
       self.label_to_index_map = '' # Empty if no information is provided
@@ -335,7 +335,7 @@ matrix_spec {
     dataset_info = self.__dict__.copy()
     dataset_info.pop('features_labels_pairs_train', None)
     dataset_info.pop('features_labels_pairs_test', None)
-    dataset_info.pop('label_to_index_map', None)
+    # dataset_info.pop('label_to_index_map', None)
     print("Basic dataset info:")
     pprint(dataset_info)
     self.write_tfrecord_and_metadata(subset='test')
