@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 tf.flags.DEFINE_string('input_dir', '../../raw_datasets/video/',
-                       "Directory containing text datasets.")
+                       "Directory containing video datasets.")
 
 tf.flags.DEFINE_string('dataset_name', 'kth', "Basename of dataset.")
 
@@ -121,26 +121,33 @@ def get_merged_df(sequence_df, kth_df):
   merged_df = shuffle(merged_df, random_state=42)
   return merged_df
 
-def video_to_3d_features(video_filepath):
+def video_to_3d_features(video_filepath, resize=(1,1)):
   cap = cv2.VideoCapture(video_filepath)
   features = []
+  printed = False
   while(cap.isOpened()):
     ret, frame = cap.read()
     if not ret:
       break
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    gray_flattened = gray.flatten()
+    # Resize
+    height, width = gray.shape
+    fx, fy = resize
+    new_height = int(fx * height)
+    new_width = int(fx * width)
+    gray_resized = cv2.resize(gray, (new_width, new_height))
+    gray_flattened = gray_resized.flatten()
     features.append(gray_flattened)
   cap.release()
   cv2.destroyAllWindows()
   features = np.array(features)
   return features
 
-def get_features_labels_pairs(merged_df, subset='train', strides=2, label_col='action'):
+def get_features_labels_pairs(merged_df, subset='train', strides=2, label_col='action', resize=(1,1)):
   def func(x):
     index, row = x
     video_filepath = row['video_filepath']
-    features_full = video_to_3d_features(video_filepath)
+    features_full = video_to_3d_features(video_filepath, resize=resize)
     begin = row['begin']
     end = row['end']
     if(end > len(features_full)):
@@ -189,20 +196,23 @@ def play_video_from_file(filename):
   plt.show()
   return ani, plt
 
-def play_video_from_features(features, row_count=120, col_count=160):
+def play_video_from_features(features, row_count=120, col_count=160, interval=80, resize=(1,1)):
   fig, ax = plt.subplots()
-  image = features[0].reshape((row_count, col_count))
+  new_row_count = int(row_count * resize[0])
+  new_col_count = int(col_count * resize[1])
+  print('Playing with {} rows and {} columns.'.format(new_row_count, new_col_count))
+  image = features[0].reshape((new_row_count, new_col_count))
   screen = plt.imshow(image, cmap='gray')
   def init():  # only required for blitting to give a clean slate.
       screen.set_data(np.empty(image.shape))
       return screen,
   def animate(i):
       if i < len(features):
-        image = features[i].reshape((row_count, col_count))
+        image = features[i].reshape((new_row_count, new_col_count))
         screen.set_data(image)
       return screen,
   ani = animation.FuncAnimation(
-      fig, animate, init_func=init, interval=80, blit=True, save_count=50, repeat=False) # interval=40 because 25fps
+      fig, animate, init_func=init, interval=interval, blit=True, save_count=50, repeat=False) # interval=40 because 25fps
   plt.show()
   return ani, plt
 
@@ -213,27 +223,35 @@ if __name__ == '__main__':
   tmp_dir = FLAGS.tmp_dir
   kth_dir = '../../raw_datasets/video/kth/'
   sequence_df = get_kth_sequence_df(kth_dir)
-  kth_df = get_kth_info_df(kth_dir, tmp_dir=tmp_dir, from_scratch=True)
+  kth_df = get_kth_info_df(kth_dir, tmp_dir=tmp_dir, from_scratch=False)
   merged_df = get_merged_df(sequence_df, kth_df)
 
-  # label_col = 'remark' # Decide which label to use
-  label_col = 'action'
+  ### Resize Videos ###
+  resize = (0.5,0.5)
+  ### Resize Videos ###
+
+  label_col = 'remark' # Decide which label to use
+  # label_col = 'action'
+  classes_list = kth_df[label_col].astype('category').cat.categories
+
   if label_col == 'action':
     new_dataset_name = 'katze'
     output_dim = 6
   elif label_col == 'remark':
     new_dataset_name = 'kraut'
     output_dim = 4
+  if resize != (1,1):
+    new_dataset_name = 'kreatur'
   else:
     raise ValueError(f"Wrong label_col: {label_col}! Should be 'action' or 'remark'.")
 
   features_labels_pairs_train =\
-    get_features_labels_pairs(merged_df, subset='train', label_col=label_col)
+    get_features_labels_pairs(merged_df, subset='train', label_col=label_col, resize=resize)
   features_labels_pairs_test =\
-    get_features_labels_pairs(merged_df, subset='test', label_col=label_col)
+    get_features_labels_pairs(merged_df, subset='test', label_col=label_col, resize=resize)
 
-  row_count = 120
-  col_count = 160
+  row_count = int(120 * resize[0])
+  col_count = int(160 * resize[1])
   dataset_formatter =  UniMediaDatasetFormatter(dataset_name,
                                                 output_dir,
                                                 features_labels_pairs_train,
@@ -251,6 +269,7 @@ if __name__ == '__main__':
                                                 format='DENSE',
                                                 is_sequence='false',
                                                 sequence_size_func=max,
-                                                new_dataset_name=new_dataset_name)
+                                                new_dataset_name=new_dataset_name,
+                                                classes_list=classes_list)
 
   dataset_formatter.press_a_button_and_give_me_an_AutoDL_dataset()
