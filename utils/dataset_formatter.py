@@ -130,6 +130,10 @@ class UniMediaDatasetFormatter():
     self.output_dir = os.path.abspath(output_dir)
     # Functions giving generators containing (features, labels) pairs, where
     # `features` is a list of vectors in float. `labels` is a list of integers.
+    # In the case where confidences of labels are detailed, `labels` can be a
+    # tuple (integers, confidences), where `integers` is a list of integers
+    # (the labels) and `confidences` is a list of float between 0 and 1 (the
+    # confidences)
     self.features_labels_pairs_train = features_labels_pairs_train
     self.features_labels_pairs_test = features_labels_pairs_test
     # Some metadata on the dataset
@@ -280,8 +284,17 @@ matrix_spec {
       self.num_examples_train = 0
     counter = 0
     labels_array = np.zeros((num_examples, self.output_dim))
+    has_confidences = False
     with tf.python_io.TFRecordWriter(path_to_tfrecord) as writer:
       for features, labels in data:
+        # in the case where `labels` is actually (labels, confidences)
+        if has_confidences or isinstance(labels, tuple):
+          assert(len(labels) == 2)
+          confidences = labels[1]
+          labels = labels[0]
+          has_confidences = True
+        else:
+          confidences = [1]*len(labels) # If not detailed, all confidence will be set to 1
         if verbose and counter % 100 == 0:
           print(f"Formatting dataset: {self.dataset_name}, subset: {subset}, index: {counter + id_translation}, example {counter} of {num_examples}...")
         if is_test_set:
@@ -290,7 +303,7 @@ matrix_spec {
           labels_array[counter] = label_sparse_to_dense(labels, self.output_dim)
         else:
           label_index = _int64_feature(labels)
-          label_score = _float_feature([1]*len(labels))
+          label_score = _float_feature(confidences)
         context_dict = {
             'id': _int64_feature([counter + id_translation]),
             'label_index': label_index,
@@ -310,8 +323,14 @@ matrix_spec {
           feature_list_dict={
             '0_dense_input': _feature_list(feature_list)
           }
+        elif self.format == 'COMPRESSED':
+          feature_list = [_bytes_feature(x) for x in features]
+          feature_list_dict={
+            '0_compressed': _feature_list(feature_list)
+          }
         else:
-          raise ValueError(f"Wrong format key: {self.format}")
+          raise ValueError(f"Wrong format key: {self.format}. Should be one of "
+                           "`DENSE`, `SPARSE`, `COMPRESSED`.")
 
         context = tf.train.Features(feature=context_dict)
         feature_lists = tf.train.FeatureLists(feature_list=feature_list_dict)
