@@ -61,7 +61,10 @@ def get_labels(label_confidence_pairs):
   """
   li_string = label_confidence_pairs.split(' ')
   if len(li_string) % 2 != 0:
-    raise ValueError("In the column LabelConfidencePairs, one can only have pairs of (integer, confidence)!")
+    raise ValueError("In the column LabelConfidencePairs, " +\
+                     "one can only have pairs of (integer, confidence) " +\
+                     "but an odd number of entries " +\
+                     "were found: {}!".format(label_confidence_pairs))
   labels = [int(x) for i, x in enumerate(li_string) if i%2 == 0]
   confidences = [float(x) for i, x in enumerate(li_string) if i%2 == 1]
   return labels, confidences
