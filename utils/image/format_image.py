@@ -19,6 +19,9 @@ tf.flags.DEFINE_string('dataset_name', 'Caltech256', "Basename of dataset.")
 tf.flags.DEFINE_string('output_dir', '../../formatted_datasets/',
                        "Output data directory.")
 
+tf.flags.DEFINE_string('new_dataset_name', 'new_dataset',
+                       "Basename of formatted dataset.")
+
 FLAGS = tf.flags.FLAGS
 
 def get_labels_df(dataset_dir):
@@ -109,7 +112,7 @@ if __name__ == '__main__':
   # classes_list = [str(i) for i in range(output_dim)]
 
   # new_dataset_name = 'image' + str(hash(dataset_name) % 10000)
-  new_dataset_name = 'itwas'
+  new_dataset_name = FLAGS.new_dataset_name
 
   features_labels_pairs_train =\
     get_features_labels_pairs(merged_df, subset='train')
