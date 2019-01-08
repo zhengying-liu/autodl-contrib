@@ -296,7 +296,11 @@ matrix_spec {
         else:
           confidences = [1]*len(labels) # If not detailed, all confidence will be set to 1
         if verbose and counter % 100 == 0:
-          print(f"Formatting dataset: {self.dataset_name}, subset: {subset}, index: {counter + id_translation}, example {counter} of {num_examples}...")
+          print("Formatting dataset: {},".format(self.dataset_name),
+                "subset: {},".format(subset),
+                "index: {},".format(counter + id_translation),
+                "example {}".format(counter),
+                "of {}...".format(num_examples))
         if is_test_set:
           label_index = _int64_feature([])
           label_score = _float_feature([])
@@ -329,7 +333,8 @@ matrix_spec {
             '0_compressed': _feature_list(feature_list)
           }
         else:
-          raise ValueError(f"Wrong format key: {self.format}. Should be one of "
+          raise ValueError("Wrong format key: {}.".format(self.format) +\
+                           "Should be one of " +\
                            "`DENSE`, `SPARSE`, `COMPRESSED`.")
 
         context = tf.train.Features(feature=context_dict)
@@ -350,7 +355,7 @@ matrix_spec {
       np.savetxt(path_to_solution, labels_array, fmt='%.0f')
 
   def press_a_button_and_give_me_an_AutoDL_dataset(self):
-    print(f"Begin formatting dataset: {self.dataset_name}.")
+    print("Begin formatting dataset: {}.".format(self.dataset_name))
     dataset_info = self.__dict__.copy()
     dataset_info.pop('features_labels_pairs_train', None)
     dataset_info.pop('features_labels_pairs_test', None)

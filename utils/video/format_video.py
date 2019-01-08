@@ -91,7 +91,7 @@ def get_kth_info_df(kth_dir, tmp_dir='/tmp/', from_scratch=False):
       elif person_id in test_id:
         return 'test'
       else:
-        raise ValueError(f"Wrong person id {person_id}!")
+        raise ValueError("Wrong person id {}!".format(person_id))
 
     path = kth_dir
     li = []
@@ -151,7 +151,10 @@ def get_features_labels_pairs(merged_df, subset='train', strides=2, label_col='a
     begin = row['begin']
     end = row['end']
     if(end > len(features_full)):
-      print(f"WARNING: bizarre file with begin: {begin}, end: {end}, index: {index}, filename: {row['video_filepath']}, features_full.shape: {features_full.shape}!!")
+      print("WARNING: bizarre file with begin: {begin},".format(),
+            "end: {}, index: {},".format(end, index),
+            "filename: {},".format(row['video_filepath']),
+            "features_full.shape: {}!!".format(features_full.shape))
       end = len(features_full)
     features = features_full[range(begin, end, strides)]
     labels = [row[label_col + '_num']]
@@ -243,7 +246,8 @@ if __name__ == '__main__':
   if resize != (1,1):
     new_dataset_name = 'kreatur'
   else:
-    raise ValueError(f"Wrong label_col: {label_col}! Should be 'action' or 'remark'.")
+    raise ValueError("Wrong label_col: {}! ".format(label_col) +\
+                     "Should be 'action' or 'remark'.")
 
   features_labels_pairs_train =\
     get_features_labels_pairs(merged_df, subset='train', label_col=label_col, resize=resize)

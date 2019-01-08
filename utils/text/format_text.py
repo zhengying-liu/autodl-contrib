@@ -65,7 +65,7 @@ GLOVE_WEIGHTS_FILE_PATH = os.path.join(GLOVE_DIR,
 
 # Download GloVe pre-trained weights if necessary
 if not os.path.isdir(GLOVE_DIR):
-    print(f"Creating directory {GLOVE_DIR}")
+    print("Creating directory {}".format(GLOVE_DIR))
     os.mkdir(GLOVE_DIR)
 
 if not os.path.isfile(GLOVE_WEIGHTS_FILE_PATH):
@@ -106,12 +106,12 @@ def get_text_labels_pairs(dataset_name, subset='train', high_level_label=False):
     labels = [[label] for label in targets] # should be a list of lists
     return zip(text, labels)
   else:
-    raise ValueError(f"Unknown dataset name: {dataset_name}")
+    raise ValueError("Unknown dataset name: {}".format(dataset_name))
 
 
 def download_GloVe_pretrained_weights():
   if not os.path.isdir(GLOVE_DIR):
-    print(f"Creating directory {GLOVE_DIR}")
+    print("Creating directory {}".format(GLOVE_DIR))
     os.mkdir(GLOVE_DIR)
   if not os.path.isfile(GLOVE_WEIGHTS_FILE_PATH):
     # Glove embedding weights can be downloaded from https://nlp.stanford.edu/projects/glove/
@@ -248,7 +248,7 @@ if __name__ == '__main__':
                                                 format='DENSE',
                                                 is_sequence='false',
                                                 new_dataset_name=new_dataset_name)
-  print(f"Begin formatting dataset: {dataset_name}.")
+  print("Begin formatting dataset: {}.".format(dataset_name))
   print("Basic dataset info:")
   dataset_info = dataset_formatter.__dict__.copy()
   dataset_info.pop('features_labels_pairs_train', None)
