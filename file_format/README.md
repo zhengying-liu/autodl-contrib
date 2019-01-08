@@ -59,7 +59,10 @@ Well yes, the files don't really follow our naming rules (with no `*example*` pa
 
 **WARNING**: in this CSV file, there should be a column called `FileName` to indicate the corresponding files and a column `LabelConfidencePairs` to indicate labels.
 
-Note that the labels should have **sparse representation with label-confidence pairs**. In this representation, each label (an integer) is follow by a number (confidence) in the interval (0,1] (labels with confidence 0 are neglected, hence sparsity). Please note that the sum of all confidence doesn't have to (and shouldn't in general) be 1 since we are dealing with multi-label classification tasks (i.e. several binary classification tasks at the same time). A valid example of such a csv file is,
+Note that the labels should have **sparse representation with label-confidence pairs**.
+In this representation, each label (an integer) is followed by a number (confidence) in the interval (0,1] (labels with confidence 0 are neglected, hence sparsity).
+Please note that the sum of all confidence doesn't have to (and shouldn't in general) be 1 since we are dealing with multi-label classification tasks (i.e. several binary classification tasks at the same time).
+A valid example of such a csv file is,
 ```
 FileName,LabelConfidencePairs
 n0159.jpg,2 0.488458 9 0.48776 0 0.486832
