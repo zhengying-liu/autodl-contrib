@@ -36,9 +36,9 @@ folders = ['raw_datasets', 'formatted_datasets', 'promised_datasets']
 
 def read_info_file(public_info_path, private_info_path):
     """ Return dictionnary with info file information """
-    
+
     dic = dict()
-    
+
     # read info files
     file1 = open(public_info_path, 'r')
     file2 = open(private_info_path, 'r')
@@ -47,7 +47,7 @@ def read_info_file(public_info_path, private_info_path):
     tab = [x for x in tab if x != ''] # remove ''
     file1.close()
     file2.close()
-    
+
     for row in tab:
         t = re.compile('(\s)+=(\s)+').split(row) # split ' =  '
         for i in range(len(t) - 2): # remove ' '
@@ -55,20 +55,25 @@ def read_info_file(public_info_path, private_info_path):
                 t.remove(' ')
 
         dic[t[0]] = t[1]
-        
+
     return dic
-    
+
 def find_info_files(dataset_dir):
     """ Find path to public and private info files from dataset directory path """
     dataset_files = os.listdir(dataset_dir)
 
-    public_info_file = [x for x in dataset_files if ('_public.info' in x)][0]
-    private_info_file = [x for x in dataset_files if ('_private.info' in x)][0]
+    try:
+        public_info_file = [x for x in dataset_files if ('_public.info' in x)][0]
+        private_info_file = [x for x in dataset_files if ('_private.info' in x)][0]
 
-    public_info_path = dataset_dir + '/' + public_info_file
-    private_info_path = dataset_dir + '/' + private_info_file
-    
-    return public_info_path, private_info_path
+        public_info_path = dataset_dir + '/' + public_info_file
+        private_info_path = dataset_dir + '/' + private_info_file
+
+        return public_info_path, private_info_path
+
+    except Exception as e:
+        print('No info files in {}'.format(dataset_dir))
+        return None, None
 
 
 def init_csv(csv_path):
@@ -81,24 +86,24 @@ def init_csv(csv_path):
 def add_entry_csv(csv_path, dic, status=None):
     """ Add entry to a CSV file by reading information in dictionary """
     f = open(csv_path, 'a')
-    
+
     row = ''
     infos = ['title', 'name', 'status', 'contact_name', 'domain', 'train_num', 'label_num', 'zip_size', 'TFDim', 'resource_url', 'remarks']
-    
+
     for i, info in enumerate(infos):
         if info in dic:
             row = row + dic[info].replace("'", '').replace(',', ';')
-        
+
         elif info == 'status' and status is not None:
             # Status: Raw dataset, Formatted dataset, Promised dataset
             row = row + status.capitalize().replace('_', ' ')
-        
+
         else:
             row = row + 'Unknown'
-        
+
         if i < (len(infos) -1):
             row = row + ','
-           
+
     f.write(row+'\n')
     f.close()
 
@@ -116,22 +121,23 @@ def write_information_table(output_file, domains):
             # Read dataset names
             if os.path.exists(DIR):
                 dataset_names = os.listdir(DIR) # read the input folder
-                dataset_names = [x for x in dataset_names if not (x.startswith('.') or x.startswith('__') or 'zip' in x)] # remove hidden files and archives
+                dataset_names = [x for x in dataset_names if not (x.startswith('.') or x.startswith('__') or any(s in x for s in ('zip', 'tar', 'tgz')))] # remove hidden files and archives
 
                 for dataset in dataset_names:
-                
+
                     dataset_dir = DIR + '/' + dataset
                     public_info_path, private_info_path = find_info_files(dataset_dir)
-                    dic = read_info_file(public_info_path, private_info_path)
-                    
-                    # Write information
-                    add_entry_csv(output_file, dic, status=folder)
-            
-            
+
+                    if (public_info_path is not None) and (private_info_path is not None):
+                        dic = read_info_file(public_info_path, private_info_path)
+                        # Write information
+                        add_entry_csv(output_file, dic, status=folder)
+
+
 write_information_table(output_file, domains)
 write_information_table(tabular_output_file, tabular_domains)
-            
-            
+
+
 
 ### OLD SCRIPT ###
 
@@ -149,5 +155,3 @@ write_information_table(tabular_output_file, tabular_domains)
 #    print('\n')
 
 ### ### ### ### ###
-
-   
