@@ -76,10 +76,36 @@ def find_info_files(dataset_dir):
         return None, None
 
 
+def init_info_file(dataset_dir, domain, public=True, templates_dir='info_file_templates/'):
+    """ Initiate .info file according to a template """
+
+    dataset_name = dataset_dir.split('/')[-1]
+
+    if public:
+        filename = dataset_dir + '/' + dataset_name + '_public.info'
+        template = open(templates_dir + 'template_public.info', 'r')
+        content = template.read().format(domain)
+        template.close()
+
+    else:
+        filename = dataset_dir + '/' + dataset_name + '_private.info'
+        template = open(templates_dir + 'template_private.info', 'r')
+        content = template.read().format(dataset_name.capitalize())
+        template.close()
+
+    print('Creating {}'.format(filename))
+    f = open(filename, 'w')
+    f.write(content)
+    f.close()
+
+    return filename
+
+
 def init_csv(csv_path):
     """ Initiate CSV file with column names """
+    print('Creating {}'.format(csv_path))
     f = open(csv_path, 'w')
-    f.write('Name,Fake name,Status,Contact name,Domain,Train num,Output DIM,Zip size,TFDim,Link,Remarks\n')
+    f.write('Name,Fake name,Status,Contact name,Purpose,Domain,Train num,Output DIM,Zip size,TFDim,Link,Remarks\n')
     f.close()
 
 
@@ -88,7 +114,7 @@ def add_entry_csv(csv_path, dic, status=None):
     f = open(csv_path, 'a')
 
     row = ''
-    infos = ['title', 'name', 'status', 'contact_name', 'domain', 'train_num', 'label_num', 'zip_size', 'TFDim', 'resource_url', 'remarks']
+    infos = ['title', 'name', 'status', 'contact_name', 'purpose', 'domain', 'train_num', 'label_num', 'zip_size', 'TFDim', 'resource_url', 'remarks']
 
     for i, info in enumerate(infos):
         if info in dic:
@@ -108,9 +134,9 @@ def add_entry_csv(csv_path, dic, status=None):
     f.close()
 
 
-def write_information_table(output_file, domains):
+def write_information_table(output_file, domains, folders):
     """ Create information table in CSV format
-        This is the goal of the script
+        This is the main function of the script
     """
     init_csv(output_file)
 
@@ -128,14 +154,21 @@ def write_information_table(output_file, domains):
                     dataset_dir = DIR + '/' + dataset
                     public_info_path, private_info_path = find_info_files(dataset_dir)
 
-                    if (public_info_path is not None) and (private_info_path is not None):
-                        dic = read_info_file(public_info_path, private_info_path)
-                        # Write information
-                        add_entry_csv(output_file, dic, status=folder)
+                    # create info files if needed
+                    if public_info_path is None:
+                        public_info_path = init_info_file(dataset_dir, domain)
+                    if private_info_path is None:
+                        private_info_path = init_info_file(dataset_dir, domain, public=False)
+
+                    # parse information
+                    dic = read_info_file(public_info_path, private_info_path)
+
+                    # Write information
+                    add_entry_csv(output_file, dic, status=folder)
 
 
-write_information_table(output_file, domains)
-write_information_table(tabular_output_file, tabular_domains)
+write_information_table(output_file, domains, folders)
+write_information_table(tabular_output_file, tabular_domains, folders)
 
 
 
