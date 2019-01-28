@@ -8,6 +8,7 @@ import glob
 import os
 import sys
 sys.path.append('../')
+from shutil import copyfile
 from dataset_formatter import UniMediaDatasetFormatter
 
 
@@ -122,8 +123,8 @@ if __name__ == '__main__':
   features_labels_pairs_test =\
     get_features_labels_pairs(merged_df, subset='test')
 
-  row_count = -1
-  col_count = -1
+  row_count = 350 # -1
+  col_count = 350 # -1
   output_dim = len(all_classes)
   sequence_size = 1
   num_examples_train = merged_df[merged_df['subset'] == 'train'].shape[0]
@@ -150,3 +151,12 @@ if __name__ == '__main__':
                                                 classes_list=None)
 
   dataset_formatter.press_a_button_and_give_me_an_AutoDL_dataset()
+
+  # Copy original info file to formatted dataset
+  try:
+      for info_file_type in ['_public', '_private']:
+          info_filepath = os.path.join(input_dir, dataset_name, dataset_name + info_file_type + '.info')
+          new_info_filepath = os.path.join(output_dir, new_dataset_name, new_dataset_name + info_file_type + '.info')
+          copyfile(info_filepath, new_info_filepath)
+  except Exception as e:
+      print('Unable to copy info files')
