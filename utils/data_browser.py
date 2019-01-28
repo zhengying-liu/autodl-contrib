@@ -6,11 +6,12 @@ Usage:
   `python data_browser.py -input_dir=../formatted_datasets/ -dataset_name=itwas`
 """
 
-import tensorflow as tf
 import os
 import sys
+
+import tensorflow as tf
 import numpy as np
-import cv2 # Run `pip install opencv-python` to install
+# import cv2 # Run `pip install opencv-python` to install
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
@@ -59,16 +60,16 @@ class DataBrowser(object):
     assert len(data_files) == 1
     dataset_name = data_files[0][:-5]
     solution_files = [x for x in files if x.endswith('.solution')]
-    # with_solution = None # With or without solution (i.e. training or test)
+    with_solution = None # With or without solution (i.e. training or test)
     if len(solution_files) == 1:
-    #   solution_dataset_name = solution_files[0][:-9]
-    #   if solution_dataset_name == dataset_name:
-    #     with_solution = True
-    #   else:
-    #     raise ValueError("Wrong dataset name. Should be {} but got {}."\
-    #                      .format(dataset_name, solution_dataset_name))
-    # elif not solution_files:
-    #   with_solution = False
+      solution_dataset_name = solution_files[0][:-9]
+      if solution_dataset_name == dataset_name:
+        with_solution = True
+      else:
+        raise ValueError("Wrong dataset name. Should be {} but got {}."\
+                         .format(dataset_name, solution_dataset_name))
+    elif not solution_files:
+      with_solution = False
     else:
       return ValueError("Multiple solution files found:" +\
                         " {}".format(solution_files))
@@ -77,6 +78,7 @@ class DataBrowser(object):
     d_test = AutoDLDataset(os.path.join(dataset_dir, dataset_name + '.data',
                                         "test"))
     other_info = {}
+    other_info['with_solution'] = with_solution
     label_to_index_map = d_train.get_metadata().get_label_to_index_map()
     if label_to_index_map:
       classes_list = [None] * len(label_to_index_map)
@@ -91,7 +93,7 @@ class DataBrowser(object):
     return d_train, d_test, other_info
 
   def infer_domain(self):
-    """Infer the domain from the shape of 3D tensor."""
+    """Infer the domain from the shape of 3."""
     d_train, _, _ = self.read_data()
     metadata = d_train.get_metadata()
     row_count, col_count = metadata.get_matrix_size(0)
@@ -122,9 +124,11 @@ class DataBrowser(object):
     image = tensor_3d[0]
     screen = plt.imshow(image, cmap='gray')
     def init():  # only required for blitting to give a clean slate.
+      """Initialize the first screen"""
       screen.set_data(np.empty(image.shape))
       return screen,
     def animate(i):
+      """Some kind of hooks for `animation.FuncAnimation` I think."""
       if i < len(tensor_3d):
         image = tensor_3d[i]
         screen.set_data(image)
@@ -138,44 +142,52 @@ class DataBrowser(object):
 
   @classmethod
   def show_image(cls, tensor_3d, label_confidence_pairs=None):
+    """Visualize a image represented by `tensor_3d` in grayscale."""
     image = tensor_3d[0]
-    screen = plt.imshow(image, cmap='gray')
+    plt.imshow(image, cmap='gray')
     plt.title('Labels: ' + str(label_confidence_pairs))
     plt.show()
     return plt
 
   @classmethod
-  def get_nth_element(cls, autodl_dataset, n):
+  def get_nth_element(cls, autodl_dataset, num):
+    """Get n-th element in `autodl_dataset` using iterator."""
     dataset = autodl_dataset.get_dataset()
     iterator = dataset.make_one_shot_iterator()
     next_element = iterator.get_next()
     with tf.Session() as sess:
-      for i in range(n):
+      for _ in range(num):
         tensor_3d, labels = sess.run(next_element)
     return tensor_3d, labels
 
   @property
   def show(self):
+    """Return corresponding show method according to inferred domain."""
     domain = self.domain
     if domain == 'image':
       return DataBrowser.show_image
     elif domain == 'video':
       return DataBrowser.show_video
     else:
-      return NotImplementedError("Show method not implemented for domain: " +\
+      raise NotImplementedError("Show method not implemented for domain: " +\
                                  "{}".format(domain))
 
   def show_an_example(self, max_range=1000):
+    """Visualize an example whose index is randomly chosen in the interval
+    [0, `max_range`).
+    """
     idx = np.random.randint(0, max_range)
     tensor_3d, labels = DataBrowser.get_nth_element(self.d_train, idx)
     if 'classes_list' in self.other_info:
-      cl = self.other_info['classes_list']
-      label_conf_pairs = {cl[idx]: c for idx, c in enumerate(labels) if c != 0}
+      c_l = self.other_info['classes_list']
+      label_conf_pairs = {c_l[idx]: c for idx, c in enumerate(labels) if c != 0}
     else:
       label_conf_pairs = {idx: c for idx, c in enumerate(labels) if c != 0}
     self.show(tensor_3d, label_confidence_pairs=label_conf_pairs)
 
 def main(*argv):
+  """Do you really need a docstring?"""
+  del argv
   input_dir = FLAGS.input_dir
   dataset_name = FLAGS.dataset_name
   print("Start visualizing process for dataset: {}...".format(dataset_name))
