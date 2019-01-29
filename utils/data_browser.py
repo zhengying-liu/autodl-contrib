@@ -133,7 +133,7 @@ class DataBrowser(object):
         image = tensor_3d[i]
         screen.set_data(image)
       return screen,
-    animation.FuncAnimation(
+    _ = animation.FuncAnimation(
         fig, animate, init_func=init, interval=interval,
         blit=True, save_count=50, repeat=False) # interval=40 because 25fps
     plt.title('Labels: ' + str(label_confidence_pairs))
