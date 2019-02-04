@@ -12,6 +12,7 @@ This repo provides instructions and examples to contribute datasets to a reposit
 	- [TFRecord Format](#tfrecord-format)
 - [Carefully Name Your Files](#carefully-name-your-files)
 - [Check the Integrity of a Dataset](#check-the-integrity-of-a-dataset)
+- [Write info files](#write-info-files)
 - [Credits](#credits)
 
 ## Two Words on AutoDL
@@ -167,6 +168,62 @@ Data donors can follow next steps to check the integrity of their datasets to ma
 3. The script will create a YAML file `dataset_info.yaml` in the dataset directory. You can read this file and check if all inferred informations on the dataset are correct as expected;
 
 4. If some info isn't correct, make sure there is no bug in your dataset directory. In some rare cases, you are allowed to modify the file `dataset_info.yaml` manually.
+
+## Write info files
+
+Provide meta-information through `public.info` and `private.info` files. Please follow the structure and syntax of the example below.
+If you don't know what to write in a section you can keep it empty with `''` or `0`. Don't worry; we are always going to check the files after your contribution.
+
+##### Example
+
+
+`digits_public.info` contains meta-information that participants are allowed to access:
+
+```
+usage = 'AutoML challenge 2014'
+name = 'digits'
+domain = 'image'
+task = 'multiclass.classification'
+target_type = 'Categorical'
+feat_type = 'Numerical'
+metric = 'bac_metric'
+time_budget = 300
+feat_num =  1568
+target_num =    10
+label_num =    10
+train_num = 15000
+valid_num = 20000
+test_num = 35000
+has_categorical =     0
+has_missing =     0
+is_sparse =     0
+```
+
+
+`digits_private.info` contains meta-information that participants are NOT allowed to access:
+
+```
+title = 'MNIST handwritten digit dataset'
+name = 'Digits'
+keywords = 'handwriting.recognition,digit.recognition,OCR'
+authors = 'Yann LeCun, Corinna Cortes, and Chris Burges'
+resource_url = 'http://yann.lecun.com/exdb/mnist/'
+contact_name = 'Isabelle Guyon'
+contact_url = 'http://clopinet.com/isabelle/'
+license = 'http://creativecommons.org/about/cc0'
+date_created = '30-Sep-2014'
+past_usage = 'Many methods have been tried on the MNIST database, in its original data split (60,000 training examples, 10,000 test examples, 10 classes). See http://yann.lecun.com/exdb/mnist/. This dataset was used in the NIPS 2003 Feature Selection Challenge under the name GISETTE and in the WCCI 2006 Performance Prediction Challenge and the IJCNN 2007 Agnostic Learning vs. Prior Knowledge Challenge under the name GINA, and in the ICML 2011 Unsupervised and Transfer Learning Challenge under the name ULE.'
+description = 'This is a dataset of handwritten digits. It is a subset of a larger set available from NIST. The digits in pixel representation have been size-normalized and centered in a fixed-size image by the authors. The data are quantized on 256 gray level values.'
+preparation = 'For the purpose of the AutoML challenge, all samples were merged and the data were freshly randomly split in three sets: training, validation, and test. The order of the features (pixels) was also randomize, after adding a few distractor features (probes) that are permuted versions of real features.'
+representation = 'pixels'
+remarks = 'This dataset is very famous!'
+zip_size = 'Unkown'
+real_feat_num =   784
+feat_type = { 'Numerical' 'Categorical' 'Binary' }
+label_names = { 'Two' 'Seven' 'Six' 'Nine' 'Zero' 'Three' 'Five' 'One' 'Four' 'Eight' }
+```
+
+_Note that `name` section represents the fake name of the dataset._
 
 ## Credits
 AutoDL is a project in collaboration with Google, ChaLearn and Inria
