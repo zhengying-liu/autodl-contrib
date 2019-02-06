@@ -1,13 +1,6 @@
 # How to Contribute Datasets to AutoDL Challenge
-This repo provides instructions and examples to contribute datasets to a repository we are building, in conjuction with the preparation of the [AutoDL challenge](http://autodl.chalearn.org).
+We provide instructions and examples to contribute datasets for the [AutoDL challenge](http://autodl.chalearn.org).
 
-## Table of Contents
-- [Quick start](#quick-start)
-- [What is needed?](#what-is-needed)
-- [Formats](#formats)
-	- [File Format](#file-format)
-	- [TFRecord Format](#tfrecord-format)
-- [Credits](#credits)
 
 ## Quick start
 
