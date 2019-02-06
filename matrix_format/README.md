@@ -1,5 +1,14 @@
 # Matrix Format (AutoML Format)
 
+In the matrix format, each example is represented as a *feature vector*. If you are familiar with `scikit-learn`, you should be familiar with this matrix representation of datasets (e.g. `X`, `y`). So if you want to contribute data in this format, the minimum kit would be **two text files**: `dataset.data` and `dataset.solution`, containing respectively a matrix (`X`) with feature vectors and a matrix (`Y`) with labels, examples in lines and features in columns.
+
+This follows the standard [AutoML format](https://github.com/codalab/chalab/wiki/Help:-Wizard-%E2%80%90-Challenge-%E2%80%90-Data) used in prior AutoML challenges, from [2015](https://competitions.codalab.org/competitions/2321) to [2018](http://prada-research.net/pakdd18/index.php/call-for-competition/). The format includes metadata that we encourage you to provide.
+
+More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format/iris-AutoML) in matrix format can be found in the sub-directory [`matrix_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format).
+
+**Isabelle: I think this is confusing and error prone to have both AutoML and CSV formats. We should stick to the AutoML format. It is more general. There is also a sparse matrix version. We also need more metadata. This should NOT be optional**
+
+
 We accept dataset contributions under **matrix format**. More specifically, we accept the standard **AutoML format** used in prior AutoML challenges. There exist [detailed guidance](https://github.com/codalab/chalab/wiki/Help:-Wizard-%E2%80%90-Challenge-%E2%80%90-Data) on how to format dataset into AutoML format.
 
 Under matrix format, each example is represented as a *feature vector*, as is the case in many classic machine learning settings. If you want to contribute data in this format, the minimum package would be two CSV files: `examples.csv` and `labels.csv`, containing respectively a matrix with feature vectors and a matrix with labels.
