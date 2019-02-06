@@ -1,14 +1,10 @@
 # How to Contribute Datasets to AutoDL Challenge
-This repo provides instructions and examples to contribute datasets to a repository we are building, in conjuction with the preparation of the AutoDL challenge.
+This repo provides instructions and examples to contribute datasets to a repository we are building, in conjuction with the preparation of the [AutoDL challenge](http://autodl.chalearn.org).
 
 ## Table of Contents
 - [Quick start](#quick-start)
-- [Two Words on AutoDL](#two-words-on-autodl)
-- [Reward for Data Donors](#reward-for-data-donors)
-- [Rights of Data](#rights-of-data)
 - [What is needed?](#what-is-needed)
-- [3 Possible Formats](#3-possible-formats)
-	- [Matrix Format](#matrix-format)
+- [Formats](#formats)
 	- [File Format](#file-format)
 	- [TFRecord Format](#tfrecord-format)
 - [Carefully Name Your Files](#carefully-name-your-files)
@@ -26,49 +22,29 @@ cd autodl-contrib
 python3 dataset_manager.py /file_format/monkeys
 ```
 
-## Two Words on AutoDL
-AutoDL stands for Automatic Deep Learning. The AutoDL challenge (planned for 2019, hopefully) aims to push automatic machine learning (AutoML), i.e. training and testing predictive models on datasets never seen before, **without any human intervention.** This challenge goes further than previous [AutoML challenges](http://automl.chalearn.org/) by proposing datasets that are NOT at all preprocessed in a feature-based representation (tabular data). Rather, images, time series, text, and spatio-temporal time series will be part of the challenge in a unified format presenving the spatio-temporal structure.
-We believe such data lend themselves to a Deep Learning (DL) solutions. However, the participants will be free to use non DL methods.
-
-## Reward for Data Donors
-Creating a large and diverse data repository is a condition of success of our endeavor: without data, the community will not be able to develop good methods. **We cannot do it without your help!!!**
-Contributing datasets to this challenge is a good deed in itself, but to further encourage you:
-1. Selected datasets will be published in our repository (after review) and you will be given credit for your donation.
-2. Data donors will be invited to join a paper on the repository [to be submitted to the JMLR MLOSS track or elsewhere]
-3. Data donors will also be invited to contribute to a paper on analyses of the challenge [to be published in a book in the Springer CiML series or elsewhere]
-4. Data donors will be acknowledged in presentations and publications on the challenge.
-
-## Rights of Data
-Data donors are responsible for properly anonymizing their data and should release it under a standard OpenSource license from the https://opensource.org/licenses. If the donors are not the originators of the data, they should give proper credit to the originators and are responsible for obtaining permission to publish the data. The data will remain available in the repository beyond the challenge termination.
-
 ## What is needed?
-All tasks in this first edition AutoDL will be **multi-label (or multi-class) classification** tasks. All you need is to provide data **samples**, their corresponding **labels**, and some **metadata**, in some simple standard format described below. Data types of interest include (but are not limited to) video, image, text, speech, time series, and even tabular data.
 
-All datasets will ultimately be formatted into a uniform format (TFRecords) amenable to be used with Tensoflow, to facilitate the task of challenge participants. However, to facilitate your work, we accept [3 possible formats](https://github.com/zhengying-liu/autodl-contrib#3-possible-formats). Quite many existing datasets are already in similar such formats, so your work will be simple (hopefully). Please [Contact us](mailto:autodl@chalearn.org) if you would like to supply data in a different format.
+* **multi-label (or multi-class) classification tasks.** 
+* **Video, image, text, speech or time series datasets.**
+* **No size limit** but if your dataset exceed 10 GB, please [Contact us](mailto:autodl@chalearn.org).
 
-For a given dataset, all files should be in the **same directory**. And note that **no train/test split is required**. The organizers will perform a train/test split themselves.
-
-There is in priciple **no size limit** for datasets in this challenge. However, because of practical reasons of data transmission and storage, if your dataset exceed 10 GB, please [Contact us](mailto:autodl@chalearn.org).
 
 ## Where to submit
 
 [Email us](mailto:autodl@chalearn.org) a URL to an on-line storage place (e.g. dropbox or Google drive) when we can pull your data from.
 
-## Three Possible Formats
-We accept dataset contributions in 3 possible formats:
-- Matrix format
-- File format
-- TFRecord format
 
+## Formats
 
-### File Format
-Under file format, each example is an independent file (this is usually the case for large examples such as videos) and all labels are contained in another file.
+* Each example is an independent file.
+* Labels are contained in a separate CSV file.
+* Meta-data in `private.info`.
 
-More details and [2 example datasets](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format/monkeys) in file format can be found in the sub-directory [`file_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format).
+Examples are provided in [file_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format) folder.
 
-**Isabelle: the info file with metadata is still needed **
 
 ### TFRecord Format
+
 TFRecord format is the final format we'll actually use in this AutoDL challenge (so when you provide your data under matrix format or file format, thereafter we'll do the conversion job to have a dataset in TFRecord format). Data from all domains will be uniformly formatted to TFRecords following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L92) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)).
 
 More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format/mini-mnist) in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
