@@ -41,7 +41,7 @@ There is in priciple **no size limit** for datasets in this challenge. However, 
 
 ## Where to submit
 
-**Isabelle: we should see whether we can create a Codalab competition in which the entries are submitted datasets. Otherwise, we can go through "My Datasets", but we need to ask eric for a new feature: share dataset with someone else**
+[Email us](mailto:autodl@chalearn.org) a URL to an on-line storage place (e.g. dropbox or Google drive) when we can pull your data from.
 
 ## Three Possible Formats
 We accept dataset contributions in 3 possible formats:
