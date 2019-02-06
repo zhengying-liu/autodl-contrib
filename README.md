@@ -27,8 +27,8 @@ python3 check_n_format.py /file_format/monkeys
 ## Formats
 
 * Each example is an independent file.
-* Labels are contained in a separate CSV file.
-* Meta-data in `private.info`.
+* Labels are contained in a separate `labels.csv` file.
+* Meta-data in `metadata.yaml`.
 
 Examples are provided in [file_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format) folder.
 
@@ -37,7 +37,7 @@ Examples are provided in [file_format](https://github.com/zhengying-liu/autodl-c
 
 This script does the following:
 
-* Read the meta-data in `private.info`.
+* Read the meta-data in `metadata.yaml`.
 * Compute simple statistics about the data (file number, etc.) and check consistency with the CSV file containing the labels.
 * Train/test split data.
 * Format the data to TFRecord format.
