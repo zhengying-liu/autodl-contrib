@@ -2,6 +2,7 @@
 This repo provides instructions and examples to contribute datasets to a repository we are building, in conjuction with the preparation of the AutoDL challenge.
 
 ## Table of Contents
+- [Quick start](#quick-start)
 - [Two Words on AutoDL](#two-words-on-autodl)
 - [Reward for Data Donors](#reward-for-data-donors)
 - [Rights of Data](#rights-of-data)
@@ -14,6 +15,16 @@ This repo provides instructions and examples to contribute datasets to a reposit
 - [Check the Integrity of a Dataset](#check-the-integrity-of-a-dataset)
 - [Write info files](#write-info-files)
 - [Credits](#credits)
+
+## Quick start
+
+To run the example type the following commands:
+
+```
+git clone http://github.com/zhengying-liu/autodl-contrib
+cd autodl-contrib
+python3 dataset_manager.py /file_format/monkeys
+```
 
 ## Two Words on AutoDL
 AutoDL stands for Automatic Deep Learning. The AutoDL challenge (planned for 2019, hopefully) aims to push automatic machine learning (AutoML), i.e. training and testing predictive models on datasets never seen before, **without any human intervention.** This challenge goes further than previous [AutoML challenges](http://automl.chalearn.org/) by proposing datasets that are NOT at all preprocessed in a feature-based representation (tabular data). Rather, images, time series, text, and spatio-temporal time series will be part of the challenge in a unified format presenving the spatio-temporal structure.
@@ -49,33 +60,6 @@ We accept dataset contributions in 3 possible formats:
 - File format
 - TFRecord format
 
-### Matrix Format
-In the matrix format, each example is represented as a *feature vector*. If you are familiar with `scikit-learn`, you should be familiar with this matrix representation of datasets (e.g. `X`, `y`). So if you want to contribute data in this format, the minimum kit would be **two text files**: `dataset.data` and `dataset.solution`, containing respectively a matrix (`X`) with feature vectors and a matrix (`Y`) with labels, examples in lines and features in columns.
-
-This follows the standard [AutoML format](https://github.com/codalab/chalab/wiki/Help:-Wizard-%E2%80%90-Challenge-%E2%80%90-Data) used in prior AutoML challenges, from [2015](https://competitions.codalab.org/competitions/2321) to [2018](http://prada-research.net/pakdd18/index.php/call-for-competition/). The format includes metadata that we encourage you to provide.
-
-More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format/iris-AutoML) in matrix format can be found in the sub-directory [`matrix_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format).
-
-**Isabelle: I think this is confusing and error prone to have both AutoML and CSV formats. We should stick to the AutoML format. It is more general. There is also a sparse matrix version. We also need more metadata. This should NOT be optional**
-
-* title = 'Original data title/name.'
-* keywords = Any relevant keyword, for example: 'text.classification,document.processing'
-* authors = 'List of original data providers.'
-* resource_url = 'URL of where the data came from'
-* contact_name = 'Name of the person who formatted the data'
-* contact_url = 'URL of the contact person (to avoid listing the email)'
-* license = 'URL of a license, e.g. nay open data license such as http://creativecommons.org/about/cc0'
-* date_created = 'Date of data release'
-* past_usage = 'Whether the data were used in other challenges or benchmarks or in published papers.'
-* description = 'Detailed data description.'
-* preparation = 'How the data were prepared, preprocessed. Methods for anonymizing, subsampling, etc.'
-* representation = 'What the features represent (e.g. word frequencies in a document, pixels, etc.'
-* feat_type = { 'Numerical' 'Categorical' 'Binary' } # do not change that
-* label_names = { 'label1' 'label2' etc. 'labeln' } # Column header of the solution files indicating the names of the labels in multi-label or multi-class tasks.
-
-**I suggest you change iris.m in [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format/iris-AutoML) by an example dataset.info file having this required metadata information.
-
-**
 
 ### File Format
 Under file format, each example is an independent file (this is usually the case for large examples such as videos) and all labels are contained in another file.
