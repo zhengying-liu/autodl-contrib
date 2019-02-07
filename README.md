@@ -18,7 +18,9 @@ python3 check_n_format.py /file_format/monkeys
 
 * **multi-label (or multi-class) classification tasks.**
 * **Video, image, text, speech or time series datasets.**
-* **No size limit** but if your dataset exceed 10 GB, please [Contact us](mailto:autodl@chalearn.org).
+* **No size limit** 
+
+If your dataset exceed 10 GB or if you have a regression task please [Contact us](mailto:autodl@chalearn.org).
 
 
 ## Where to submit
@@ -30,7 +32,7 @@ python3 check_n_format.py /file_format/monkeys
 
 * Each example is an independent file.
 * Labels are contained in a separate `labels.csv` file.
-* Meta-data in `metadata.yaml`.
+* Meta-data in `private.info`.
 
 Examples are provided in [file_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format) folder.
 
@@ -39,7 +41,7 @@ Examples are provided in [file_format](https://github.com/zhengying-liu/autodl-c
 
 This script does the following:
 
-* Read the meta-data in `metadata.yaml`.
+* Read the meta-data in `private.info`.
 * Compute simple statistics about the data (file number, etc.) and check consistency with the CSV file containing the labels.
 * Train/test split data.
 * Format the data to TFRecord format.
@@ -53,6 +55,6 @@ More details and [an example dataset](https://github.com/zhengying-liu/autodl-co
 
 
 ## Credits
-AutoDL is a project in collaboration with Google, ChaLearn and Inria
+AutoDL is a project in collaboration with Google, ChaLearn and Inria.
 
-Please contact us via email: autodl@chalearn.org.
+Please contact us via [email](mailto:autodl@chalearn.org).
