@@ -17,7 +17,8 @@ import matplotlib.animation as animation
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
-STARTING_KIT_DIR = '../../autodl/codalab_competition_bundle/AutoDL_starting_kit'
+#STARTING_KIT_DIR = '../../../autodl/codalab_competition_bundle/AutoDL_starting_kit'
+STARTING_KIT_DIR = '.'
 INGESTION_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program')
 SCORING_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_scoring_program')
 CODE_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_sample_code_submission')
@@ -25,10 +26,8 @@ for d in [INGESTION_DIR, SCORING_DIR, CODE_DIR]:
   sys.path.append(d)
 from dataset import AutoDLDataset # pylint: disable=wrong-import-position, import-error
 
-tf.flags.DEFINE_string('input_dir', '../formatted_datasets/',
-                       "Directory containing datasets.")
-
-tf.flags.DEFINE_string('dataset_name', 'itwas', "Basename of dataset.")
+tf.flags.DEFINE_string('input_dir', '../formatted_datasets/itwas',
+                       "Path to dataset.")
 
 FLAGS = tf.flags.FLAGS
 
@@ -185,21 +184,25 @@ class DataBrowser(object):
       label_conf_pairs = {idx: c for idx, c in enumerate(labels) if c != 0}
     self.show(tensor_3d, label_confidence_pairs=label_conf_pairs)
 
+
+def show_examples(input_dir):
+      print("Start visualizing process for dataset: {}...".format(input_dir))
+      data_browser = DataBrowser(input_dir)
+      num_examples_to_visualize = input("Please enter the number of examples " +
+                                        "that you want to visualize: ")
+      num_examples_to_visualize = min(10, int(num_examples_to_visualize))
+      for i in range(num_examples_to_visualize):
+        print("Visualizing example {}.".format(i+1) +
+              " Close the corresponding window to continue...")
+        data_browser.show_an_example()
+
+
 def main(*argv):
   """Do you really need a docstring?"""
   del argv
   input_dir = FLAGS.input_dir
-  dataset_name = FLAGS.dataset_name
-  print("Start visualizing process for dataset: {}...".format(dataset_name))
-  dataset_dir = os.path.join(input_dir, dataset_name)
-  data_browser = DataBrowser(dataset_dir)
-  num_examples_to_visualize = input("Please enter the number of examples " +
-                                    "that you want to visualize: ")
-  num_examples_to_visualize = min(10, int(num_examples_to_visualize))
-  for i in range(num_examples_to_visualize):
-    print("Visualizing example {}.".format(i+1) +
-          " Close the corresponding window to continue...")
-    data_browser.show_an_example()
+  show_examples(input_dir)
+
 
 if __name__ == '__main__':
   main()

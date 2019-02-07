@@ -9,12 +9,14 @@ To run the example type the following commands:
 ```
 git clone http://github.com/zhengying-liu/autodl-contrib
 cd autodl-contrib
+git clone http://github.com/zhengying-liu/autodl_starting_kit_stable
+sudo pip install -r requirements.txt
 python3 check_n_format.py /file_format/monkeys
 ```
 
 ## What is needed?
 
-* **multi-label (or multi-class) classification tasks.** 
+* **multi-label (or multi-class) classification tasks.**
 * **Video, image, text, speech or time series datasets.**
 * **No size limit** but if your dataset exceed 10 GB, please [Contact us](mailto:autodl@chalearn.org).
 
@@ -44,7 +46,7 @@ This script does the following:
 * Run baseline.
 * Ask the user to check a few samples manually.
 
- 
+
 TFRecord format is the final format of the AutoDL challenge, following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L92) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)).
 
 More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format/mini-mnist) in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).

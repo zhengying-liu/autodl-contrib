@@ -12,10 +12,8 @@ from shutil import copyfile
 from dataset_formatter import UniMediaDatasetFormatter
 
 
-tf.flags.DEFINE_string('input_dir', '../../raw_datasets/image/',
+tf.flags.DEFINE_string('input_dir', '../../file_format/monkeys',
                        "Directory containing image datasets.")
-
-tf.flags.DEFINE_string('dataset_name', 'Caltech256', "Basename of dataset.")
 
 tf.flags.DEFINE_string('output_dir', '../../formatted_datasets/',
                        "Output data directory.")
@@ -50,37 +48,50 @@ def get_merged_df(labels_df, train_size=0.8):
   merged_df['subset'] = merged_df.apply(lambda x: get_subset(np.random.rand()), axis=1)
   return merged_df
 
-def get_features(filename):
+def get_features(dataset_dir, filename):
   filepath = os.path.join(dataset_dir, filename)
   with open(filepath, 'rb') as f:
     image_bytes = f.read()
   features = [[image_bytes]]
   return features
 
-def get_labels(label_confidence_pairs):
+def get_labels(labels, confidence_pairs=False):
   """Parse label confidence pairs into two lists of labels and confidence.
 
   Args:
-    label_confidence_pairs: string, of form `2 0.0001 9 0.48776 0 1.0`."
+    labels: string, of form `2 0.0001 9 0.48776 0 1.0`." or "2 9 0"
+    confidence_pairs: True if labels are confidence pairs.
   """
-  li_string = label_confidence_pairs.split(' ')
-  if len(li_string) % 2 != 0:
-    raise ValueError("In the column LabelConfidencePairs, " +\
-                     "one can only have pairs of (integer, confidence) " +\
-                     "but an odd number of entries " +\
-                     "were found: {}!".format(label_confidence_pairs))
-  labels = [int(x) for i, x in enumerate(li_string) if i%2 == 0]
-  confidences = [float(x) for i, x in enumerate(li_string) if i%2 == 1]
+  if isinstance(labels, str):
+      l_split = labels.split(' ')
+  else:
+      l_split = [labels]
+
+  if confidence_pairs:
+      labels = [int(x) for i, x in enumerate(l_split) if i%2 == 0]
+      confidences = [float(x) for i, x in enumerate(l_split) if i%2 == 1]
+  else:
+      labels = [int(x) for x in l_split]
+      confidences = [1 for _ in l_split]
+
   return labels, confidences
 
-def get_features_labels_pairs(merged_df, subset='train'):
+def get_features_labels_pairs(merged_df, dataset_dir, subset='train'):
   def func(x):
     index, row = x
     filename = row['FileName']
-    label_confidence_pairs = row['LabelConfidencePairs']
-    features = get_features(filename)
-    labels = get_labels(label_confidence_pairs)
+    if 'LabelConfidencePairs' in row:
+        labels = row['LabelConfidencePairs']
+        confidence_pairs = True
+    elif 'Labels' in row:
+        labels = row['Labels']
+        confidence_pairs = False
+    else:
+        raise Exception('No labels found, please check labels.csv file.')
+    features = get_features(dataset_dir, filename)
+    labels = get_labels(labels, confidence_pairs=confidence_pairs)
     return features, labels
+
   g = merged_df[merged_df['subset'] == subset].iterrows
   features_labels_pairs = lambda:map(func, g())
   return features_labels_pairs
@@ -92,22 +103,39 @@ def show_image_from_bytes(image_bytes):
   plt.imshow(x)
 
 def get_all_classes(merged_df):
-  label_confidence_pairs = merged_df['LabelConfidencePairs']
-  labels_sets = label_confidence_pairs.apply(lambda x: set(get_labels(x)[0]))
+  if 'LabelConfidencePairs' in list(merged_df):
+      label_confidence_pairs = merged_df['LabelConfidencePairs']
+      confidence_pairs = True
+  elif 'Labels' in list(merged_df):
+      label_confidence_pairs = merged_df['Labels']
+      confidence_pairs = False
+
+  else:
+      raise Exception('No labels found, please check labels.csv file.')
+  labels_sets = label_confidence_pairs.apply(lambda x: set(get_labels(x, confidence_pairs=confidence_pairs)[0]))
   all_classes = set()
   for labels_set in labels_sets:
     all_classes = all_classes.union(labels_set)
   return all_classes
 
-if __name__ == '__main__':
-  input_dir = FLAGS.input_dir
-  dataset_name = FLAGS.dataset_name
-  output_dir = FLAGS.output_dir
 
-  dataset_dir = os.path.join(input_dir, dataset_name)
-  print(dataset_dir)
-  print(os.listdir(dataset_dir)[:10]) # TODO
-  labels_df = get_labels_df(dataset_dir)
+def im_size(input_dir, filenames):
+    """ Find images width and length
+        -1 means not fixed size
+    """
+    for filename in filenames:
+        pass
+    row_count = 350 #-1
+    col_count = 350 #-1
+    return row_count, col_count
+
+
+def format_data(input_dir, output_dir, new_dataset_name):
+  print(input_dir)
+  input_dir = os.path.normpath(input_dir)
+  dataset_name = os.path.basename(input_dir)
+  print(os.listdir(input_dir)[:10]) # TODO
+  labels_df = get_labels_df(input_dir)
   merged_df = get_merged_df(labels_df)
 
   all_classes = get_all_classes(merged_df)
@@ -115,20 +143,18 @@ if __name__ == '__main__':
   # TODO (@zhengying-liu @Adrien): add info on real label names
   # classes_list = [str(i) for i in range(output_dim)]
 
-  # new_dataset_name = 'image' + str(hash(dataset_name) % 10000)
-  new_dataset_name = FLAGS.new_dataset_name
-
   features_labels_pairs_train =\
-    get_features_labels_pairs(merged_df, subset='train')
+    get_features_labels_pairs(merged_df, input_dir, subset='train')
   features_labels_pairs_test =\
-    get_features_labels_pairs(merged_df, subset='test')
+    get_features_labels_pairs(merged_df, input_dir, subset='test')
 
-  row_count = 350 # -1
-  col_count = 350 # -1
   output_dim = len(all_classes)
   sequence_size = 1
   num_examples_train = merged_df[merged_df['subset'] == 'train'].shape[0]
   num_examples_test = merged_df[merged_df['subset'] == 'test'].shape[0]
+
+  filenames = labels_df['FileName']
+  row_count, col_count = im_size(input_dir, filenames)
 
   dataset_formatter =  UniMediaDatasetFormatter(dataset_name,
                                                 output_dir,
@@ -160,3 +186,11 @@ if __name__ == '__main__':
           copyfile(info_filepath, new_info_filepath)
   except Exception as e:
       print('Unable to copy info files')
+
+
+if __name__ == '__main__':
+  input_dir = FLAGS.input_dir
+  output_dir = FLAGS.output_dir
+  new_dataset_name = FLAGS.new_dataset_name
+
+  format_data(input_dir, output_dir, new_dataset_name)
