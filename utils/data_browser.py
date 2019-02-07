@@ -3,7 +3,7 @@
 """Visualize examples and labels for given AutoDL dataset.
 
 Usage:
-  `python data_browser.py -input_dir=../formatted_datasets/ -dataset_name=itwas`
+  `python data_browser.py -input_dir=../formatted_datasets/itwas`
 """
 
 import os
@@ -17,8 +17,8 @@ import matplotlib.animation as animation
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
-#STARTING_KIT_DIR = '../../../autodl/codalab_competition_bundle/AutoDL_starting_kit'
-STARTING_KIT_DIR = '.'
+STARTING_KIT_DIR = '../autodl/codalab_competition_bundle/AutoDL_starting_kit'
+#STARTING_KIT_DIR = ''
 INGESTION_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program')
 SCORING_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_scoring_program')
 CODE_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_sample_code_submission')

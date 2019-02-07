@@ -123,10 +123,11 @@ def im_size(input_dir, filenames):
     """ Find images width and length
         -1 means not fixed size
     """
+    # TODO: detect image sizes
     for filename in filenames:
         pass
-    row_count = 350 #-1
-    col_count = 350 #-1
+    row_count = -1
+    col_count = -1
     return row_count, col_count
 
 

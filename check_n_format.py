@@ -1,6 +1,8 @@
 # Authors: Isabelle Guyon, Adrien Pavao and Zhengying Liu
 # Date: Feb 6 2019
 
+# Usage: `python3 check_n_format path/to/dataset`
+
 from sys import argv, path
 import glob
 import os
@@ -9,7 +11,8 @@ import tensorflow as tf
 path.append('utils')
 path.append('utils/image')
 path.append('autodl_starting_kit_stable')
-path.append('autodl_starting_kit_stable/AutoDL_ingestion_program')
+# IMPORTANT: UPDATE AUTODL_STARTING_KIT_STABLE TO HAVE THE NEW VERSION OF STARTING KIT (currently in AutoDL repo)
+path.append('../autodl/codalab_competition_bundle/autodl_starting_kit_stable/AutoDL_ingestion_program')
 import dataset_manager
 import pandas as pd
 import format_image
@@ -65,7 +68,8 @@ def find_file(input_dir, name):
 def format_data(input_dir, output_dir, fake_name, effective_sample_num):
     print('Formatting... {} samples'.format(effective_sample_num))
     # TODO: use effective_sample_num
-    format_image.format_data(input_dir, output_dir, fake_name)
+    if effective_sample_num != 0:
+        format_image.format_data(input_dir, output_dir, fake_name)
 
 
 def run_baseline(data_dir, code_dir):
