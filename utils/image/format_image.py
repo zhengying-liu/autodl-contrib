@@ -11,19 +11,9 @@ sys.path.append('../')
 from shutil import copyfile
 from dataset_formatter import UniMediaDatasetFormatter
 
-
-tf.flags.DEFINE_string('input_dir', '../../file_format/monkeys',
-                       "Directory containing image datasets.")
-
-tf.flags.DEFINE_string('output_dir', '../../formatted_datasets/',
-                       "Output data directory.")
-
-tf.flags.DEFINE_string('new_dataset_name', 'new_dataset',
-                       "Basename of formatted dataset.")
-
-FLAGS = tf.flags.FLAGS
-
 def get_labels_df(dataset_dir):
+  """ Read labels.csv and return DataFrame
+  """
   if not os.path.isdir(dataset_dir):
     raise IOError("{} is not a directory!".format(dataset_dir))
   labels_csv_files = [file for file in glob.glob(os.path.join(dataset_dir, '*labels*.csv'))]
@@ -49,6 +39,8 @@ def get_merged_df(labels_df, train_size=0.8):
   return merged_df
 
 def get_features(dataset_dir, filename):
+  """ Read a file
+  """
   filepath = os.path.join(dataset_dir, filename)
   with open(filepath, 'rb') as f:
     image_bytes = f.read()
@@ -88,8 +80,8 @@ def get_features_labels_pairs(merged_df, dataset_dir, subset='train'):
         confidence_pairs = False
     else:
         raise Exception('No labels found, please check labels.csv file.')
-    features = get_features(dataset_dir, filename)
-    labels = get_labels(labels, confidence_pairs=confidence_pairs)
+    features = get_features(dataset_dir, filename) # read file
+    labels = get_labels(labels, confidence_pairs=confidence_pairs) # read labels
     return features, labels
 
   g = merged_df[merged_df['subset'] == subset].iterrows
@@ -131,13 +123,16 @@ def im_size(input_dir, filenames):
     return row_count, col_count
 
 
-def format_data(input_dir, output_dir, new_dataset_name):
+def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8, max_num_examples=None):
   print(input_dir)
   input_dir = os.path.normpath(input_dir)
   dataset_name = os.path.basename(input_dir)
   print(os.listdir(input_dir)[:10]) # TODO
   labels_df = get_labels_df(input_dir)
-  merged_df = get_merged_df(labels_df)
+  merged_df = get_merged_df(labels_df, train_size=train_size)
+
+  if max_num_examples:
+    merged_df = merged_df.sample(n=max_num_examples)
 
   all_classes = get_all_classes(merged_df)
 
@@ -190,6 +185,16 @@ def format_data(input_dir, output_dir, new_dataset_name):
 
 
 if __name__ == '__main__':
+  tf.flags.DEFINE_string('input_dir', '../../file_format/monkeys',
+                         "Directory containing image datasets.")
+
+  tf.flags.DEFINE_string('output_dir', '../../formatted_datasets/',
+                         "Output data directory.")
+
+  tf.flags.DEFINE_string('new_dataset_name', 'new_dataset',
+                         "Basename of formatted dataset.")
+
+  FLAGS = tf.flags.FLAGS
   input_dir = FLAGS.input_dir
   output_dir = FLAGS.output_dir
   new_dataset_name = FLAGS.new_dataset_name

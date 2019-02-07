@@ -4,37 +4,30 @@
 # Usage: `python3 check_n_format path/to/dataset`
 
 from sys import argv, path
-import glob
-import os
-import yaml
+import glob, os, yaml
 import tensorflow as tf
 path.append('utils')
 path.append('utils/image')
-path.append('autodl_starting_kit_stable')
-# IMPORTANT: UPDATE AUTODL_STARTING_KIT_STABLE TO HAVE THE NEW VERSION OF STARTING KIT (currently in AutoDL repo)
-path.append('../autodl/codalab_competition_bundle/autodl_starting_kit_stable/AutoDL_ingestion_program')
+path.append('autodl/codalab_competition_bundle/AutoDL_starting_kit')
+path.append('autodl/codalab_competition_bundle/autodl_starting_kit/AutoDL_ingestion_program')
 import dataset_manager
 import pandas as pd
 import format_image
 import run_local_test
-
-# Delete flags to avoid conflicts between scripts
-FLAGS = tf.flags.FLAGS
-flags_dict = FLAGS._flags()
-keys_list = [keys for keys in flags_dict]
-for keys in keys_list:
-    FLAGS.__delattr__(keys)
-
 import data_browser
 
 
 def read_metadata(input_dir):
+    """ Read private.info with pyyaml
+    """
     #filename = os.path.join(input_dir, 'private.info')
     filename = find_file(input_dir, 'private.info')
     return yaml.load(open(filename, 'r'))
 
 
 def compute_stats(labels_df, label_name=None):
+    """ Compute simple statistics (sample num, label num)
+    """
     res = {}
     res['sample_num'] = labels_df.shape[0]
     if 'Labels' in list(labels_df):
@@ -65,21 +58,30 @@ def find_file(input_dir, name):
     return filename[0]
 
 
-def format_data(input_dir, output_dir, fake_name, effective_sample_num):
-    print('Formatting... {} samples'.format(effective_sample_num))
+# This are the 3 main functions: format, baseline and check
+
+def format_data(input_dir, output_dir, fake_name, effective_sample_num, train_size=0.8):
+    """ Transform data into TFRecords
+    """
+    print('format_data: Formatting... {} samples'.format(effective_sample_num))
     # TODO: use effective_sample_num
+    # TODO: detect image sizes
     if effective_sample_num != 0:
-        format_image.format_data(input_dir, output_dir, fake_name)
+        format_image.format_data(input_dir, output_dir, fake_name, train_size=train_size, max_num_examples=effective_sample_num)
+    print('format_data: done.')
 
 
 def run_baseline(data_dir, code_dir):
-    print('Running baseline...')
+    print('run_baseline: Running baseline...')
     run_local_test.run_baseline(data_dir, code_dir)
+    print('run_baseline: done.')
 
 
 def manual_check(data_dir):
-    print('Checking manually...')
+    print('manual_check: Checking manually...')
     data_browser.show_examples(data_dir)
+    print('manual_check: done.')
+    # TODO: ask for check
 
 
 def is_formatted(output_dir):
@@ -91,12 +93,13 @@ if __name__=="__main__":
     if len(argv)==2:
         input_dir = argv[1]
         input_dir = os.path.normpath(input_dir)
-        output_dir = os.path.join(input_dir + '_formatted')
+        output_dir = input_dir + '_formatted'
     else:
         print('Please enter a dataset directory')
         exit()
 
-    if not os.path.exists(output_dir):
+    if not is_formatted(output_dir):
+        print('No formatted version found, creating {} folder.'.format(output_dir))
         os.mkdir(output_dir)
 
     # Read the meta-data in private.info.
@@ -129,13 +132,14 @@ if __name__=="__main__":
         if not input('Overwrite existing formatted data? [Y/n] ') in ['n', 'N']:
             # Overwrite
             if not input('Quick check? [Y/n] ') in ['n', 'N']:
+                # TODO: change output_dir when quick checking to avoid formatted data loss
                 # quick check
                 print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
-                effective_sample_num = min(effective_sample_num, 10)
+                effective_sample_num = min(effective_sample_num, 20)
 
             elif input('Re-format all {} files? [Y/n] '.format(effective_sample_num)) in ['n', 'N']:
                 # quick check
-                effective_sample_num = min(effective_sample_num, 10)
+                effective_sample_num = min(effectivesample_num, 20)
 
         else:
             effective_sample_num = 0
@@ -157,3 +161,6 @@ if __name__=="__main__":
     # manual check
     if do_manual_check:
         manual_check(formatted_dataset_path)
+
+
+    # TODO: note: ask Zhengying how the train/test split is done

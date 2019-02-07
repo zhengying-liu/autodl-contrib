@@ -17,7 +17,7 @@ import matplotlib.animation as animation
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
-STARTING_KIT_DIR = '../autodl/codalab_competition_bundle/AutoDL_starting_kit'
+STARTING_KIT_DIR = 'autodl/codalab_competition_bundle/AutoDL_starting_kit'
 #STARTING_KIT_DIR = ''
 INGESTION_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program')
 SCORING_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_scoring_program')
@@ -25,11 +25,6 @@ CODE_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_sample_code_submission')
 for d in [INGESTION_DIR, SCORING_DIR, CODE_DIR]:
   sys.path.append(d)
 from dataset import AutoDLDataset # pylint: disable=wrong-import-position, import-error
-
-tf.flags.DEFINE_string('input_dir', '../formatted_datasets/itwas',
-                       "Path to dataset.")
-
-FLAGS = tf.flags.FLAGS
 
 
 class DataBrowser(object):
@@ -185,11 +180,10 @@ class DataBrowser(object):
     self.show(tensor_3d, label_confidence_pairs=label_conf_pairs)
 
 
-def show_examples(input_dir):
+def show_examples(input_dir, num_examples=5):
       print("Start visualizing process for dataset: {}...".format(input_dir))
       data_browser = DataBrowser(input_dir)
-      num_examples_to_visualize = input("Please enter the number of examples " +
-                                        "that you want to visualize: ")
+      num_examples_to_visualize = num_examples
       num_examples_to_visualize = min(10, int(num_examples_to_visualize))
       for i in range(num_examples_to_visualize):
         print("Visualizing example {}.".format(i+1) +
@@ -199,10 +193,15 @@ def show_examples(input_dir):
 
 def main(*argv):
   """Do you really need a docstring?"""
+  tf.flags.DEFINE_string('input_dir', '../formatted_datasets/itwas',
+                         "Path to dataset.")
+
+  FLAGS = tf.flags.FLAGS
   del argv
   input_dir = FLAGS.input_dir
   show_examples(input_dir)
 
 
 if __name__ == '__main__':
+  print('Salut salut')
   main()

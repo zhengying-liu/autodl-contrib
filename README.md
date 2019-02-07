@@ -9,7 +9,7 @@ To run the example type the following commands:
 ```
 git clone http://github.com/zhengying-liu/autodl-contrib
 cd autodl-contrib
-git clone http://github.com/zhengying-liu/autodl_starting_kit_stable
+git clone http://github.com/zhengying-liu/autodl
 sudo pip install -r requirements.txt
 python3 check_n_format.py /file_format/monkeys
 ```
@@ -18,7 +18,7 @@ python3 check_n_format.py /file_format/monkeys
 
 * **multi-label (or multi-class) classification tasks.**
 * **Video, image, text, speech or time series datasets.**
-* **No size limit** 
+* **No size limit**
 
 If your dataset exceed 10 GB or if you have a regression task please [Contact us](mailto:autodl@chalearn.org).
 
