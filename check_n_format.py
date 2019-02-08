@@ -8,8 +8,9 @@ import glob, os, yaml
 import tensorflow as tf
 path.append('utils')
 path.append('utils/image')
-path.append('autodl/codalab_competition_bundle/AutoDL_starting_kit')
-path.append('autodl/codalab_competition_bundle/autodl_starting_kit/AutoDL_ingestion_program')
+STARTING_KIT_DIR = 'autodl/codalab_competition_bundle/AutoDL_starting_kit'
+path.append(STARTING_KIT_DIR)
+path.append(os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program'))
 import dataset_manager
 import pandas as pd
 import format_image
@@ -139,7 +140,7 @@ if __name__=="__main__":
 
             elif input('Re-format all {} files? [Y/n] '.format(effective_sample_num)) in ['n', 'N']:
                 # quick check
-                effective_sample_num = min(effectivesample_num, 20)
+                effective_sample_num = min(effective_sample_num, 20)
 
         else:
             effective_sample_num = 0
@@ -154,7 +155,7 @@ if __name__=="__main__":
 
     # run baseline
     if do_run_baseline:
-        code_dir = './autodl_starting_kit_stable/AutoDL_sample_code_submission'
+        code_dir = os.path.join(STARTING_KIT_DIR, 'AutoDL_sample_code_submission')
         run_baseline(formatted_dataset_path, code_dir)
         # TODO: save results in log file
 
