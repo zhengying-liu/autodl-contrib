@@ -1,5 +1,5 @@
-# How to Contribute Datasets to AutoDL Challenge
-We provide instructions and examples to contribute datasets for the [AutoDL challenge](http://autodl.chalearn.org).
+# How to Format your own Datasets for the AutoCV and AutoDL Challenges
+We provide instructions and examples to contribute datasets for the AutoCV and [AutoDL](http://autodl.chalearn.org) challenges.
 
 
 ## Quick start
