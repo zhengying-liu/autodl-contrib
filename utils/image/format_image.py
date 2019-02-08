@@ -10,6 +10,7 @@ import sys
 sys.path.append('../')
 from shutil import copyfile
 from dataset_formatter import UniMediaDatasetFormatter
+from PIL import Image
 
 def get_labels_df(dataset_dir):
   """ Read labels.csv and return DataFrame
@@ -116,10 +117,15 @@ def im_size(input_dir, filenames):
         -1 means not fixed size
     """
     # TODO: detect image sizes
+    s = set()
     for filename in filenames:
-        pass
-    row_count = -1
-    col_count = -1
+        im = Image.open(os.path.join(input_dir, filename))
+        s.add(im.size)
+    if len(s) == 1:
+        row_count, col_count = next(iter(s))
+    else:
+        row_count, col_count = -1, -1
+    print('Images size: {} x {}'.format(row_count, col_count))
     return row_count, col_count
 
 
