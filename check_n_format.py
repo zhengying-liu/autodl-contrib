@@ -95,7 +95,7 @@ if __name__=="__main__":
         input_dir = os.path.normpath(input_dir)
         output_dir = input_dir + '_formatted'
     else:
-        print('Please enter a dataset directory')
+        print('Please enter a dataset directory. Usage: `python3 check_n_format path/to/dataset`')
         exit()
 
     if not is_formatted(output_dir):

@@ -183,12 +183,12 @@ class DataBrowser(object):
 def show_examples(input_dir, num_examples=5):
       print("Start visualizing process for dataset: {}...".format(input_dir))
       data_browser = DataBrowser(input_dir)
-      num_examples_to_visualize = num_examples
-      num_examples_to_visualize = min(10, int(num_examples_to_visualize))
-      for i in range(num_examples_to_visualize):
+      num_examples = min(10, int(num_examples))
+      for i in range(num_examples):
         print("Visualizing example {}.".format(i+1) +
               " Close the corresponding window to continue...")
-        data_browser.show_an_example()
+        set_size = min(data_browser.d_train.metadata_.size(), 1000)
+        data_browser.show_an_example(max_range=set_size)
 
 
 def main(*argv):
