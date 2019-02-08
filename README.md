@@ -1,4 +1,4 @@
-# How to Format your own Datasets for the AutoCV and AutoDL Challenges
+# Format your own Datasets for the AutoCV and AutoDL Challenges
 We provide instructions and examples to contribute datasets for the AutoCV and [AutoDL](http://autodl.chalearn.org) challenges.
 
 
