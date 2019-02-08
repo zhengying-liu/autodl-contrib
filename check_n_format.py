@@ -65,8 +65,6 @@ def format_data(input_dir, output_dir, fake_name, effective_sample_num, train_si
     """ Transform data into TFRecords
     """
     print('format_data: Formatting... {} samples'.format(effective_sample_num))
-    # TODO: use effective_sample_num
-    # TODO: detect image sizes
     if effective_sample_num != 0:
         format_image.format_data(input_dir, output_dir, fake_name, train_size=train_size, max_num_examples=effective_sample_num)
     print('format_data: done.')
@@ -99,10 +97,6 @@ if __name__=="__main__":
         print('Please enter a dataset directory. Usage: `python3 check_n_format path/to/dataset`')
         exit()
 
-    if not is_formatted(output_dir):
-        print('No formatted version found, creating {} folder.'.format(output_dir))
-        os.mkdir(output_dir)
-
     # Read the meta-data in private.info.
     metadata = read_metadata(input_dir)
     fake_name = metadata['name']
@@ -120,14 +114,8 @@ if __name__=="__main__":
     res = compute_stats(labels_df, label_name=label_name)
     print(res)
 
-    public_info_file = os.path.join(output_dir, 'public.info')
-    write_info(public_info_file, res)
-
-
-    # Ask user
-
+    # Ask user what he wants to be done
     effective_sample_num = res['sample_num']
-
     if is_formatted(output_dir):
         # already exists
         if not input('Overwrite existing formatted data? [Y/n] ') in ['n', 'N']:
@@ -136,14 +124,23 @@ if __name__=="__main__":
                 # TODO: change output_dir when quick checking to avoid formatted data loss
                 # quick check
                 print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
+                output_dir = output_dir + '_mini'
                 effective_sample_num = min(effective_sample_num, 20)
 
             elif input('Re-format all {} files? [Y/n] '.format(effective_sample_num)) in ['n', 'N']:
                 # quick check
                 effective_sample_num = min(effective_sample_num, 20)
-
         else:
             effective_sample_num = 0
+
+    # Init output_dir
+    if not is_formatted(output_dir):
+        print('No formatted version found, creating {} folder.'.format(output_dir))
+        os.mkdir(output_dir)
+
+    # Write metadata
+    public_info_file = os.path.join(output_dir, 'public.info')
+    write_info(public_info_file, res)
 
     # booleans
     do_run_baseline = not input('Run baseline on formatted data? [Y/n] ') in ['n', 'N']
@@ -162,6 +159,3 @@ if __name__=="__main__":
     # manual check
     if do_manual_check:
         manual_check(formatted_dataset_path)
-
-
-    # TODO: note: ask Zhengying how the train/test split is done

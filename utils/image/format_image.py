@@ -116,7 +116,6 @@ def im_size(input_dir, filenames):
     """ Find images width and length
         -1 means not fixed size
     """
-    # TODO: detect image sizes
     s = set()
     for filename in filenames:
         im = Image.open(os.path.join(input_dir, filename))
