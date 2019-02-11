@@ -8,7 +8,7 @@ import glob, os, yaml
 import tensorflow as tf
 path.append('utils')
 path.append('utils/image')
-STARTING_KIT_DIR = 'autodl/codalab_competition_bundle/AutoDL_starting_kit'
+STARTING_KIT_DIR = '../autodl/codalab_competition_bundle/AutoDL_starting_kit'
 path.append(STARTING_KIT_DIR)
 path.append(os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program'))
 import dataset_manager
