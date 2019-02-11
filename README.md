@@ -21,8 +21,8 @@ cd autodl-contrib
 pip3 install -r requirements.txt
 python3 check_n_format.py file_format/mini-cifar
 ```
-to answer [Y] to all questions, just hit "return", this should be good enough to check that everything is running smoothly.
-When you see images pop-up, check that they are displayed properly and the labels correspond well. Your formatted data (in the AutoDL format) ends up in file_format/mini-cifar_formatted.
+To answer [Y] to all questions, just keep hitting "return": this should be good enough to check that everything is running smoothly.
+When you see images pop-up, check that they are displayed properly and the labels correspond well. You may also see an HTML file with a learning curve pop-up in your browser. Your formatted data (in the AutoDL format) ends up in `file_format/mini-cifar_formatted`.
 
 To create your own dataset, create a new directory at the same level than mini-cifar a fill it with your own data, then re-run the same script.
 
