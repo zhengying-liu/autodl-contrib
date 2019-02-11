@@ -10,7 +10,7 @@ Install [Python 3](https://www.anaconda.com/distribution/) and Tensorflow (`pip3
 git clone http://github.com/zhengying-liu/autodl-contrib
 git clone http://github.com/zhengying-liu/autodl
 cd autodl-contrib
-sudo pip install -r requirements.txt
+sudo pip3 install -r requirements.txt
 python3 check_n_format.py file_format/monkeys
 ```
 answer [Y] to all questions.
