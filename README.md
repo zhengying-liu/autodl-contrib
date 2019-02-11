@@ -17,7 +17,10 @@ cd autodl-contrib
 pip3 install -r requirements.txt
 python3 check_n_format.py file_format/monkeys
 ```
-answer [Y] to all questions.
+answer [Y] to all questions. If you have any doubt about your version of Tensorflow:
+```
+python3 -c "import tensorflow as tf; print(tf.__version__)"
+```
 
 ## What is needed?
 
