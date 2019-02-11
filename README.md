@@ -25,7 +25,7 @@ If your dataset exceed 10 GB or if you have a regression task please [Contact us
 
 ## Where to submit
 
-[Email us](mailto:autodl@chalearn.org) a URL to an on-line storage place (e.g. dropbox or Google drive) when we can pull your data from.
+[Email us](mailto:autodl@chalearn.org) a URL to an on-line storage place (e.g. dropbox or Google drive) where we can pull your data from.
 
 
 ## Formats
