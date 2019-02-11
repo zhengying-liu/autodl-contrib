@@ -8,8 +8,8 @@ Install python3 and Tensorflow then the following commands:
 
 ```
 git clone http://github.com/zhengying-liu/autodl-contrib
-cd autodl-contrib
 git clone http://github.com/zhengying-liu/autodl
+cd autodl-contrib
 sudo pip install -r requirements.txt
 python3 check_n_format.py file_format/monkeys
 ```
