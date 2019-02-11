@@ -4,7 +4,7 @@ We provide instructions and examples to format your own datasets for the AutoCV 
 
 ## Quick start
 
-To run the example type the following commands:
+Install python3 and Tensorflow then the following commands:
 
 ```
 git clone http://github.com/zhengying-liu/autodl-contrib
@@ -13,6 +13,7 @@ git clone http://github.com/zhengying-liu/autodl
 sudo pip install -r requirements.txt
 python3 check_n_format.py file_format/monkeys
 ```
+answer [Y] to all questions.
 
 ## What is needed?
 
