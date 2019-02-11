@@ -126,7 +126,7 @@ if __name__=="__main__":
     print()
 
     # Ask user what he wants to be done
-    effective_sample_num = res['sample_num']
+    effective_sample_num = res['sample_num'] # if quick check, it'll be the number of examples to format for each class
     if is_formatted(output_dir):
         # already exists
         if not input('Overwrite existing formatted data? [Y/n] ') in ['n', 'N']:
@@ -136,11 +136,11 @@ if __name__=="__main__":
                 # quick check
                 print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
                 output_dir = output_dir + '_mini'
-                effective_sample_num = min(effective_sample_num, 20)
+                effective_sample_num = min(effective_sample_num, 2)
 
             elif input('Re-format all {} files? [Y/n] '.format(effective_sample_num)) in ['n', 'N']:
                 # quick check
-                effective_sample_num = min(effective_sample_num, 20)
+                effective_sample_num = min(effective_sample_num, 2)
         else:
             effective_sample_num = 0
 

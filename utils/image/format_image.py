@@ -102,9 +102,9 @@ def get_all_classes(merged_df):
   elif 'Labels' in list(merged_df):
       label_confidence_pairs = merged_df['Labels']
       confidence_pairs = False
-
   else:
       raise Exception('No labels found, please check labels.csv file.')
+
   labels_sets = label_confidence_pairs.apply(lambda x: set(get_labels(x, confidence_pairs=confidence_pairs)[0]))
   all_classes = set()
   for labels_set in labels_sets:
@@ -124,7 +124,7 @@ def im_size(input_dir, filenames):
         row_count, col_count = next(iter(s))
     else:
         row_count, col_count = -1, -1
-    print('Images size: {} x {}'.format(row_count, col_count))
+    print('Images size: {} x {}\n'.format(row_count, col_count))
     return row_count, col_count
 
 
@@ -132,15 +132,24 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8, max_num
   print(input_dir)
   input_dir = os.path.normpath(input_dir)
   dataset_name = os.path.basename(input_dir)
-  print(os.listdir(input_dir)[:10]) # TODO
+  print('Some files in input directory:')
+  print(os.listdir(input_dir)[:10])
+  print()
   labels_df = get_labels_df(input_dir)
   merged_df = get_merged_df(labels_df, train_size=train_size)
 
-  if max_num_examples:
-    merged_df = merged_df.sample(n=max_num_examples)
+  if max_num_examples and max_num_examples<=5: # if quick check, it'll be the number of examples to format for each class
+    # Need at least one example of each class (tensorflow)
+    #merged_df = merged_df.sample(n=max_num_examples)
+    if 'LabelConfidencePairs' in list(merged_df):
+        merged_df = merged_df.groupby('LabelConfidencePairs').apply(lambda x: x.sample(n=2))
+    elif 'Labels' in list(merged_df):
+        merged_df = merged_df.groupby('Labels').apply(lambda x: x.sample(n=2))
+    else:
+        raise Exception('No labels found, please check labels.csv file.')
+
 
   all_classes = get_all_classes(merged_df)
-
   # TODO (@zhengying-liu @Adrien): add info on real label names
   # classes_list = [str(i) for i in range(output_dim)]
 

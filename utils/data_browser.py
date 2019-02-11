@@ -150,7 +150,7 @@ class DataBrowser(object):
     iterator = dataset.make_one_shot_iterator()
     next_element = iterator.get_next()
     with tf.Session() as sess:
-      for _ in range(num):
+      for _ in range(num+1):
         tensor_3d, labels = sess.run(next_element)
     return tensor_3d, labels
 
@@ -166,11 +166,12 @@ class DataBrowser(object):
       raise NotImplementedError("Show method not implemented for domain: " +\
                                  "{}".format(domain))
 
-  def show_an_example(self, max_range=1000):
+  def show_an_example(self, default_max_range=1000):
     """Visualize an example whose index is randomly chosen in the interval
     [0, `max_range`).
     """
-    idx = np.random.randint(0, max_range)
+    max_range = min(self.d_train.metadata_.size(), default_max_range)
+    idx = np.random.randint(max_range)
     tensor_3d, labels = DataBrowser.get_nth_element(self.d_train, idx)
     if 'classes_list' in self.other_info:
       c_l = self.other_info['classes_list']
@@ -187,8 +188,8 @@ def show_examples(input_dir, num_examples=5):
       for i in range(num_examples):
         print("Visualizing example {}.".format(i+1) +
               " Close the corresponding window to continue...")
-        set_size = min(data_browser.d_train.metadata_.size(), 1000)
-        data_browser.show_an_example(max_range=set_size)
+
+        data_browser.show_an_example()
 
 
 def main(*argv):
@@ -203,5 +204,4 @@ def main(*argv):
 
 
 if __name__ == '__main__':
-  print('Salut salut')
   main()
