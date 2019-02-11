@@ -8,6 +8,10 @@ Install [Python 3.7](https://www.anaconda.com/distribution/) (Anaconda 3) and in
 ```
 conda install tensorflow 
 ```
+If you have any doubt about your version of Tensorflow:
+```
+python3 -c "import tensorflow as tf; print(tf.__version__)"
+```
 then enter the following commands:
 
 ```
@@ -15,16 +19,14 @@ git clone http://github.com/zhengying-liu/autodl-contrib
 git clone http://github.com/zhengying-liu/autodl
 cd autodl-contrib
 pip3 install -r requirements.txt
-python3 check_n_format.py file_format/monkeys
+python3 check_n_format.py file_format/mini-cifar
 ```
-answer [Y] to all questions. If you have any doubt about your version of Tensorflow:
-```
-python3 -c "import tensorflow as tf; print(tf.__version__)"
-```
+to answer [Y] to all questions, just hit "return", this should be good enough to check that everything is running smoothly.
+When you see images pop-up, check that they are displayed properly and the labels correspond well. Your formatted data (in the AutoDL format) ends up in file_format/mini-cifar_formatted.
 
 ## What is needed?
 
-* **multi-label (or multi-class) classification tasks.**
+* **Multi-label (or multi-class) classification tasks.**
 * **Video, image, text, speech or time series datasets.**
 * **No size limit**
 
@@ -38,9 +40,9 @@ If your dataset exceed 10 GB or if you have a regression task please [Contact us
 
 ## Formats
 
-* Each example is an independent file.
+* Each image is an independent file (jpg, png).
 * Labels are contained in a separate `labels.csv` file.
-* Meta-data in `private.info`.
+* Meta-data in `private.info`. Please edit by hand to supply information needed.
 
 Examples are provided in [file_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format) folder.
 
