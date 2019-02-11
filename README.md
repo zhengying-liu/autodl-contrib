@@ -8,7 +8,7 @@ Install [Python 3](https://www.anaconda.com/distribution/)(Anaconda 3) and insta
 ```
 pip3 install tensorflow 
 ```
-then the following commands:
+then enter the following commands:
 
 ```
 git clone http://github.com/zhengying-liu/autodl-contrib
