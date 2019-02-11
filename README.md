@@ -24,6 +24,8 @@ python3 check_n_format.py file_format/mini-cifar
 to answer [Y] to all questions, just hit "return", this should be good enough to check that everything is running smoothly.
 When you see images pop-up, check that they are displayed properly and the labels correspond well. Your formatted data (in the AutoDL format) ends up in file_format/mini-cifar_formatted.
 
+To create your own dataset, create a new directory at the same level than mini-cifar a fill it with your own data, then re-run the same script.
+
 ## What is needed?
 
 * **Multi-label (or multi-class) classification tasks.**
