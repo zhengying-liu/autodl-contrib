@@ -11,7 +11,7 @@ git clone http://github.com/zhengying-liu/autodl-contrib
 cd autodl-contrib
 git clone http://github.com/zhengying-liu/autodl
 sudo pip install -r requirements.txt
-python3 check_n_format.py /file_format/monkeys
+python3 check_n_format.py file_format/monkeys
 ```
 
 ## What is needed?
