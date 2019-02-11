@@ -4,7 +4,7 @@ We provide instructions and examples to format your own datasets for the AutoCV 
 
 ## Quick start
 
-Install python3 and Tensorflow (`pip3 install tensorflow`) then the following commands:
+Install [Python 3](https://www.anaconda.com/distribution/) and Tensorflow (`pip3 install tensorflow`) then the following commands:
 
 ```
 git clone http://github.com/zhengying-liu/autodl-contrib
