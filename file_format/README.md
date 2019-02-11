@@ -5,24 +5,23 @@ We accept dataset contributions under **file format**.
 Under file format, each example is an independent file (this is usually the case for large examples such as videos) and all labels are contained in another file.
 
 ## Supported File Types
-File format is extremely convenient when examples in the dataset are indeed *files*. This is the case when one already has a database of files (e.g. images, videos, audios) with corresponding labels. If you want to contribute data in file format, you can simply provide these files plus the labels contained in a CSV file. We'll further format these files into TFRecords using `dataset_manager.py`. Some preferred file types are:
+File format is the best choice when examples are indeed *files*; if you already has a database of files (e.g. images, videos, audios) with corresponding labels. If you want to contribute data in file format, you can simply provide these files plus the labels contained in a CSV file. We can further format these files into TFRecords using `check_n_format.py` (currently images only) or `data_manager.py`. Some preferred file types are:
 - images: `.jpg`, `.png`, `.gif`
 - videos: `.avi`, `.mp4`
 - audios: `.mp3`, `.wav`
 
-It is preferred that all examples in one dataset share the **same size** (e.g. height and width). If the examples are sequences, they don't have to share the same length. In all cases, please try to indicate these info (at least the shared height and width of the examples) in a file containing metadata, with filename following glob pattern `*metadata*`.
+Examples can have a **fixed size** (height and width) or be **iregular** (each example has its own dimensions).
 
 If you want to contribute data in `.txt` type, you need to provide **tokenized data**, after some typical pre-processing in NLP (stemming, lemmatization, stopwords removing, argumentation, etc). Then each examples is represented by a **series of integers** which are indexes of words. [An example](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format/randomtext) of such text datasets can be found in this directory too.
 
-## Carefully Name Your Files
-Remember, you need to be careful about naming your files in a dataset and follow our [file naming rules](https://github.com/zhengying-liu/autodl-contrib#carefully-name-your-files).
 
 ## How Should These Files Look Like?
 
 The directory of a valid dataset in file format may look like
 ```
 monkeys/
-├── monkeys_labels_file_format.csv
+├── labels.csv
+├── labels.name
 ├── n0159.jpg
 ├── n0165.jpg
 ├── n0167.jpg
@@ -55,14 +54,9 @@ monkeys/
 └── n9162.jpg
 ```
 
-Well yes, the files don't really follow our naming rules (with no `*example*` pattern etc). You are allowed to do this only if **you precise that the dataset is in file format (instead of other formats) in the file name of lables**, as in `monkeys_labels_file_format.csv`.
+**WARNING**: in `labels.csv` file there should be two columns: `FileName` and `Labels`.
 
-**WARNING**: in this CSV file, there should be a column called `FileName` to indicate the corresponding files and a column `LabelConfidencePairs` to indicate labels.
-
-Note that the labels should have **sparse representation with label-confidence pairs**.
-In this representation, each label (an integer) is followed by a number (confidence) in the interval (0,1] (labels with confidence 0 are neglected, hence sparsity).
-Please note that the sum of all confidence doesn't have to (and shouldn't in general) be 1 since we are dealing with multi-label classification tasks (i.e. several binary classification tasks at the same time).
-A valid example of such a csv file is,
+You can also provide labels as **label confidence pairs** as in the following example:
 ```
 FileName,LabelConfidencePairs
 n0159.jpg,2 0.488458 9 0.48776 0 0.486832
@@ -78,7 +72,4 @@ Additional files can contain all sorts of metadata (number of examples, column n
 ## We Only Accept Multi-label Classification Datasets
 In multi-label classification tasks, each example can belong to several classes (i.e. have several labels).
 
-For now, we don't consider regression problems.
-
-## Check the Integrity of Your Dataset
-Remember to [check the integrity of your dataset](https://github.com/zhengying-liu/autodl-contrib#check-the-integrity-of-a-dataset) before donating.
+If you have a regression task, contact us and we'll probably turn it into a classification task (categorical regression).

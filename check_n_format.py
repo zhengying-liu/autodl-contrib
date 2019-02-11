@@ -9,6 +9,7 @@ import tensorflow as tf
 path.append('utils')
 path.append('utils/image')
 STARTING_KIT_DIR = '../autodl/codalab_competition_bundle/AutoDL_starting_kit'
+LOG_FILE = 'baseline_log.txt'
 path.append(STARTING_KIT_DIR)
 path.append(os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program'))
 import dataset_manager
@@ -72,12 +73,14 @@ def format_data(input_dir, output_dir, fake_name, effective_sample_num, train_si
 
 def run_baseline(data_dir, code_dir):
     print('run_baseline: Running baseline...')
+    print('Saving results in {}.'.format(LOG_FILE))
     run_local_test.run_baseline(data_dir, code_dir)
     print('run_baseline: done.')
 
 
 def manual_check(data_dir):
     print('manual_check: Checking manually...')
+    print('Samples of the dataset are going to be displayed. Please check that the display is correct. Click on the cross after looking at the images.')
     data_browser.show_examples(data_dir)
     print('manual_check: done.')
     # TODO: ask for check
@@ -99,20 +102,28 @@ if __name__=="__main__":
 
     # Read the meta-data in private.info.
     metadata = read_metadata(input_dir)
+
     fake_name = metadata['name']
-    print(metadata['name'])
+    print('\nDataset fake name: {}\n'.format(fake_name))
     labels_df = format_image.get_labels_df(input_dir)
+
+    print('First rows of labels file:')
     print(labels_df.head())
+    print()
 
     label_name = None
     label_file = os.path.join(input_dir, 'label.name')
     if os.path.exists(label_file):
         label_name = pd.read_csv(label_file, header=None)
+        print('Labels name:')
         print(label_name.head())
+        print()
 
     # Compute simple statistics about the data (file number, etc.) and check consistency with the CSV file containing the labels.
     res = compute_stats(labels_df, label_name=label_name)
+    print('Some statistics:')
     print(res)
+    print()
 
     # Ask user what he wants to be done
     effective_sample_num = res['sample_num']
