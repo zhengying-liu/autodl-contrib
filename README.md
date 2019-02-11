@@ -14,7 +14,7 @@ then enter the following commands:
 git clone http://github.com/zhengying-liu/autodl-contrib
 git clone http://github.com/zhengying-liu/autodl
 cd autodl-contrib
-sudo pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 python3 check_n_format.py file_format/monkeys
 ```
 answer [Y] to all questions.
