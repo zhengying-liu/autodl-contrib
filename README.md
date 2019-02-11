@@ -4,9 +4,9 @@ We provide instructions and examples to format your own datasets for the AutoCV 
 
 ## Quick start
 
-Install [Python 3](https://www.anaconda.com/distribution/)(Anaconda 3) and install Tensorflow by
+Install [Python 3.7](https://www.anaconda.com/distribution/)(Anaconda 3) and install Tensorflow 1.12 by
 ```
-pip3 install tensorflow 
+conda install tensorflow 
 ```
 then enter the following commands:
 
