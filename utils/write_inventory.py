@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 # DATASET INVENTORY SCRIPT
 # Author: Adrien
 
@@ -49,7 +52,13 @@ def read_info_file(public_info_path, private_info_path):
     file2.close()
 
     for row in tab:
-        t = re.compile('(\s)+=(\s)+').split(row) # split ' =  '
+        # checking for each row because there is 2 files
+        if '=' in row: # info format
+            regexp = '(\s)+=(\s)+'
+        else: # yaml format
+            regexp = '(\s)+:(\s)+'
+
+        t = re.compile(regexp).split(row) # split ' = '
         for i in range(len(t) - 2): # remove ' '
             while ' ' in t:
                 t.remove(' ')
