@@ -2,9 +2,19 @@
 We provide instructions and examples to format your own datasets for the AutoCV and [AutoDL](http://autodl.chalearn.org) challenges in the generic TF records format being used.
 
 
-## Quick start
+## Quickstart
 
-Install [Python 3.7](https://www.anaconda.com/distribution/) (Anaconda 3) and install Tensorflow 1.12 by:
+In the directory containing your personal projects (e.g. `~/projects/`), clone the two GitHub repos of AutoDL:
+```bash
+git clone http://github.com/zhengying-liu/autodl-contrib
+git clone http://github.com/zhengying-liu/autodl
+```
+Then you can choose to 
+1. work on your local machine (and make local changes); or
+2. work in a Docker container (in the same environment as AutoCV/AutoDL challenge).
+
+### Option 1: Work on Your Local Machine
+Install [Python 3](https://www.anaconda.com/distribution/) (Anaconda 3) and install Tensorflow 1.12 by:
 ```
 conda install tensorflow 
 ```
@@ -12,13 +22,30 @@ If you have any doubt about your version of Tensorflow:
 ```
 python3 -c "import tensorflow as tf; print(tf.__version__)"
 ```
-then enter the following commands:
-
+make sure the version >= 1.12.0. Then install necessary packages 
 ```
-git clone http://github.com/zhengying-liu/autodl-contrib
-git clone http://github.com/zhengying-liu/autodl
-cd autodl-contrib
 pip3 install -r requirements.txt
+```
+Then you should have a work environment ready for formatting datasets and preparing baseline methods (and make submissions).
+
+### Option 2: Work in Docker
+Instead of installing packages and make local changes, you can also choose to work in the Docker image that is used for AutoCV/AutoDL challenge: `evariste/autodl`. Thus, by using in this Docker image, you are working in the exact same environment in which participants' submissions are handled.
+
+To do this, you first need to [setup Docker](https://www.docker.com/products/docker-desktop). Then go to `~/projects/` and run
+```bash
+docker run --memory=4g -it -u root -v $(pwd):/app/codalab evariste/autodl bash
+```
+In the Docker container session, you can check the version of tensorflow by running
+```
+python3 -c "import tensorflow as tf; print(tf.__version__)"
+```
+and you should get `1.12.0`.
+
+### Now Let's Format a Dataset!
+
+After installing the work environment (on your local machine or in Docker), begin a quick dataset formatting by entering the following commands:
+```
+cd autodl-contrib
 python3 check_n_format.py file_format/mini-cifar
 ```
 To answer [Y] to all questions, just keep hitting "return": this should be good enough to check that everything is running smoothly.
