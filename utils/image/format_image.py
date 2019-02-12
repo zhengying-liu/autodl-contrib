@@ -138,13 +138,13 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8, max_num
   labels_df = get_labels_df(input_dir)
   merged_df = get_merged_df(labels_df, train_size=train_size)
 
-  if max_num_examples and max_num_examples<=5: # if quick check, it'll be the number of examples to format for each class
+  if max_num_examples and max_num_examples<=4: # if quick check, it'll be the number of examples to format for each class
     # Need at least one example of each class (tensorflow)
     #merged_df = merged_df.sample(n=max_num_examples)
     if 'LabelConfidencePairs' in list(merged_df):
-        merged_df = merged_df.groupby('LabelConfidencePairs').apply(lambda x: x.sample(n=2))
+        merged_df = merged_df.groupby('LabelConfidencePairs').apply(lambda x: x.sample(n=1))
     elif 'Labels' in list(merged_df):
-        merged_df = merged_df.groupby('Labels').apply(lambda x: x.sample(n=2))
+        merged_df = merged_df.groupby('Labels').apply(lambda x: x.sample(n=1))
     else:
         raise Exception('No labels found, please check labels.csv file.')
 

@@ -115,7 +115,7 @@ if __name__=="__main__":
     label_file = os.path.join(input_dir, 'label.name')
     if os.path.exists(label_file):
         label_name = pd.read_csv(label_file, header=None)
-        print('Labels name:')
+        print('First rows of label names:')
         print(label_name.head())
         print()
 
@@ -136,11 +136,11 @@ if __name__=="__main__":
                 # quick check
                 print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
                 output_dir = output_dir + '_mini'
-                effective_sample_num = min(effective_sample_num, 2)
+                effective_sample_num = min(effective_sample_num, 1)
 
             elif input('Re-format all {} files? [Y/n] '.format(effective_sample_num)) in ['n', 'N']:
                 # quick check
-                effective_sample_num = min(effective_sample_num, 2)
+                effective_sample_num = min(effective_sample_num, 1)
         else:
             effective_sample_num = 0
 
