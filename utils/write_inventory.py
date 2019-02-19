@@ -45,26 +45,23 @@ def read_info_file(public_info_path, private_info_path):
     # read info files
     file1 = open(public_info_path, 'r')
     file2 = open(private_info_path, 'r')
-    tab = file1.read().split('\n')
-    tab = file2.read().split('\n') + tab
-    tab = [x for x in tab if x != ''] # remove ''
+    tab1 = file1.read().split('\n')
+    tab2 = file2.read().split('\n')
     file1.close()
     file2.close()
 
-    for row in tab:
-        # checking for each row because there is 2 files
-        if '=' in row: # info format
+    for tab in [tab1, tab2]:
+        tab = [x for x in tab if x != ''] # remove ''
+        if '=' in tab[0]: # info format
             regexp = '(\s)+=(\s)+'
         else: # yaml format
             regexp = '(\s)+:(\s)+'
-
-        t = re.compile(regexp).split(row) # split ' = '
-        for i in range(len(t) - 2): # remove ' '
-            while ' ' in t:
-                t.remove(' ')
-
-        dic[t[0]] = t[1]
-
+        for row in tab:
+            t = re.compile(regexp).split(row) # split ' = '
+            for i in range(len(t) - 2): # remove ' '
+                while ' ' in t:
+                    t.remove(' ')
+            dic[t[0]] = t[1]
     return dic
 
 def find_info_files(dataset_dir):
