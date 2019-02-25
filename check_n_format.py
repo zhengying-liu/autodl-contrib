@@ -132,7 +132,6 @@ if __name__=="__main__":
         if not input('Overwrite existing formatted data? [Y/n] ') in ['n', 'N']:
             # Overwrite
             if not input('Quick check? [Y/n] ') in ['n', 'N']:
-                # TODO: change output_dir when quick checking to avoid formatted data loss
                 # quick check
                 print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
                 output_dir = output_dir + '_mini'
@@ -145,9 +144,16 @@ if __name__=="__main__":
             effective_sample_num = 0
 
     # Init output_dir
-    if not is_formatted(output_dir):
+    else:
+        if not input('Quick check? [Y/n] ') in ['n', 'N']:
+            # quick check
+            print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
+            output_dir = output_dir + '_mini'
+            effective_sample_num = min(effective_sample_num, 1)
+
         print('No formatted version found, creating {} folder.'.format(output_dir))
         os.mkdir(output_dir)
+
 
     # Write metadata
     public_info_file = os.path.join(output_dir, 'public.info')
