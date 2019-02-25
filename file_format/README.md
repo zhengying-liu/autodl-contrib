@@ -55,6 +55,13 @@ monkeys/
 ```
 
 **WARNING**: in `labels.csv` file there should be two columns: `FileName` and `Labels`.
+```
+FileName,Labels
+n0159.jpg,0 9
+n7031.jpg,0 1 7
+n8136.jpg,5
+...
+```
 
 You can also provide labels as **label confidence pairs** as in the following example:
 ```
