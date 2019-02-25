@@ -127,33 +127,29 @@ if __name__=="__main__":
 
     # Ask user what he wants to be done
     effective_sample_num = res['sample_num'] # if quick check, it'll be the number of examples to format for each class
+
+    quick_check = 1 # just for display purpose
+    if not input('Quick check? [Y/n] ') in ['n', 'N']:
+        # quick check
+        print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
+        output_dir = output_dir + '_mini'
+        effective_sample_num = min(effective_sample_num, 1)
+        quick_check = res['label_num'] # just for display purpose
+
     if is_formatted(output_dir):
-        # already exists
+        # Already exists
         if not input('Overwrite existing formatted data? [Y/n] ') in ['n', 'N']:
             # Overwrite
-            if not input('Quick check? [Y/n] ') in ['n', 'N']:
-                # quick check
-                print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
-                output_dir = output_dir + '_mini'
-                effective_sample_num = min(effective_sample_num, 1)
-
-            elif input('Re-format all {} files? [Y/n] '.format(effective_sample_num)) in ['n', 'N']:
-                # quick check
-                effective_sample_num = min(effective_sample_num, 1)
+            if input('Re-format all {} files? [Y/n] '.format(effective_sample_num * quick_check)) in ['n', 'N']: # Confirmation
+                # Do nothing
+                exit()
         else:
             effective_sample_num = 0
 
     # Init output_dir
     else:
-        if not input('Quick check? [Y/n] ') in ['n', 'N']:
-            # quick check
-            print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
-            output_dir = output_dir + '_mini'
-            effective_sample_num = min(effective_sample_num, 1)
-
         print('No formatted version found, creating {} folder.'.format(output_dir))
         os.mkdir(output_dir)
-
 
     # Write metadata
     public_info_file = os.path.join(output_dir, 'public.info')
