@@ -55,22 +55,17 @@ monkeys/
 └── n9162.jpg
 ```
 
-**WARNING**: in `labels.csv` file there should be two columns: `FileName` and `Labels`.
+The `labels.csv` file should have two comma separated columns: `FileName` and `Labels`.
 ```
-FileName,Labels
-n0159.jpg,0 9
-n7031.jpg,0 1 7
-n8136.jpg,5
+FileName, Labels
+n0159.jpg, 0 9
+n7031.jpg, 0 1 7
+n8136.jpg, 5
 ...
 ```
+The second column is a space separated list of numerical labels (since all problems are multi-label problems). Labels are numbered 0 to c-1, where c is the total number of categories. 
 
-You can also provide labels as **label confidence pairs** as in the following example:
-```
-FileName,LabelConfidencePairs
-n0159.jpg,2 0.488458 9 0.48776 0 0.486832
-n7031.jpg,1 0.544249 0 0.53526 7 0.490038 3 0.48924 2 0.485278 6 0.481826
-...
-```
+The `labels.name` file should contain the names of the labels, one per line, in the order of the numerica labels: 0 to c-1, 0 corresponding to the first line. 
 
 ## Providing More Info Is Always Well-received
 You are of course welcome to add more informations in your dataset directory.
@@ -81,3 +76,12 @@ Additional files can contain all sorts of metadata (number of examples, column n
 In multi-label classification tasks, each example can belong to several classes (i.e. have several labels).
 
 If you have a regression task, contact us and we'll probably turn it into a classification task (categorical regression).
+
+## Label confidence pairs
+You can also provide labels as **label confidence pairs** as in the following example [NOT RECOMMENDED]:
+```
+FileName, LabelConfidencePairs
+n0159.jpg, 2 0.488458 9 0.48776 0 0.486832
+n7031.jpg, 1 0.544249 0 0.53526 7 0.490038 3 0.48924 2 0.485278 6 0.481826
+...
+```
