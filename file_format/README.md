@@ -2,7 +2,7 @@
 
 Raw data must be supplied in **file format**.
 
-Under the file format, each example is an independent file (this is usually the case for large examples such as videos) and all labels are contained in another file.
+Under the file format, each example is an independent file and all labels are contained in a separate CSV file.
 
 ## Supported File Types
 For images and videos, preferred file types are:
@@ -26,7 +26,7 @@ monkeys/
 ├── n0159.jpg
 ├── n0165.jpg
 ├── n0167.jpg
-├── n1034.jpg
+├──  
 etc.
 ```
 
@@ -34,16 +34,23 @@ The `labels.csv` file should have two comma separated columns: `FileName` and `L
 ```
 FileName, Labels
 n0159.jpg, 0 9
-n7031.jpg, 0 1 7
-n8136.jpg, 5
-...
+n0165.jpg, 0 1 7
+n0167.jpg, 5
+etc.
 ```
 The second column is a space separated list of numerical labels (since all problems are multi-label problems). Labels are numbered 0 to c-1, where c is the total number of categories. 
 
-The `labels.name` file should contain the names of the labels, one per line, in the order of the numerica labels: 0 to c-1, 0 corresponding to the first line. 
+The `labels.name` file should contain the names of the labels, one per line, in the order of the numerica labels: 0 to c-1, 0 corresponding to the first line.
+
+```
+Baboon
+Chimp
+Gorilla
+etc.
+```
 
 ## What to do next?
-You can convert these files into TFRecords using `check_n_format.py` (currently images only) or `data_manager.py`. 
+You can convert these files into TFRecords using `check_n_format.py` (currently images only) or `data_manager.py`. See [INSTRUCTIONS](https://github.com/zhengying-liu/autodl-contrib).
 
 ## Providing More Info Is Always Well-received
 You are of course welcome to add more informations in your dataset directory. Please add a private.info file.
