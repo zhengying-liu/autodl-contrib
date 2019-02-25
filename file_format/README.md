@@ -22,6 +22,7 @@ The directory of a valid dataset in file format may look like
 monkeys/
 ├── labels.csv
 ├── labels.name
+├── private.info
 ├── n0159.jpg
 ├── n0165.jpg
 ├── n0167.jpg
