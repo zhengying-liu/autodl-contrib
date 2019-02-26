@@ -137,8 +137,8 @@ class DataBrowser(object):
   @classmethod
   def show_image(cls, tensor_3d, label_confidence_pairs=None):
     """Visualize a image represented by `tensor_3d` in grayscale."""
-    image = tensor_3d[0]
-    plt.imshow(image, cmap='gray')
+    image = np.transpose(tensor_3d, (1, 2, 0))
+    plt.imshow(image)
     plt.title('Labels: ' + str(label_confidence_pairs))
     plt.show()
     return plt
