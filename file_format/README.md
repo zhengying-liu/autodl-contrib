@@ -76,8 +76,10 @@ remarks : 'This is a toy dataset.'
 ### Feature Name and Label Name Files
 To enable visualization (or possibly transfer learning), you are welcome to provide additional information on the names of features and labels (although it's optional). This is crucial for visualizing **image** datasets and **text** datasets because without this information we can only visualize integers instead of the real names of features/labels. More details are provided in the following.
 
+#### Feature Name File
 Each dataset in File Format can be attached with a file under the name `feat.name`, which is a CSV file with only *one* column. Each row of index `i` is a string indicating the name of feature `i` in the dataset. Take text datasets as example, we use one-hot encoding to represent each word in the vocabulary, say of size `V`. Then the `feature_name.csv` should contain `V` rows where each row is a word in the vocaubulary. Note that since we are dealing with example tensors of shape `(sequence_size, row_count, col_count, num_channels)` in this challenge, the number of feature names will eventually be equal to `col_count`. One example of feature name file can be found [here](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format/randomtext).
 
+#### Label Name File
 Each dataset in File Format can be attached with a file under the name `label.name`, which is a CSV file with only *one* column. Each row of index `i` is a string indicating the name of label `i` in the dataset. Since we are dealing with label tensors of shape `(output_size,)` in this challenge, the number of label names should be equal to `output_size`. One example of label name file can be found [here](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format/monkeys).
 
 ## Important: We Only Accept Multi-label Classification Datasets
