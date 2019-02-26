@@ -17,8 +17,8 @@ import matplotlib.animation as animation
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
-STARTING_KIT_DIR = 'autodl/codalab_competition_bundle/AutoDL_starting_kit'
-#STARTING_KIT_DIR = ''
+# STARTING_KIT_DIR = 'autodl/codalab_competition_bundle/AutoDL_starting_kit'
+STARTING_KIT_DIR = '../../autodl/codalab_competition_bundle/AutoDL_starting_kit'
 INGESTION_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program')
 SCORING_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_scoring_program')
 CODE_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_sample_code_submission')
@@ -110,21 +110,21 @@ class DataBrowser(object):
     return domain
 
   @classmethod
-  def show_video(cls, tensor_3d, interval=80, label_confidence_pairs=None):
-    """Visualize a video represented by `tensor_3d` using `interval` ms.
+  def show_video(cls, tensor_4d, interval=80, label_confidence_pairs=None):
+    """Visualize a video represented by `tensor_4d` using `interval` ms.
     This means that frames per second (fps) is equal to 1000/`interval`.
     """
     fig, _ = plt.subplots()
-    image = tensor_3d[0]
-    screen = plt.imshow(image, cmap='gray')
+    image = np.squeeze(tensor_4d[0])
+    screen = plt.imshow(image)
     def init():  # only required for blitting to give a clean slate.
       """Initialize the first screen"""
       screen.set_data(np.empty(image.shape))
       return screen,
     def animate(i):
       """Some kind of hooks for `animation.FuncAnimation` I think."""
-      if i < len(tensor_3d):
-        image = tensor_3d[i]
+      if i < len(tensor_4d):
+        image = np.squeeze(tensor_4d[i])
         screen.set_data(image)
       return screen,
     _ = animation.FuncAnimation(
@@ -135,9 +135,9 @@ class DataBrowser(object):
     return plt
 
   @classmethod
-  def show_image(cls, tensor_3d, label_confidence_pairs=None):
-    """Visualize a image represented by `tensor_3d` in grayscale."""
-    image = np.transpose(tensor_3d, (1, 2, 0))
+  def show_image(cls, tensor_4d, label_confidence_pairs=None):
+    """Visualize a image represented by `tensor_4d` in RGB or grayscale."""
+    image = np.squeeze(tensor_4d[0])
     plt.imshow(image)
     plt.title('Labels: ' + str(label_confidence_pairs))
     plt.show()
@@ -151,8 +151,8 @@ class DataBrowser(object):
     next_element = iterator.get_next()
     with tf.Session() as sess:
       for _ in range(num+1):
-        tensor_3d, labels = sess.run(next_element)
-    return tensor_3d, labels
+        tensor_4d, labels = sess.run(next_element)
+    return tensor_4d, labels
 
   @property
   def show(self):
@@ -172,13 +172,13 @@ class DataBrowser(object):
     """
     max_range = min(self.d_train.metadata_.size(), default_max_range)
     idx = np.random.randint(max_range)
-    tensor_3d, labels = DataBrowser.get_nth_element(self.d_train, idx)
+    tensor_4d, labels = DataBrowser.get_nth_element(self.d_train, idx)
     if 'classes_list' in self.other_info:
       c_l = self.other_info['classes_list']
       label_conf_pairs = {c_l[idx]: c for idx, c in enumerate(labels) if c != 0}
     else:
       label_conf_pairs = {idx: c for idx, c in enumerate(labels) if c != 0}
-    self.show(tensor_3d, label_confidence_pairs=label_conf_pairs)
+    self.show(tensor_4d, label_confidence_pairs=label_conf_pairs)
 
 
 def show_examples(input_dir, num_examples=5):
@@ -194,7 +194,7 @@ def show_examples(input_dir, num_examples=5):
 
 def main(*argv):
   """Do you really need a docstring?"""
-  tf.flags.DEFINE_string('input_dir', '../formatted_datasets/itwas',
+  tf.flags.DEFINE_string('input_dir', '../formatted_datasets/katze',
                          "Path to dataset.")
 
   FLAGS = tf.flags.FLAGS
