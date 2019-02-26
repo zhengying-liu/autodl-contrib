@@ -40,13 +40,13 @@ etc.
 ```
 The second column is a space separated list of numerical labels (since all problems are multi-label problems). Labels are numbered 0 to c-1, where c is the total number of categories. 
 
-The `labels.name` file should contain the names of the labels, one per line, in the order of the numerica labels: 0 to c-1, 0 corresponding to the first line.
+The `label.name` file should contain the names of the labels, one per line, in the order of the numerica labels: 0 to c-1, 0 corresponding to the first line.
 
 ```
 Baboon
 Chimp
 Gorilla
-etc.
+...
 ```
 
 ## What to do next?
