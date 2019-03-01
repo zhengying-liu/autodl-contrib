@@ -137,8 +137,18 @@ class DataBrowser(object):
   @classmethod
   def show_image(cls, tensor_4d, label_confidence_pairs=None):
     """Visualize a image represented by `tensor_4d` in RGB or grayscale."""
+    num_channels = tensor_4d.shape[-1]
     image = np.squeeze(tensor_4d[0])
-    plt.imshow(image)
+    print("image.dtype:", image.dtype)
+    if not np.issubdtype(image.dtype, np.integer):
+      image = image / 256
+    if num_channels == 1:
+      plt.imshow(image, cmap='gray')
+    else:
+      if not num_channels == 3:
+        raise ValueError("Expected num_channels = 3 but got {} instead."\
+                         .format(num_channels))
+      plt.imshow(image)
     plt.title('Labels: ' + str(label_confidence_pairs))
     plt.show()
     return plt
