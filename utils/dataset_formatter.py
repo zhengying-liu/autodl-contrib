@@ -221,10 +221,10 @@ class UniMediaDatasetFormatter():
 sample_count: <sample_count>
 sequence_size: <sequence_size>
 output_dim: <output_dim>
-num_channels: <num_channels>
 matrix_spec {
   col_count: <col_count>
   row_count: <row_count>
+  num_channels: <num_channels>
   is_sequence_col: <is_sequence_col>
   is_sequence_row: <is_sequence_row>
   has_locality_col: <has_locality_col>
