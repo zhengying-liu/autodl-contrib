@@ -15,9 +15,6 @@ import sys
 sys.path.append('../')
 from dataset_formatter import UniMediaDatasetFormatter
 
-TASK_TYPE = 'multiclass'
-assert(TASK_TYPE in ['multilabel', 'multiclass'])
-
 def unpickle(file):
     import pickle
     with open(file, 'rb') as fo:
@@ -41,13 +38,17 @@ def get_features_labels_pairs_generator(subset='train'):
   fine_labels = [x + translation for x in data_dict[b'fine_labels']]
   num_examples = images.shape[0]
   rgb = images.reshape(num_examples, 3, 32, 32).transpose([0, 2, 3, 1])
-  VECT = [0.299, 0.587, 0.114]
-  gray = rgb.dot(VECT) # Convert to gray scale
-  features = gray.reshape(num_examples, 32*32)
+  if GRAYSCALE:
+    VECT = [0.299, 0.587, 0.114]
+    gray = rgb.dot(VECT) # Convert to gray scale
+    features = gray.reshape(num_examples, 32*32)
+  else:
+    features = rgb.reshape(num_examples, 32*32*3)
 
   features = [[x] for x in features]
   if TASK_TYPE == 'multilabel':
     labels = list(zip(coarse_labels, fine_labels))
+    labels = [[coarse_labels[i], fine_labels[i]] for i in range(len(fine_labels))]
   else: # TASK_TYPE == 'multiclass'
     labels = [[x] for x in fine_labels]
 
@@ -60,6 +61,12 @@ if __name__ == '__main__':
   FLAGS = tf.flags.FLAGS
   output_dir = FLAGS.output_dir
   root_dir = '../../raw_datasets/image/cifar-100-python/'
+
+  TASK_TYPE = 'multilabel'
+  assert(TASK_TYPE in ['multilabel', 'multiclass'])
+
+  GRAYSCALE = False
+
   metadata_dict = unpickle(root_dir + 'meta')
   train_dict = unpickle(root_dir + 'train')
   test_dict = unpickle(root_dir + 'test')
@@ -69,6 +76,14 @@ if __name__ == '__main__':
   coarse_label_names = metadata_dict[b'coarse_label_names']
   coarse_label_names = [x.decode('utf-8') for x in coarse_label_names]
 
+  sequence_size = 1
+  row_count = 32
+  col_count = 32
+  dataset_name = 'CIFAR-100'
+  num_channels = 1
+  num_examples_train = 50000
+  num_examples_test = 10000
+
   if TASK_TYPE == 'multilabel':
     classes_list = coarse_label_names + fine_label_names
     new_dataset_name = 'ciao'
@@ -76,10 +91,11 @@ if __name__ == '__main__':
     classes_list = fine_label_names
     new_dataset_name = 'chao'
 
-  row_count = 32
-  col_count = 32
   output_dim = len(classes_list)
-  dataset_name = 'CIFAR-100'
+
+  if not GRAYSCALE:
+    new_dataset_name = 'chuck'
+    num_channels = 3
 
   features_labels_pairs_train =\
       get_features_labels_pairs_generator(subset='train')
@@ -92,9 +108,10 @@ if __name__ == '__main__':
                                                 output_dim,
                                                 col_count,
                                                 row_count,
-                                                sequence_size=None, # for strides=2
-                                                num_examples_train=None,
-                                                num_examples_test=None,
+                                                sequence_size=sequence_size, # for strides=2
+                                                num_channels=num_channels,
+                                                num_examples_train=num_examples_train,
+                                                num_examples_test=num_examples_test,
                                                 is_sequence_col='false',
                                                 is_sequence_row='false',
                                                 has_locality_col='true',
