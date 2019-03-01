@@ -15,10 +15,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+def _HERE(*args):
+    h = os.path.dirname(os.path.realpath(__file__))
+    return os.path.abspath(os.path.join(h, *args))
+
 tf.logging.set_verbosity(tf.logging.INFO)
 
 # STARTING_KIT_DIR = 'autodl/codalab_competition_bundle/AutoDL_starting_kit'
-STARTING_KIT_DIR = '../../autodl/codalab_competition_bundle/AutoDL_starting_kit'
+RELATIVE_STARTING_KIT_DIR = '../../autodl/codalab_competition_bundle/AutoDL_starting_kit'
+STARTING_KIT_DIR = _HERE(RELATIVE_STARTING_KIT_DIR)
 INGESTION_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program')
 SCORING_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_scoring_program')
 CODE_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_sample_code_submission')
@@ -140,7 +145,8 @@ class DataBrowser(object):
     num_channels = tensor_4d.shape[-1]
     image = np.squeeze(tensor_4d[0])
     print("image.dtype:", image.dtype)
-    if not np.issubdtype(image.dtype, np.integer):
+    # If the entries are float but in [0,255]
+    if not np.issubdtype(image.dtype, np.integer) and np.max(image) > 100:
       image = image / 256
     if num_channels == 1:
       plt.imshow(image, cmap='gray')
@@ -204,7 +210,8 @@ def show_examples(input_dir, num_examples=5):
 
 def main(*argv):
   """Do you really need a docstring?"""
-  tf.flags.DEFINE_string('input_dir', '../formatted_datasets/katze',
+  default_input_dir = _HERE('../formatted_datasets/katze')
+  tf.flags.DEFINE_string('input_dir', default_input_dir,
                          "Path to dataset.")
 
   FLAGS = tf.flags.FLAGS
