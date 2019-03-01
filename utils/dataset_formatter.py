@@ -107,7 +107,8 @@ class UniMediaDatasetFormatter():
                output_dim,
                col_count,
                row_count,
-               sequence_size=None,
+               sequence_size=1,
+               num_channels=1,
                num_examples_train=None,
                num_examples_test=None,
                is_sequence_col='false',
@@ -138,6 +139,7 @@ class UniMediaDatasetFormatter():
     self.features_labels_pairs_test = features_labels_pairs_test
     # Some metadata on the dataset
     self.output_dim = output_dim
+    self.num_channels = num_channels
     if classes_dict is not None:
       self.label_to_index_map = dict_to_text_format(classes_dict) # Convert dict to string
     elif classes_list is not None:
@@ -219,6 +221,7 @@ class UniMediaDatasetFormatter():
 sample_count: <sample_count>
 sequence_size: <sequence_size>
 output_dim: <output_dim>
+num_channels: <num_channels>
 matrix_spec {
   col_count: <col_count>
   row_count: <row_count>
@@ -238,6 +241,7 @@ matrix_spec {
     metadata = metadata.replace('<is_sequence>', str(self.is_sequence))
     metadata = metadata.replace('<sequence_size>', str(self.sequence_size))
     metadata = metadata.replace('<output_dim>', str(self.output_dim))
+    metadata = metadata.replace('<num_channels>', str(self.num_channels))
     metadata = metadata.replace('<label_to_index_map>', str(self.label_to_index_map))
     metadata = metadata.replace('<col_count>', str(self.col_count))
     metadata = metadata.replace('<row_count>', str(self.row_count))
