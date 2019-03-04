@@ -54,6 +54,7 @@ class DataBrowser(object):
         `label_to_index_map`).
     """
     dataset_dir = self.dataset_dir
+    dataset_dir = os.path.expanduser(dataset_dir) # Expand the tilde `~/`
     files = os.listdir(dataset_dir)
     data_files = [x for x in files if x.endswith('.data')]
     assert len(data_files) == 1
@@ -92,7 +93,7 @@ class DataBrowser(object):
     return d_train, d_test, other_info
 
   def infer_domain(self):
-    """Infer the domain from the shape of 3."""
+    """Infer the domain from the shape of the 4-D tensor."""
     d_train, _, _ = self.read_data()
     metadata = d_train.get_metadata()
     row_count, col_count = metadata.get_matrix_size(0)
@@ -210,6 +211,9 @@ def show_examples(input_dir, num_examples=5):
 
 def main(*argv):
   """Do you really need a docstring?"""
+  # Actually here input_dir should be dataset_dir since input_dir/ is the folder
+  # that contains all datasets but dataset_dir is the folder that contains the
+  # content of one single dataset
   default_input_dir = _HERE('../formatted_datasets/katze')
   tf.flags.DEFINE_string('input_dir', default_input_dir,
                          "Path to dataset.")
