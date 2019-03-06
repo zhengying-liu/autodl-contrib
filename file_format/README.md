@@ -6,7 +6,7 @@ Under the file format, each example is an independent file and all labels are co
 
 ## Supported File Types
 For images and videos, preferred file types are:
-- images: `.jpg`, `.png`, `.gif`
+- images: `.jpg`, `.bmp`, `.png`, `.gif`
 - videos: `.avi`, `.mp4`
 - audios: `.mp3`, `.wav`
 
