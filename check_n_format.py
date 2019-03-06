@@ -18,6 +18,14 @@ import format_image
 import run_local_test
 import data_browser
 
+tf.flags.DEFINE_string('raw_dataset_dir', 'file_format/mini-cifar',
+                       "Path to raw dataset.")
+
+tf.flags.DEFINE_integer('num_channels', 3,
+                       "Number of channels. Useful for RGB or sensor data.")
+
+FLAGS = tf.flags.FLAGS
+
 
 def read_metadata(input_dir):
     """ Read private.info with pyyaml
@@ -62,12 +70,17 @@ def find_file(input_dir, name):
 
 # This are the 3 main functions: format, baseline and check
 
-def format_data(input_dir, output_dir, fake_name, effective_sample_num, train_size=0.8):
+def format_data(input_dir, output_dir, fake_name, effective_sample_num,
+                train_size=0.8,
+                num_channels=FLAGS.num_channels):
     """ Transform data into TFRecords
     """
     print('format_data: Formatting... {} samples'.format(effective_sample_num))
     if effective_sample_num != 0:
-        format_image.format_data(input_dir, output_dir, fake_name, train_size=train_size, max_num_examples=effective_sample_num)
+        format_image.format_data(input_dir, output_dir, fake_name,
+                                 train_size=train_size,
+                                 max_num_examples=effective_sample_num,
+                                 num_channels=num_channels)
     print('format_data: done.')
 
 
@@ -92,13 +105,17 @@ def is_formatted(output_dir):
 
 if __name__=="__main__":
 
-    if len(argv)==2:
-        input_dir = argv[1]
-        input_dir = os.path.normpath(input_dir)
-        output_dir = input_dir + '_formatted'
-    else:
-        print('Please enter a dataset directory. Usage: `python3 check_n_format path/to/dataset`')
-        exit()
+    # if len(argv)==2:
+    #     input_dir = argv[1]
+    #     input_dir = os.path.normpath(input_dir)
+    #     output_dir = input_dir + '_formatted'
+    # else:
+    #     print('Please enter a dataset directory. Usage: `python3 check_n_format path/to/dataset`')
+    #     exit()
+
+    input_dir = FLAGS.raw_dataset_dir
+    input_dir = os.path.normpath(input_dir)
+    output_dir = input_dir + '_formatted'
 
     # Read the meta-data in private.info.
     metadata = read_metadata(input_dir)
