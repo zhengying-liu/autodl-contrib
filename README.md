@@ -9,20 +9,20 @@ In the directory containing your personal projects (e.g. `~/projects/`), clone t
 git clone http://github.com/zhengying-liu/autodl-contrib
 git clone http://github.com/zhengying-liu/autodl
 ```
-Then you can choose to 
+Then you can choose to
 1. work on your local machine (and make local changes); or
 2. work in a Docker container (in the same environment as AutoCV/AutoDL challenge).
 
 ### Option 1: Work on Your Local Machine
 Install [Python 3](https://www.anaconda.com/distribution/) (Anaconda 3) and install Tensorflow 1.12 by:
 ```
-conda install tensorflow 
+conda install tensorflow
 ```
 If you have any doubt about your version of Tensorflow:
 ```
 python3 -c "import tensorflow as tf; print(tf.__version__)"
 ```
-make sure the version >= 1.12.0. Then install necessary packages 
+make sure the version >= 1.12.0. Then install necessary packages
 ```
 pip3 install -r requirements.txt
 ```
@@ -46,12 +46,22 @@ and you should get `1.12.0`.
 After installing the work environment (on your local machine or in Docker), begin a quick dataset formatting by entering the following commands:
 ```
 cd autodl-contrib
-python3 check_n_format.py file_format/mini-cifar
+python3 check_n_format.py -raw_dataset_dir=file_format/mini-cifar
 ```
 To answer [Y] to all questions, just keep hitting "return": this should be good enough to check that everything is running smoothly.
 When you see images pop-up, check that they are displayed properly and the labels correspond well. You may also see an HTML file with a learning curve pop-up in your browser. Your formatted data (in the AutoDL format) ends up in `file_format/mini-cifar_formatted`.
 
 To create your own dataset, create a new directory at the same level than mini-cifar a fill it with your own data, then re-run the same script.
+
+NB: The script `check_n_format.py` also accepts other arguments to customize dataset parameters. For example, say if you have an image dataset of 4 channels instead of the default 3 RGB channels, you can run:
+```
+python3 check_n_format.py -raw_dataset_dir=path/to/your/dataset -num_channels=4
+```
+This will generate a dataset containing 4-D tensors of shape
+```
+(sequence_size, row_count, col_count, num_channels) = (1, ?, ?, 4)
+```
+If you look at `metadata.textproto` files of the formatted datasets, you should notice the difference.
 
 ## What is needed?
 

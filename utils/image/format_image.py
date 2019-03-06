@@ -128,7 +128,9 @@ def im_size(input_dir, filenames):
     return row_count, col_count
 
 
-def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8, max_num_examples=None):
+def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8,
+                max_num_examples=None,
+                num_channels=3):
   print(input_dir)
   input_dir = os.path.normpath(input_dir)
   dataset_name = os.path.basename(input_dir)
@@ -174,6 +176,7 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8, max_num
                                                 col_count,
                                                 row_count,
                                                 sequence_size=sequence_size, # for strides=2
+                                                num_channels=num_channels,
                                                 num_examples_train=num_examples_train,
                                                 num_examples_test=num_examples_test,
                                                 is_sequence_col='false',

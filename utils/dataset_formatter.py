@@ -108,7 +108,7 @@ class UniMediaDatasetFormatter():
                col_count,
                row_count,
                sequence_size=1,
-               num_channels=1,
+               num_channels=None,
                num_examples_train=None,
                num_examples_test=None,
                is_sequence_col='false',
@@ -139,7 +139,6 @@ class UniMediaDatasetFormatter():
     self.features_labels_pairs_test = features_labels_pairs_test
     # Some metadata on the dataset
     self.output_dim = output_dim
-    self.num_channels = num_channels
     if classes_dict is not None:
       self.label_to_index_map = dict_to_text_format(classes_dict) # Convert dict to string
     elif classes_list is not None:
@@ -157,6 +156,15 @@ class UniMediaDatasetFormatter():
     self.has_locality_col = has_locality_col
     self.has_locality_row = has_locality_row
     self.format = format
+    # When no info is given on `num_channels`, the default value is set to 3
+    # for compressed images and 1 other wise
+    if num_channels is None:
+      if self.format == 'COMPRESSED':
+        self.num_channels = 3
+      else:
+        self.num_channels = 1
+    else:
+      self.num_channels = num_channels
     self.is_sequence = is_sequence
     if num_examples_train:
       self.num_examples_train = num_examples_train
