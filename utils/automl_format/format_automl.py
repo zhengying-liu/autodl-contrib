@@ -3,10 +3,46 @@
 # Description: format datasets in AutoML format to TFRecords for AutoDL
 """Generate AutoDL datasets from datasets in AutoML format.
 
-Run a command line (in the current directory) with something like:
-`python format_automl.py -input_dir='../../raw_datasets/automl/' -output_dir='../../formatted_datasets/' -dataset_name=adult -max_num_examples_train=600 -max_num_examples_test=100`
+Run a command line (in the current directory) with for example:
+`python format_automl.py -input_dir='../../raw_datasets/automl/' -output_dir='../../formatted_datasets/' -dataset_name=adult`
 
-Please change `input_dir` to the right directory on your disk containing the AutoML datasets.
+Please change `input_dir` to the right directory on your disk containing the
+AutoML datasets. Under this directory, there should be a folder named
+`dataset_name`, say `adult/`. The files in this folder should be organized as
+the following:
+
+adult
+├── adult_feat.name (optional)
+├── adult_label.name (optional, but recommended)
+├── adult_private.info (optional)
+├── adult_public.info (optional)
+├── adult_test.data
+├── adult_test.solution
+├── adult_train.data
+├── adult_train.solution
+├── adult_valid.data (required, but can be empty, will be merged to train)
+└── adult_valid.solution (required, but can be empty)
+
+The `.data` files are CSV files with space as separator. Each one of them
+represents a matrix of shape
+    (num_examples, num_features)
+so each example is a vector of shape
+    (num_features,)
+As in AutoDL challenge, each example is a tensor of shape
+    (sequence_size, row_count, col_count, num_channels) = (T, H, W, C)
+we should have
+    num_features = T * H * W * C
+To get a vector of shape (num_features,) from a tensor of shape (T, H, W, C),
+we can typically do a flattening (e.g. by calling `numpy.ravel`). And in order
+to be able to reconstruct the tensor during the challenge, the shape information
+(e.g. T, H, W, C) should be provided as arguments when calling this script. For
+example:
+```
+python format_automl.py -input_dir='../../raw_datasets/automl/' -output_dir='../../formatted_datasets/' -dataset_name=adult -sequence_size=1 -row_count=1 -col_count=24 -num_channels=1
+```
+
+For more detailed guidance on AutoML format, please see:
+    https://github.com/codalab/chalab/wiki/Help:-Wizard-%E2%80%90-Challenge-%E2%80%90-Data
 """
 
 import tensorflow as tf
@@ -18,25 +54,44 @@ import sys
 from pprint import pprint
 sys.path.append('./ingestion_program/')
 from data_manager import DataManager
+sys.path.append('../')
+from dataset_formatter import UniMediaDatasetFormatter
 from shutil import copyfile
 
 tf.flags.DEFINE_string('input_dir', '../../raw_datasets/automl/',
                        "Directory containing all AutoML datasets.")
 
-tf.flags.DEFINE_string("dataset_name", "adult", "Basename of dataset.")
+tf.flags.DEFINE_string("dataset_name", "adult",
+                       "Basename of dataset.")
 
-tf.flags.DEFINE_string("output_dir", "../../formatted_datasets/", "Output data directory.")
+tf.flags.DEFINE_string("output_dir", "../../formatted_datasets/",
+                       "Output data directory.")
 
-tf.flags.DEFINE_string('max_num_examples_train', '600',
+# Metadata on the dataset
+tf.flags.DEFINE_integer('sequence_size', None,
+                       "Number of frames (time axis shape) in each example.")
+
+tf.flags.DEFINE_integer('row_count', None,
+                       "Number of rows (X axis shape) in each example.")
+
+tf.flags.DEFINE_integer('col_count', None,
+                       "Number of columns (Y axis shape) in each example.")
+
+tf.flags.DEFINE_integer('num_channels', None,
+                       "Number of channels in each example.")
+
+# Configuration for customized dataset formatting
+tf.flags.DEFINE_integer('max_num_examples_train', None,
                        "Number of examples in training set we want to format.")
 
-tf.flags.DEFINE_string('max_num_examples_test', '100',
+tf.flags.DEFINE_integer('max_num_examples_test', None,
                        "Number of examples in test set we want to format.")
 
-tf.flags.DEFINE_string('num_shards_train', '1', # TODO: sharding feature is not implemented yet
+# TODO: sharding feature is not implemented yet
+tf.flags.DEFINE_integer('num_shards_train', 1,
                        "Number of shards for training set.")
 
-tf.flags.DEFINE_string('num_shards_test', '1',
+tf.flags.DEFINE_integer('num_shards_test', 1,
                        "Number of shards for training set.")
 
 FLAGS = tf.flags.FLAGS
@@ -46,11 +101,12 @@ verbose = False
 class AutoMLMetadata():
   def __init__(self, dataset_name=None,
                sample_count=None,
-               output_dim=None,
                set_type='train',
+               output_dim=None,
+               sequence_size=None,
+               row_count=None,
                col_count=None,
-               row_count=1,      # each matrix in matrix bundle is a vector, so row_count=1
-               sequence_size=1): # not time series
+               num_channels=None):
     self.dataset_name = dataset_name
     self.sample_count = sample_count
     self.output_dim = output_dim
@@ -58,6 +114,7 @@ class AutoMLMetadata():
     self.col_count = col_count
     self.row_count = row_count
     self.sequence_size = sequence_size
+    self.num_channels = num_channels
     assert(set_type in ['train', 'test'])
   def __str__(self):
     return "AutoMLMetadata: {}".format(self.__dict__)
@@ -75,7 +132,17 @@ def regression_to_multilabel(regression_label, get_threshold=np.median):
   binary_label = (regression_label > threshold)
   return binary_to_multilabel(binary_label)
 
-def _prepare_metadata_features_and_labels(D, set_type='train'):
+def _prepare_metadata_features_and_labels(D, set_type='train',
+                                          sequence_size=FLAGS.sequence_size,
+                                          row_count=FLAGS.row_count,
+                                          col_count=FLAGS.col_count,
+                                          num_channels=FLAGS.num_channels):
+  """
+  Returns:
+    metadata: an AutoMLMetadata object
+    features: an array-like object of shape (num_examples, num_features)
+    labels: an array-like object of shape (num_examples, num_classes)
+  """
   data_format = D.info['format']
   task = D.info['task']
   if set_type == 'train':
@@ -88,25 +155,59 @@ def _prepare_metadata_features_and_labels(D, set_type='train'):
       concat = scipy.sparse.vstack
     else:
       concat = np.concatenate
-    features = concat([X_train, X_valid])
-    # Fetch labels
-    labels = np.concatenate([Y_train, Y_valid])
+    if X_valid.size:
+      features = concat([X_train, X_valid])
+      labels = np.concatenate([Y_train, Y_valid])
+    else:
+      features = X_train
+      labels = Y_train
+
   elif set_type == 'test':
     features = D.data['X_test']
     labels = D.data['Y_test']
   else:
     raise ValueError("Wrong set type, should be `train` or `test`!")
-  # when the task if binary.classification or regression, transform it to multilabel
+  # when the task is binary.classification or regression, transform it to multilabel
   if task == 'regression':
     labels = regression_to_multilabel(labels)
   elif task == 'binary.classification':
     labels = binary_to_multilabel(labels)
+
+  if sequence_size is None and row_count is None and\
+      col_count is None and num_channels is None:
+    sequence_size = 1
+    row_count = 1
+    col_count = features.shape[1]
+    num_channels = 1
+    if set_type == 'train':
+      print("No specification on example shape is given! Adopting default shape: ",
+            (sequence_size, row_count, col_count, num_channels))
+
+  try:
+    num_entries = sequence_size * row_count * col_count * num_channels
+  except:
+    raise ValueError("Some shape info is not specified: " +
+                     "(sequence_size, row_count, col_count, num_channels) = " +
+                     str((sequence_size, row_count, col_count, num_channels)) +
+                     ". Please add all these metadata as arguments.")
+  if features.shape[1] != num_entries:
+    raise ValueError("Incompatible metadata with data shape! " +
+                     "The shape specified in metadata is\n" +
+                     "(sequence_size, row_count, col_count, num_channels) = " +
+                     str((sequence_size, row_count, col_count, num_channels)) +
+                     "\nwith {} entries ".format(num_entries) +
+                     "but got num_features = {} ".format(features.shape[1]) +
+                     "!= {} !\n".format(num_entries) +
+                     "Please specify good metadata in the command arguments.")
   # Generate metadata
   metadata = AutoMLMetadata(dataset_name=D.info['name'],
                             sample_count=features.shape[0],
                             output_dim=labels.shape[1],
                             set_type=set_type,
-                            col_count=features.shape[1])
+                            sequence_size=sequence_size,
+                            row_count=row_count,
+                            col_count=col_count,
+                            num_channels=num_channels)
   return metadata, features, labels
 
 def csr_feature_vector_to_lists(sparse_feature_vector):
@@ -159,6 +260,8 @@ def _write_metadata_textproto(counter, metadata, D_info, filepath):
   sequence_size = metadata.sequence_size
   output_dim = metadata.output_dim
   col_count = metadata.col_count
+  row_count = metadata.row_count
+  num_channels = metadata.num_channels
   if D_info['format'] == 'dense':
     _format = 'DENSE'
   else:
@@ -171,24 +274,28 @@ sequence_size: <sequence_size>
 output_dim: <output_dim>
 matrix_spec {
   col_count: <col_count>
-  row_count: 1
+  row_count: <row_count>
+  num_channels: <num_channels>
   is_sequence_col: false
   is_sequence_row: false
-  has_locality_col: true
-  has_locality_row: true
+  has_locality_col: false
+  has_locality_row: false
   format: <format>
 }
 """
   metadata_textproto = metadata_textproto.replace('<sample_count>', str(sample_count))
-  metadata_textproto = metadata_textproto.replace('<sequence_size>', str(sequence_size))
   metadata_textproto = metadata_textproto.replace('<output_dim>', str(output_dim))
+  metadata_textproto = metadata_textproto.replace('<sequence_size>', str(sequence_size))
+  metadata_textproto = metadata_textproto.replace('<row_count>', str(row_count))
   metadata_textproto = metadata_textproto.replace('<col_count>', str(col_count))
+  metadata_textproto = metadata_textproto.replace('<num_channels>', str(num_channels))
   metadata_textproto = metadata_textproto.replace('<format>', str(_format))
   with open(metadata_filepath, 'w') as f:
     f.write(metadata_textproto)
 
-def convert_vectors_to_sequence_example(filepath, metadata, features, labels, D_info,
-                                        max_num_examples=None, num_shards=1):
+def convert_vectors_to_sequence_example(filepath, metadata, features, labels,
+                                        D_info, max_num_examples=None,
+                                        num_shards=1):
   """
   Args:
     metadata: an AutoMLMetadata object
@@ -201,6 +308,7 @@ def convert_vectors_to_sequence_example(filepath, metadata, features, labels, D_
   assert(isinstance(labels, np.ndarray))
   dataset_name = metadata.dataset_name
   set_type = metadata.set_type
+  sequence_size = metadata.sequence_size
   is_test_set = (set_type == 'test')
   has_sparse_features = is_sparse(features)
 
@@ -232,6 +340,9 @@ def convert_vectors_to_sequence_example(filepath, metadata, features, labels, D_
       }
 
       if has_sparse_features:
+        if sequence_size != 1:
+          raise NotImplementedError("Doesn't support sequence_size != 1 " +
+                                    "for sparse format!")
         sparse_col_index, sparse_row_index, sparse_value =\
             csr_feature_vector_to_lists(feature_row)
         feature_list_dict = {
@@ -240,8 +351,13 @@ def convert_vectors_to_sequence_example(filepath, metadata, features, labels, D_
           '0_sparse_value': _feature_list([_float_feature(sparse_value)])
         }
       else:
+        if sequence_size == 1:
+          feature_list = [_float_feature(feature_row)]
+        else:
+          feature_row = np.reshape(feature_row, (sequence_size, -1))
+          feature_list = [_float_feature(f) for f in feature_row]
         feature_list_dict={
-          '0_dense_input': _feature_list([_float_feature(feature_row)])
+          '0_dense_input': _feature_list(feature_list)
         }
 
       context = tf.train.Features(feature=context_dict)
@@ -281,7 +397,8 @@ def press_a_button_and_give_me_an_AutoDL_dataset(input_dir,
                                                  max_num_examples_train,
                                                  max_num_examples_test,
                                                  num_shards_train,
-                                                 num_shards_test):
+                                                 num_shards_test,
+                                                 new_dataset_name=None):
   """Well there is actually not a button and instead you need to run a command
   line.
 
@@ -291,7 +408,7 @@ def press_a_button_and_give_me_an_AutoDL_dataset(input_dir,
       (AND waldo dataset doesn't have solutions for valid and test)
   """
   D = DataManager(dataset_name, input_dir, replace_missing=False, verbose=verbose)
-  new_dataset_name = dataset_name
+  new_dataset_name = new_dataset_name if new_dataset_name else dataset_name
 
   if max_num_examples_train:
     new_dataset_name += '_' + str(max_num_examples_train)
@@ -337,7 +454,7 @@ def press_a_button_and_give_me_an_AutoDL_dataset(input_dir,
     log = open('log.txt', 'a')
     log.write('Solution file not moved: '+dataset_name+'\n')
     log.close()
-  
+
   # Copy original info file to formatted dataset
   try:
       for info_file_type in ['_public', '_private']:
@@ -346,34 +463,19 @@ def press_a_button_and_give_me_an_AutoDL_dataset(input_dir,
           copyfile(info_filepath, new_info_filepath)
   except Exception as e:
       print('Unable to copy info files')
-  
+
   return dataset_dir, new_dataset_name
-  
+
 
 if __name__ == '__main__':
   input_dir = FLAGS.input_dir
   dataset_name = FLAGS.dataset_name
   output_dir = FLAGS.output_dir
-  try:
-    max_num_examples_train = int(FLAGS.max_num_examples_train)
-  except:
-    print("Couldn't parse max_num_examples_train...setting to None.")
-    max_num_examples_train = None
-  try:
-    max_num_examples_test = int(FLAGS.max_num_examples_test)
-  except:
-    print("Couldn't parse max_num_examples_test...setting to None.")
-    max_num_examples_test = None
-  try:
-    print("Couldn't parse num_shards_train...setting to 1.")
-    num_shards_train = int(FLAGS.num_shards_train)
-  except:
-    num_shards_train = 1
-  try:
-    print("Couldn't parse num_shards_test...setting to 1.")
-    num_shards_test = int(FLAGS.num_shards_test)
-  except:
-    num_shards_test = 1
+
+  max_num_examples_train = FLAGS.max_num_examples_train
+  max_num_examples_test = FLAGS.max_num_examples_test
+  num_shards_train = FLAGS.num_shards_train
+  num_shards_test = FLAGS.num_shards_test
 
   dataset_dir, new_dataset_name = press_a_button_and_give_me_an_AutoDL_dataset(
                                      input_dir,
