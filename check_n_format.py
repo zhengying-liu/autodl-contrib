@@ -4,6 +4,7 @@
 # Usage: `python3 check_n_format path/to/dataset`
 
 from sys import argv, path
+import argparse
 import glob, os, yaml
 import tensorflow as tf
 path.append('utils')
@@ -18,11 +19,11 @@ import format_image
 import run_local_test
 import data_browser
 
-tf.flags.DEFINE_string('raw_dataset_dir', 'file_format/mini-cifar',
-                       "Path to raw dataset.")
+#tf.flags.DEFINE_string('raw_dataset_dir', 'file_format/mini-cifar',
+#                       "Path to raw dataset.")
 
-tf.flags.DEFINE_integer('num_channels', 3,
-                       "Number of channels. Useful for RGB or sensor data.")
+#tf.flags.DEFINE_integer('num_channels', 3,
+#                       "Number of channels. Useful for RGB or sensor data.")
 
 FLAGS = tf.flags.FLAGS
 
@@ -71,8 +72,8 @@ def find_file(input_dir, name):
 # This are the 3 main functions: format, baseline and check
 
 def format_data(input_dir, output_dir, fake_name, effective_sample_num,
-                train_size=0.8,
-                num_channels=FLAGS.num_channels):
+                train_size,
+                num_channels):
     """ Transform data into TFRecords
     """
     print('format_data: Formatting... {} samples'.format(effective_sample_num))
@@ -103,6 +104,13 @@ def is_formatted(output_dir):
     """ Check if data are already formatted """
     return os.path.exists(output_dir)
 
+class Range(object):
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+    def __eq__(self, other):
+        return self.start <= other <= self.end
+
 if __name__=="__main__":
 
     # if len(argv)==2:
@@ -113,7 +121,33 @@ if __name__=="__main__":
     #     print('Please enter a dataset directory. Usage: `python3 check_n_format path/to/dataset`')
     #     exit()
 
-    input_dir = FLAGS.raw_dataset_dir
+    text = 'This a script to check and format datasets for autodl and autcv challengesself.'
+
+    parser = argparse.ArgumentParser(description = text)
+    parser.add_argument("-i", "--input_dir",
+                        help="path of the input directory. it should contain the images, \`labels.csv\`, \`label.name\` and \`private.info\ ")
+    parser.add_argument("-s", "--split_ratio", type=float, choices=[Range(0.0, 1.0)],
+                        help="split ratio of train data size over the full dataset size.")
+    parser.add_argument("-c", "--channels", type=int, choices=[1, 3] , help="number of channels of the images. It should be 3 for RGB, and 1 for grayscale images")
+    args = parser.parse_args()
+
+    if args.input_dir:
+        input_dir = args.input_dir
+    else:
+        input_dir = 'file_format/mini-cifar'
+
+    if args.split_ratio:
+        split_ratio = args.split_ratio
+    else:
+        split_ratio = 0.8
+
+    if args.channels:
+        num_channels = args.channels
+    else:
+        num_channels = 3
+
+
+    #input_dir = FLAGS.raw_dataset_dir
     input_dir = os.path.normpath(input_dir)
     output_dir = input_dir + '_formatted'
 
@@ -177,7 +211,7 @@ if __name__=="__main__":
     do_manual_check = not input('Do manual check? [Y/n] ') in ['n', 'N']
 
     # format data in TFRecords
-    format_data(input_dir, output_dir, fake_name, effective_sample_num)
+    format_data(input_dir, output_dir, fake_name, effective_sample_num, split_ratio, num_channels)
     formatted_dataset_path = os.path.join(output_dir, fake_name)
 
     # run baseline
