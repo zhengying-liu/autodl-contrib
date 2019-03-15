@@ -1,7 +1,7 @@
 # Authors: Isabelle Guyon, Adrien Pavao and Zhengying Liu
 # Date: Feb 6 2019
 
-# Usage: `python3 check_n_format path/to/dataset`
+# Usage: `python3 check_n_format --input_dir=path/to/dataset`
 
 from sys import argv, path
 import argparse
@@ -18,15 +18,6 @@ import pandas as pd
 import format_image
 import run_local_test
 import data_browser
-
-#tf.flags.DEFINE_string('raw_dataset_dir', 'file_format/mini-cifar',
-#                       "Path to raw dataset.")
-
-#tf.flags.DEFINE_integer('num_channels', 3,
-#                       "Number of channels. Useful for RGB or sensor data.")
-
-FLAGS = tf.flags.FLAGS
-
 
 def read_metadata(input_dir):
     """ Read private.info with pyyaml
@@ -113,41 +104,20 @@ class Range(object):
 
 if __name__=="__main__":
 
-    # if len(argv)==2:
-    #     input_dir = argv[1]
-    #     input_dir = os.path.normpath(input_dir)
-    #     output_dir = input_dir + '_formatted'
-    # else:
-    #     print('Please enter a dataset directory. Usage: `python3 check_n_format path/to/dataset`')
-    #     exit()
-
-    text = 'This a script to check and format datasets for autodl and autcv challengesself.'
-
+    text = 'This a script to check and format datasets for autodl and autcv challenges.'
     parser = argparse.ArgumentParser(description = text)
-    parser.add_argument("-i", "--input_dir",
+    parser.add_argument("-i", "--input_dir", default='file_format/mini-cifar',
                         help="path of the input directory. it should contain the images, \`labels.csv\`, \`label.name\` and \`private.info\ ")
-    parser.add_argument("-s", "--split_ratio", type=float, choices=[Range(0.0, 1.0)],
+    parser.add_argument("-s", "--split_ratio", type=float, choices=[Range(0.0, 1.0)], default=0.8,
                         help="split ratio of train data size over the full dataset size.")
-    parser.add_argument("-c", "--channels", type=int, choices=[1, 3] , help="number of channels of the images. It should be 3 for RGB, and 1 for grayscale images")
+    parser.add_argument("-c", "--channels", type=int, choices=[1, 3], default=3,
+                        help="number of channels of the images. It should be 3 for RGB, and 1 for grayscale images")
     args = parser.parse_args()
 
-    if args.input_dir:
-        input_dir = args.input_dir
-    else:
-        input_dir = 'file_format/mini-cifar'
+    input_dir = args.input_dir
+    split_ratio = args.split_ratio
+    num_channels = args.channels
 
-    if args.split_ratio:
-        split_ratio = args.split_ratio
-    else:
-        split_ratio = 0.8
-
-    if args.channels:
-        num_channels = args.channels
-    else:
-        num_channels = 3
-
-
-    #input_dir = FLAGS.raw_dataset_dir
     input_dir = os.path.normpath(input_dir)
     output_dir = input_dir + '_formatted'
 
