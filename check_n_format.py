@@ -128,7 +128,7 @@ if __name__=="__main__":
                         help="path of the input directory. it should contain the images, \`labels.csv\`, \`label.name\` and \`private.info\ ")
     parser.add_argument("-s", "--split_ratio", type=float, choices=[Range(0.0, 1.0)],
                         help="split ratio of train data size over the full dataset size.")
-    parser.add_argument("-c", "--channels", type=int, choices=[1, 3] , help="number of channels of the images. It should be 3 for RGB, and 1 for grayscale images")
+    parser.add_argument("-c", "--channels", type=int, choices=[1, 4] , help="number of channels of the images. It should be 1 for grayscale images, 3 for RGB, 4 for 4-D tensors")
     args = parser.parse_args()
 
     if args.input_dir:

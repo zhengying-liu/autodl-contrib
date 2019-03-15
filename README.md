@@ -55,8 +55,19 @@ To create your own dataset, create a new directory at the same level than mini-c
 
 NB: The script `check_n_format.py` also accepts other arguments to customize dataset parameters. For example, say if you have an image dataset of 4 channels instead of the default 3 RGB channels, you can run:
 ```
-python3 check_n_format.py -raw_dataset_dir=path/to/your/dataset -num_channels=4
+python3 check_n_format.py -i path/to/your/dataset -s 0.8 -c 4
 ```
+OPTIONS:   
+-i or --input_dir : path of the input directory.
+                    it should contain the images, \`labels.csv\`, \`label.name\` and \`private.info\`"  
+                    default is `file_format/cifar-mini`'  
+
+-s or --split_ratio : split ratio of train data size over the full dataset size. Value should be between 0 and 1.   
+default value is 0.8  
+
+-c or --channels : number of channels of the images. It should be 1 for grayscale images, 3 for RGB, 4 for 4-D tensors.  
+default value is 3.
+
 This will generate a dataset containing 4-D tensors of shape
 ```
 (sequence_size, row_count, col_count, num_channels) = (1, ?, ?, 4)
