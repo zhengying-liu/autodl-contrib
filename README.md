@@ -46,7 +46,7 @@ and you should get `1.12.0`.
 After installing the work environment (on your local machine or in Docker), begin a quick dataset formatting by entering the following commands:
 ```
 cd autodl-contrib
-python3 check_n_format.py --input-dir=file_format/mini-cifar
+python3 check_n_format.py file_format/mini-cifar
 ```
 To answer [Y] to all questions, just keep hitting "return": this should be good enough to check that everything is running smoothly.
 When you see images pop-up, check that they are displayed properly and the labels correspond well. You may also see an HTML file with a learning curve pop-up in your browser. Your formatted data (in the AutoDL format) ends up in `file_format/mini-cifar_formatted`.

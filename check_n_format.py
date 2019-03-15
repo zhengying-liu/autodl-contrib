@@ -1,7 +1,7 @@
 # Authors: Isabelle Guyon, Adrien Pavao and Zhengying Liu
 # Date: Feb 6 2019
 
-# Usage: `python3 check_n_format --input_dir=path/to/dataset`
+# Usage: `python3 check_n_format path/to/dataset`
 
 from sys import argv, path
 import argparse
@@ -63,8 +63,8 @@ def find_file(input_dir, name):
 # This are the 3 main functions: format, baseline and check
 
 def format_data(input_dir, output_dir, fake_name, effective_sample_num,
-                train_size,
-                num_channels):
+                train_size=0.8,
+                num_channels=3):
     """ Transform data into TFRecords
     """
     print('format_data: Formatting... {} samples'.format(effective_sample_num))
@@ -95,31 +95,16 @@ def is_formatted(output_dir):
     """ Check if data are already formatted """
     return os.path.exists(output_dir)
 
-class Range(object):
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-    def __eq__(self, other):
-        return self.start <= other <= self.end
 
 if __name__=="__main__":
 
-    text = 'This a script to check and format datasets for autodl and autcv challenges.'
-    parser = argparse.ArgumentParser(description = text)
-    parser.add_argument("-i", "--input_dir", default='file_format/mini-cifar',
-                        help="path of the input directory. it should contain the images, \`labels.csv\`, \`label.name\` and \`private.info\ ")
-    parser.add_argument("-s", "--split_ratio", type=float, choices=[Range(0.0, 1.0)], default=0.8,
-                        help="split ratio of train data size over the full dataset size.")
-    parser.add_argument("-c", "--channels", type=int, choices=[1, 3], default=3,
-                        help="number of channels of the images. It should be 3 for RGB, and 1 for grayscale images")
-    args = parser.parse_args()
-
-    input_dir = args.input_dir
-    split_ratio = args.split_ratio
-    num_channels = args.channels
-
-    input_dir = os.path.normpath(input_dir)
-    output_dir = input_dir + '_formatted'
+    if len(argv)==2:
+        input_dir = argv[1]
+        input_dir = os.path.normpath(input_dir)
+        output_dir = input_dir + '_formatted'
+    else:
+        print('Please enter a dataset directory. Usage: `python3 check_n_format path/to/dataset`')
+        exit()
 
     # Read the meta-data in private.info.
     metadata = read_metadata(input_dir)
@@ -176,12 +161,20 @@ if __name__=="__main__":
     public_info_file = os.path.join(output_dir, 'public.info')
     write_info(public_info_file, res)
 
+    # num channels
+    num_channels = input('Number of channels? [Default=3] ')
+    if num_channels == '':
+        num_channels = 3
+    if not type(num_channels) is int:
+        print('Number of channels must be an Integer.')
+        exit()
+
     # booleans
     do_run_baseline = not input('Run baseline on formatted data? [Y/n] ') in ['n', 'N']
     do_manual_check = not input('Do manual check? [Y/n] ') in ['n', 'N']
 
     # format data in TFRecords
-    format_data(input_dir, output_dir, fake_name, effective_sample_num, split_ratio, num_channels)
+    format_data(input_dir, output_dir, fake_name, effective_sample_num, num_channels=num_channels)
     formatted_dataset_path = os.path.join(output_dir, fake_name)
 
     # run baseline
