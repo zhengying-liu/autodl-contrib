@@ -130,7 +130,8 @@ def im_size(input_dir, filenames):
 
 def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8,
                 max_num_examples=None,
-                num_channels=3):
+                num_channels=3,
+                classes_list=None):
   print(input_dir)
   input_dir = os.path.normpath(input_dir)
   dataset_name = os.path.basename(input_dir)
@@ -187,7 +188,7 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8,
                                                 is_sequence='false',
                                                 sequence_size_func=None,
                                                 new_dataset_name=new_dataset_name,
-                                                classes_list=None)
+                                                classes_list=classes_list)
 
   dataset_formatter.press_a_button_and_give_me_an_AutoDL_dataset()
 

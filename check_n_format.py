@@ -64,7 +64,8 @@ def find_file(input_dir, name):
 
 def format_data(input_dir, output_dir, fake_name, effective_sample_num,
                 train_size=0.8,
-                num_channels=3):
+                num_channels=3,
+                classes_list=None):
     """ Transform data into TFRecords
     """
     print('format_data: Formatting... {} samples'.format(effective_sample_num))
@@ -72,7 +73,8 @@ def format_data(input_dir, output_dir, fake_name, effective_sample_num,
         format_image.format_data(input_dir, output_dir, fake_name,
                                  train_size=train_size,
                                  max_num_examples=effective_sample_num,
-                                 num_channels=num_channels)
+                                 num_channels=num_channels,
+                                 classes_list=classes_list)
     print('format_data: done.')
 
 
@@ -176,7 +178,11 @@ if __name__=="__main__":
     do_manual_check = not input('Do manual check? [Y/n] ') in ['n', 'N']
 
     # format data in TFRecords
-    format_data(input_dir, output_dir, fake_name, effective_sample_num, num_channels=num_channels)
+    print('Label list:')
+    label_list = label_name.values.tolist()
+    flat_label_list = [item for sublist in label_list for item in sublist]
+    print(flat_label_list)
+    format_data(input_dir, output_dir, fake_name, effective_sample_num, num_channels=num_channels, classes_list=flat_label_list)
     formatted_dataset_path = os.path.join(output_dir, fake_name)
 
     # run baseline

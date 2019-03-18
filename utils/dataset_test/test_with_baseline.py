@@ -42,8 +42,8 @@ def get_path_to_ingestion_program(starting_kit_dir):
 def get_path_to_scoring_program(starting_kit_dir):
   return os.path.join(starting_kit_dir,
                       'AutoDL_scoring_program', 'score.py')
-
-if __name__ == '__main__':
+                      
+def run_baseline():
   dataset_dir = FLAGS.input_dir + FLAGS.dataset_name
   starting_kit_dir = FLAGS.starting_kit_dir
   path_ingestion = get_path_to_ingestion_program(starting_kit_dir)
@@ -73,3 +73,6 @@ if __name__ == '__main__':
       webbrowser.open('file://'+detailed_results_page, new=2)
       break
     time.sleep(1)
+
+if __name__ == '__main__':
+    run_baseline()
