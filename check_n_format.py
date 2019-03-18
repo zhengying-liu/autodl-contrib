@@ -165,8 +165,10 @@ if __name__=="__main__":
     num_channels = input('Number of channels? [Default=3] ')
     if num_channels == '':
         num_channels = 3
-    if not type(num_channels) is int:
-        print('Number of channels must be an Integer.')
+    try:
+        num_channels = int(num_channels)
+    except Exception as e:
+        print('Number of channels must be an Integer:', e)
         exit()
 
     # booleans

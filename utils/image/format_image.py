@@ -192,13 +192,13 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8,
   dataset_formatter.press_a_button_and_give_me_an_AutoDL_dataset()
 
   # Copy original info file to formatted dataset
-  try:
-      for info_file_type in ['_public', '_private']:
-          info_filepath = os.path.join(input_dir, dataset_name, dataset_name + info_file_type + '.info')
-          new_info_filepath = os.path.join(output_dir, new_dataset_name, new_dataset_name + info_file_type + '.info')
-          copyfile(info_filepath, new_info_filepath)
-  except Exception as e:
-      print('Unable to copy info files')
+  #try:
+  #    for info_file_type in ['_public', '_private']:
+  #        info_filepath = os.path.join(input_dir, dataset_name, dataset_name + info_file_type + '.info')
+  #        new_info_filepath = os.path.join(output_dir, new_dataset_name, new_dataset_name + info_file_type + '.info')
+  #        copyfile(info_filepath, new_info_filepath)
+  #except Exception as e:
+  #    print('Unable to copy info files')
 
 
 if __name__ == '__main__':
