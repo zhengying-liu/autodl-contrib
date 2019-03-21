@@ -1,10 +1,9 @@
 #!/bin/bash
-# Usage: ./zip_dataset.sh <dataset_name>
+# Usage: ./zip_dataset.sh <dataset_path>
 # For a given dataset with name $1, make .zip files with only useful files: metadata.textproto
 
-INPUT_DIR=$(pwd)/../formatted_datasets
-DATASET_DIR=$INPUT_DIR/$1
-DATA_DIR=$DATASET_DIR/$1.data
+DATASET_DIR=$1
+DATASET_NAME=$(basename $DATASET_DIR)
 cd $DATASET_DIR/
-zip -r --exclude=*__pycache__* --exclude=*.DS_Store* --exclude=*__MACOSX* --exclude=*.yaml --exclude=*.csv $1.data.zip $1.data;
-zip $1.solution.zip $1.solution
+zip -r --exclude=*__pycache__* --exclude=*.DS_Store* --exclude=*__MACOSX* --exclude=*.yaml --exclude=*.csv $DATASET_NAME.data.zip $DATASET_NAME.data;
+zip $DATASET_NAME.solution.zip $DATASET_NAME.solution
