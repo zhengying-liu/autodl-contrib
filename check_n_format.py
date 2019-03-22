@@ -179,8 +179,11 @@ if __name__=="__main__":
 
     # format data in TFRecords
     print('Label list:')
-    label_list = label_name.values.tolist()
-    flat_label_list = [item for sublist in label_list for item in sublist]
+    if label_name is None:
+        flat_label_list = None
+    else:
+        label_list = label_name.values.tolist()
+        flat_label_list = [item for sublist in label_list for item in sublist]
     print(flat_label_list)
     format_data(input_dir, output_dir, fake_name, effective_sample_num, num_channels=num_channels, classes_list=flat_label_list)
     formatted_dataset_path = os.path.join(output_dir, fake_name)
