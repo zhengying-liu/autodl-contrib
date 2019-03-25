@@ -11,8 +11,9 @@ sys.path.append('../')
 from shutil import copyfile
 from dataset_formatter import UniMediaDatasetFormatter
 from PIL import Image
+from sklearn.utils import shuffle
 
-def get_labels_df(dataset_dir):
+def get_labels_df(dataset_dir, shuffling=True):
   """ Read labels.csv and return DataFrame
   """
   if not os.path.isdir(dataset_dir):
@@ -25,6 +26,8 @@ def get_labels_df(dataset_dir):
   else:
     labels_csv_file = labels_csv_files[0]
   labels_df = pd.read_csv(labels_csv_file)
+  if shuffling:
+    labels_df = shuffle(labels_df, random_state=42)
   return labels_df
 
 def get_merged_df(labels_df, train_size=0.8):
