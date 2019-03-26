@@ -85,10 +85,10 @@ def run_baseline(data_dir, code_dir):
     print('run_baseline: done.')
 
 
-def manual_check(data_dir):
+def manual_check(data_dir, num_examples=5):
     print('manual_check: Checking manually...')
     print('Samples of the dataset are going to be displayed. Please check that the display is correct. Click on the cross after looking at the images.')
-    data_browser.show_examples(data_dir)
+    data_browser.show_examples(data_dir, num_examples=num_examples)
     print('manual_check: done.')
     # TODO: ask for check
 
@@ -196,4 +196,4 @@ if __name__=="__main__":
 
     # manual check
     if do_manual_check:
-        manual_check(formatted_dataset_path)
+        manual_check(formatted_dataset_path, num_examples=10)
