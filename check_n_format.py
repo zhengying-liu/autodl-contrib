@@ -110,7 +110,6 @@ if __name__=="__main__":
 
     # Read the meta-data in private.info.
     metadata = read_metadata(input_dir)
-
     fake_name = metadata['name']
     print('\nDataset fake name: {}\n'.format(fake_name))
     labels_df = format_image.get_labels_df(input_dir)
@@ -159,10 +158,6 @@ if __name__=="__main__":
         print('No formatted version found, creating {} folder.'.format(output_dir))
         os.mkdir(output_dir)
 
-    # Write metadata
-    public_info_file = os.path.join(output_dir, 'public.info')
-    write_info(public_info_file, res)
-
     # num channels
     num_channels = input('Number of channels? [Default=3] ')
     if num_channels == '':
@@ -197,3 +192,8 @@ if __name__=="__main__":
     # manual check
     if do_manual_check:
         manual_check(formatted_dataset_path, num_examples=10)
+
+    # Write metadata
+    res['tensor_shape'] = data_browser.get_tensor_shape(formatted_dataset_path)
+    public_info_file = os.path.join(output_dir, fake_name, 'public.info')
+    write_info(public_info_file, res)
