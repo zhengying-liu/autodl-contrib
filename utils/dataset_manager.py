@@ -12,12 +12,14 @@ Of course, originally this class is only reserved for organizers or their
 collaborators, since the participants will only see the result of this class.
 """
 
+import glob
 import numpy as np
 import os
 import sys
 import tensorflow as tf
 import pandas as pd
 import yaml
+import hashlib
 
 # Ugly section to import necessary packages in autodl
 # To be replaced using Python packaging
@@ -31,6 +33,132 @@ sys.path.append(INGESTION_DIR)
 
 from dataset import AutoDLDataset
 from data_browser import DataBrowser
+
+def get_hash_value(some_bytes):
+  return hashlib.md5(some_bytes).hexdigest()
+
+def get_df_with_file_hash(csv_file_path):
+  """For a data frame with a column 'FileName' and corresponding files in
+  the same directory, generate a new column of the hash value of each file.
+  """
+  file_dir = os.path.dirname(csv_file_path)
+  files_df = pd.read_csv(csv_file_path)
+  def get_hash(row):
+    filename = row['FileName']
+    filepath = os.path.join(file_dir, filename)
+    with open(filepath, 'rb') as f:
+      h = get_hash_value(f.read())
+    return h
+  file_hash_df = pd.DataFrame()
+  file_hash_df['HashValue'] = files_df.apply(get_hash, axis=1)
+  file_hash_df['FileName'] = files_df['FileName']
+  for label_col_name in ['LabelConfidencePairs', 'Labels']:
+    if label_col_name in files_df:
+      file_hash_df[label_col_name] = files_df[label_col_name]
+  return file_hash_df
+
+def get_label_confidence_pairs_set(labels, confidence_pairs=False):
+  """Parse label confidence pairs string into a set of label-confidence pairs.
+
+  Args:
+    labels: string, of form `2 0.0001 9 0.48776 0 1.0`." or "2 9 0"
+    confidence_pairs: True if labels are confidence pairs.
+  """
+  if isinstance(labels, str):
+      l_split = labels.split(' ')
+  else:
+      l_split = [labels]
+  if confidence_pairs:
+      labels = [int(x) for i, x in enumerate(l_split) if i%2 == 0]
+      confidences = [float(x) for i, x in enumerate(l_split) if i%2 == 1]
+  else:
+      labels = [int(x) for x in l_split]
+      confidences = [1 for _ in l_split]
+  return set(zip(labels, confidences))
+
+def labels_df_to_dict(labels_df):
+  """Given a CSV file with columns 'HashValue' and 'LabelConfidencePairs'
+  (or 'Labels'), return a (hash,labels) dictionary.
+
+  Returns:
+    a dictionary of items
+      (hash_value, label_confidence_pairs_set)
+  where `hash_value` is the hash value of the example and
+  `label_confidence_pairs_set` is a set of 2-tuples.
+  """
+  if 'LabelConfidencePairs' in labels_df.columns:
+    all_labels = labels_df['LabelConfidencePairs']
+    confidence_pairs = True
+  elif 'Labels' in labels_df.columns:
+    all_labels = labels_df['Labels']
+    confidence_pairs = False
+  else:
+    raise ValueError("No label column found. Only got {}."\
+                     .format(labels_df.columns))
+  if 'HashValue' in labels_df.columns:
+    hash_values = labels_df['HashValue']
+  else:
+    raise ValueError("No hash value column found. Only got {}."\
+                     .format(labels_df.columns))
+  all_labels = [get_label_confidence_pairs_set(labels,
+                    confidence_pairs=confidence_pairs)
+                for labels in all_labels]
+  hash_labels_dict = {h:l for h, l in zip(hash_values, all_labels)}
+  return hash_labels_dict
+
+def compare_labels(labels_df_1, labels_df_2):
+  """Given two data frames of labels, compare if the same examples have the
+  same labels.
+
+  Returns:
+    True if these two datasets have exact the same examples and corresponding
+      labels.
+  """
+  hash_labels_dict_1 = labels_df_to_dict(labels_df_1)
+  hash_labels_dict_2 = labels_df_to_dict(labels_df_2)
+  common_keys = {k for k in hash_labels_dict_1 if k in hash_labels_dict_2}
+  common_keys_labels = {k for k in common_keys
+                        if hash_labels_dict_1[k] == hash_labels_dict_2[k]}
+  print("First dataset has {} examples.".format(len(hash_labels_dict_1)))
+  print("Second dataset has {} examples.".format(len(hash_labels_dict_2)))
+  print("Number of common examples: {}".format(len(common_keys)))
+  print("Number of common examples that have the same labels: {}"\
+        .format(len(common_keys_labels)))
+  return len(common_keys_labels) == len(hash_labels_dict_1) and\
+         len(common_keys_labels) == len(hash_labels_dict_2)
+
+def get_labels_file_name(file_dataset_dir):
+  """ Read labels.csv and return DataFrame
+  """
+  if not os.path.isdir(file_dataset_dir):
+    raise IOError("{} is not a directory!".format(file_dataset_dir))
+  labels_csv_files = [file for file in glob.glob(os.path.join(file_dataset_dir, '*labels*.csv'))]
+  if len(labels_csv_files) > 1:
+    raise ValueError("Ambiguous label file! Several of them found: {}".format(labels_csv_files))
+  elif len(labels_csv_files) < 1:
+    raise ValueError("No label file found! The name of this file should follow the glob pattern `*labels*.csv` (e.g. monkeys_labels_file_format.csv).")
+  else:
+    labels_csv_file = labels_csv_files[0]
+  return labels_csv_file
+
+def compare_datasets(file_dataset_dir, tfrecord_dataset_dir):
+  """Given a dataset in File Format and another one in TFRecord Format,
+  compare if the same examples have the same labels.
+
+  Returns:
+    True if these two datasets have exact the same examples and corresponding
+      labels.
+  """
+  print("Comparing the File Format dataset at {} and ".format(file_dataset_dir)+
+        "the TFRecord Format dataset at {}...".format(tfrecord_dataset_dir))
+  labels_csv_file = get_labels_file_name(file_dataset_dir)
+  file_labels_df = get_df_with_file_hash(labels_csv_file)
+  tfrecord_labels_df = TFRecordFormatDataset(tfrecord_dataset_dir).get_labels_df()
+  identical = compare_labels(file_labels_df, tfrecord_labels_df)
+  answer = 'Yes' if identical else 'No'
+  print("Do the two datasets have exact the same examples, " +
+        "each with the same labels? Answer: {}.".format(answer))
+  return identical
 
 def to_label_confidence_pairs(confidences):
   """Convert a dense array of numbers in [0,1] to sparse label-confidence pairs.
@@ -314,6 +442,101 @@ class TFRecordFormatDataset(object):
       label_confidence_pairs = to_label_confidence_pairs(solution_array)
       return label_confidence_pairs
 
+  def get_labels_df(self):
+    """Construct a `labels.csv` file just as in File Format."""
+    if self.domain != 'image':
+      raise NotImplementedError("This functionality is not implemented for " +
+                              "the domain {} yet.".format(browser.domain))
+
+    dataset_name = self.dataset_name
+
+    output_dim = self.get_output_size()
+
+    classes_list = self.get_classes_list()
+    if not classes_list:
+      classes_list = range(output_dim)
+
+    file_names = []
+    label_confidence_pairs = []
+    subsets = []
+    indices = []
+    hash_values = []
+
+    total_num_examples = self.get_num_examples(subset='train') +\
+                         self.get_num_examples(subset='test')
+    le_n = len(str(total_num_examples))
+
+    image_format = self._get_image_format()
+
+    for subset in ['test', 'train']:
+      image_bytes_tensor = self._get_bytes(subset)
+      index_tensor = self.get_index(subset)
+
+      if subset == 'test':
+        count = 0
+        label_confidence_pairs_test = self.get_test_labels()
+        with tf.Session() as sess:
+          while True:
+            try:
+              image_bytes, index = sess.run((image_bytes_tensor,
+                                             index_tensor))
+              index_score_list = label_confidence_pairs_test[count]
+
+              string_list = [str(l) + ' ' + str(c) for l, c in index_score_list]
+              labels_list = [str(classes_list[l]) for l, c in index_score_list]
+              labels_str = '-'.join(labels_list)
+              if len(labels_str) > 20:
+                labels_str = labels_str[:20]
+              label_confidence_pairs_str = ' '.join(string_list)
+              file_name = str(index).zfill(le_n) + '_' + labels_str +\
+                          '_' + subset + '.' + image_format
+              label_confidence_pairs.append(label_confidence_pairs_str)
+              file_names.append(file_name)
+              subsets.append(subset)
+              indices.append(index)
+              hash_values.append(get_hash_value(image_bytes))
+              count += 1
+            except tf.errors.OutOfRangeError:
+              break
+      else: # subset == 'train'
+        count = 0
+        label_index, label_score = self.get_train_labels()
+        with tf.Session() as sess:
+          while True:
+            try:
+              image_bytes, index, label_index_v, label_score_v =\
+                  sess.run((image_bytes_tensor,
+                            index_tensor,
+                            label_index,
+                            label_score))
+              index_score_list = list(zip(label_index_v, label_score_v))
+
+              string_list = [str(l) + ' ' + str(c) for l, c in index_score_list]
+              labels_list = [str(classes_list[l]) for l, c in index_score_list]
+              labels_str = '-'.join(labels_list)
+              if len(labels_str) > 20:
+                labels_str = labels_str[:20]
+              label_confidence_pairs_str = ' '.join(string_list)
+              file_name = str(index).zfill(le_n) + '_' + labels_str +\
+                          '_' + subset + '.' + image_format
+              label_confidence_pairs.append(label_confidence_pairs_str)
+              file_names.append(file_name)
+              subsets.append(subset)
+              indices.append(index)
+              hash_values.append(get_hash_value(image_bytes))
+              count += 1
+            except tf.errors.OutOfRangeError:
+              break
+
+    labels_file_name = 'labels.csv'
+    labels_df = pd.DataFrame({'FileName': file_names,
+                              'LabelConfidencePairs': label_confidence_pairs,
+                              'Subset': subsets,
+                              'Index': indices,
+                              'HashValue': hash_values})
+
+    return labels_df
+
   def tfrecord_format_to_file_format(self, new_dataset_name=None):
     """Generate a dataset in File Format.
 
@@ -354,6 +577,7 @@ class TFRecordFormatDataset(object):
     label_confidence_pairs = []
     subsets = []
     indices = []
+    hash_values = []
 
     total_num_examples = self.get_num_examples(subset='train') +\
                          self.get_num_examples(subset='test')
@@ -385,6 +609,8 @@ class TFRecordFormatDataset(object):
               string_list = [str(l) + ' ' + str(c) for l, c in index_score_list]
               labels_list = [str(classes_list[l]) for l, c in index_score_list]
               labels_str = '-'.join(labels_list)
+              if len(labels_str) > 20:
+                labels_str = labels_str[:20]
               label_confidence_pairs_str = ' '.join(string_list)
               file_name = str(index).zfill(le_n) + '_' + labels_str +\
                           '_' + subset + '.' + image_format
@@ -395,6 +621,7 @@ class TFRecordFormatDataset(object):
               file_names.append(file_name)
               subsets.append(subset)
               indices.append(index)
+              hash_values.append(get_hash_value(image_bytes))
               count += 1
             except tf.errors.OutOfRangeError:
               print("Number of last example in subset {}: {}"\
@@ -420,6 +647,8 @@ class TFRecordFormatDataset(object):
               string_list = [str(l) + ' ' + str(c) for l, c in index_score_list]
               labels_list = [str(classes_list[l]) for l, c in index_score_list]
               labels_str = '-'.join(labels_list)
+              if len(labels_str) > 20:
+                labels_str = labels_str[:20]
               label_confidence_pairs_str = ' '.join(string_list)
               file_name = str(index).zfill(le_n) + '_' + labels_str +\
                           '_' + subset + '.' + image_format
@@ -430,6 +659,7 @@ class TFRecordFormatDataset(object):
               file_names.append(file_name)
               subsets.append(subset)
               indices.append(index)
+              hash_values.append(get_hash_value(image_bytes))
               count += 1
             except tf.errors.OutOfRangeError:
               print("Number of last example in subset {}: {}"\
@@ -440,7 +670,8 @@ class TFRecordFormatDataset(object):
     labels_df = pd.DataFrame({'FileName': file_names,
                               'LabelConfidencePairs': label_confidence_pairs,
                               'Subset': subsets,
-                              'Index': indices})
+                              'Index': indices,
+                              'HashValue': hash_values})
     labels_file_path = os.path.join(new_dataset_dir, labels_file_name)
     labels_df.to_csv(labels_file_path, index=False)
 
