@@ -1,4 +1,5 @@
 # TFRecord Format
+(Deprecated. To be updated)
 
 We accept dataset contributions under **TFRecord format**.
 
