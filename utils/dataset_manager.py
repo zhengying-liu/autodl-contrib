@@ -436,13 +436,19 @@ class TFRecordFormatDataset(object):
                     .format(subset, count))
               break
 
+    labels_file_name = 'labels.csv'
     labels_df = pd.DataFrame({'FileName': file_names,
                               'LabelConfidencePairs': label_confidence_pairs,
                               'Subset': subsets,
                               'Index': indices})
-    labels_file_name = 'labels.csv'
     labels_file_path = os.path.join(new_dataset_dir, labels_file_name)
     labels_df.to_csv(labels_file_path, index=False)
+
+    private_info_file_name = 'private.info'
+    private_info_file_path = os.path.join(new_dataset_dir,
+                                          private_info_file_name)
+    with open(private_info_file_path, 'w') as f:
+      f.write('')
 
     return None
 
