@@ -156,8 +156,6 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8,
 
 
   all_classes = get_all_classes(merged_df)
-  # TODO (@zhengying-liu @Adrien): add info on real label names
-  # classes_list = [str(i) for i in range(output_dim)]
 
   features_labels_pairs_train =\
     get_features_labels_pairs(merged_df, input_dir, subset='train')
