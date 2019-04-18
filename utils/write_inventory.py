@@ -84,13 +84,12 @@ def find_info_files(dataset_dir):
 
 def init_info_file(dataset_dir, domain, public=True, templates_dir='info_file_templates/'):
     """ Initiate .info file according to a template """
-
     dataset_name = dataset_dir.split('/')[-1]
 
     if public:
         filename = dataset_dir + '/' + dataset_name + '_public.info'
         template = open(templates_dir + 'template_public.info', 'r')
-        content = template.read().format(domain)
+        content = template.read().format(dataset_name.capitalize(), domain) # write fake name and domain (e.g. image)
         template.close()
 
     else:
@@ -172,11 +171,11 @@ def write_information_table(output_file, domains, folders):
                     # Write information
                     add_entry_csv(output_file, dic, status=folder)
 
-
 write_information_table(output_file, domains, folders)
 write_information_table(tabular_output_file, tabular_domains, folders)
 
-
+# sample-FakeName-train.tfrecord
+# FakeName
 
 ### OLD SCRIPT ###
 
