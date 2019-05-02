@@ -206,10 +206,8 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8,
 if __name__ == '__main__':
   tf.flags.DEFINE_string('input_dir', '../../file_format/monkeys',
                          "Directory containing image datasets.")
-
   tf.flags.DEFINE_string('output_dir', '../../formatted_datasets/',
                          "Output data directory.")
-
   tf.flags.DEFINE_string('new_dataset_name', 'new_dataset',
                          "Basename of formatted dataset.")
 
