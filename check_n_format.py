@@ -29,13 +29,27 @@ def read_metadata(input_dir):
     return yaml.load(open(filename, 'r'))
 
 
+def count_labels(series):
+    """ Count the number of unique labels.
+        We need to do some splits for the multi-label case.
+    """
+    s = set()
+    for line in series:
+        if isinstance(line, str):
+            for e in line.split(' '):
+                s.add(int(e))
+        else:
+            s.add(line)
+    return len(s)
+    
+
 def compute_stats(labels_df, label_name=None):
     """ Compute simple statistics (sample num, label num)
     """
     res = {}
     res['sample_num'] = labels_df.shape[0]
     if 'Labels' in list(labels_df):
-        res['label_num'] = len(labels_df['Labels'].unique())
+        res['label_num'] = count_labels(labels_df['Labels'])
     elif 'LabelConfidencePairs' in list(labels_df):
         res['label_num'] = len(labels_df['LabelConfidencePairs'].unique())
     else:
