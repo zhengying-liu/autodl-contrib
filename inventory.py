@@ -37,7 +37,8 @@ class Stats():
         self.min_cardinality_label = None
 
     def to_string(self):
-        return'{},{},{},{},{},{},{},{}\n'.format(self.name,self.size,self.tensor_shape,
+        return'{},{},{},{},{},{},{},{}\n'.format(self.name,self.size,
+                                                 str(self.tensor_shape).replace(',', ';'), # let's avoid commas because of CSV format
                                                  self.output_size,self.num_channels,
                                                  self.is_multiclass, self.average_labels,
                                                  self.min_cardinality_label)
