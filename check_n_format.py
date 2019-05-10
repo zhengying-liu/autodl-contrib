@@ -41,7 +41,7 @@ def count_labels(series):
         else:
             s.add(line)
     return len(s)
-    
+
 
 def compute_stats(labels_df, label_name=None):
     """ Compute simple statistics (sample num, label num)
