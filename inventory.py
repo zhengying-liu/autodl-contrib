@@ -73,26 +73,23 @@ def compute_statistics(dataset):
      e.g. no ex. of one class in one label column after the split.
     """
     name, train, test, test_labels = dataset
-    train_dataset = train.get_dataset()
-    test_dataset = test.get_dataset()
     train_stats = Stats(name + ' train', train) # read metadata and initialize variables
     test_stats = Stats(name + ' test', test)
     all_stats = Stats(name, train, test) # stats before train/test split
 
     # loop over train set (labels are attached with data points)
-    for dataset, stats in [(train_dataset, train_stats)]: #, (test_dataset, test_stats)]:
-        # Loop over the dataset to compute statistics
-        iterator = dataset.make_one_shot_iterator()
-        next_element = iterator.get_next()
-        with tf.Session() as sess:
-            for _ in range(stats.size):
-             _, labels = sess.run(next_element)
-             one_num = np.count_nonzero(labels)
-             if (not stats.is_multilabel) and (one_num > 1):
-                 stats.is_multilabel = True # is multilabel
-             stats.ones_sum += one_num
-             stats.labels_sum += labels
-        stats.update()
+    train_dataset = train.get_dataset()
+    iterator = train_dataset.make_one_shot_iterator()
+    next_element = iterator.get_next()
+    with tf.Session() as sess:
+        for _ in range(train_stats.size):
+         _, labels = sess.run(next_element)
+         one_num = np.count_nonzero(labels)
+         if (not train_stats.is_multilabel) and (one_num > 1):
+             train_stats.is_multilabel = True # is multilabel
+         train_stats.ones_sum += one_num
+         train_stats.labels_sum += labels
+    train_stats.update()
 
     # loop over test set (labels are in solution file)
     for labels in test_labels:
