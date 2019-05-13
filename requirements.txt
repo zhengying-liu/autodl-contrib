@@ -6,3 +6,4 @@ pyyaml
 Pillow
 #Pillow==4.0.0
 psutil
+opencv-python

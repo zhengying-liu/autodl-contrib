@@ -9,6 +9,7 @@ import glob, os, yaml
 import tensorflow as tf
 path.append('utils')
 path.append('utils/image')
+path.append('utils/video')
 STARTING_KIT_DIR = '../autodl/codalab_competition_bundle/AutoDL_starting_kit'
 LOG_FILE = 'baseline_log.txt'
 path.append(STARTING_KIT_DIR)
@@ -16,6 +17,7 @@ path.append(os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program'))
 import dataset_manager
 import pandas as pd
 import format_image
+import format_video
 import run_local_test
 import data_browser
 
@@ -27,13 +29,27 @@ def read_metadata(input_dir):
     return yaml.load(open(filename, 'r'))
 
 
+def count_labels(series):
+    """ Count the number of unique labels.
+        We need to do some splits for the multi-label case.
+    """
+    s = set()
+    for line in series:
+        if isinstance(line, str):
+            for e in line.split(' '):
+                s.add(int(e))
+        else:
+            s.add(line)
+    return len(s)
+
+
 def compute_stats(labels_df, label_name=None):
     """ Compute simple statistics (sample num, label num)
     """
     res = {}
     res['sample_num'] = labels_df.shape[0]
     if 'Labels' in list(labels_df):
-        res['label_num'] = len(labels_df['Labels'].unique())
+        res['label_num'] = count_labels(labels_df['Labels'])
     elif 'LabelConfidencePairs' in list(labels_df):
         res['label_num'] = len(labels_df['LabelConfidencePairs'].unique())
     else:
@@ -65,16 +81,26 @@ def find_file(input_dir, name):
 def format_data(input_dir, output_dir, fake_name, effective_sample_num,
                 train_size=0.8,
                 num_channels=3,
-                classes_list=None):
+                classes_list=None,
+                domain='image'):
     """ Transform data into TFRecords
     """
     print('format_data: Formatting... {} samples'.format(effective_sample_num))
     if effective_sample_num != 0:
-        format_image.format_data(input_dir, output_dir, fake_name,
-                                 train_size=train_size,
-                                 max_num_examples=effective_sample_num,
-                                 num_channels=num_channels,
-                                 classes_list=classes_list)
+        if domain == 'image':
+            format_image.format_data(input_dir, output_dir, fake_name,
+                                     train_size=train_size,
+                                     max_num_examples=effective_sample_num,
+                                     num_channels=num_channels,
+                                     classes_list=classes_list)
+        elif domain == 'video':
+            format_video.format_data(input_dir, output_dir, fake_name,
+                                     train_size=train_size,
+                                     max_num_examples=effective_sample_num,
+                                     num_channels=num_channels,
+                                     classes_list=classes_list)
+        else:
+            raise Exception('Unknown domain: {}'.format(domain))
     print('format_data: done.')
 
 
@@ -112,7 +138,7 @@ if __name__=="__main__":
     metadata = read_metadata(input_dir)
     fake_name = metadata['name']
     print('\nDataset fake name: {}\n'.format(fake_name))
-    labels_df = format_image.get_labels_df(input_dir)
+    labels_df = format_image.get_labels_df(input_dir) # same function in format_video
 
     print('First rows of labels file:')
     print(labels_df.head())
@@ -158,6 +184,11 @@ if __name__=="__main__":
         print('No formatted version found, creating {} folder.'.format(output_dir))
         os.mkdir(output_dir)
 
+    # domain (image, video, text, etc.)
+    domain = input("Domain? 'image' or 'video' [Default='image'] ")
+    if domain == '':
+        domain = 'image'
+
     # num channels
     num_channels = input('Number of channels? [Default=3] ')
     if num_channels == '':
@@ -180,7 +211,7 @@ if __name__=="__main__":
         label_list = label_name.values.tolist()
         flat_label_list = [item for sublist in label_list for item in sublist]
     print(flat_label_list)
-    format_data(input_dir, output_dir, fake_name, effective_sample_num, num_channels=num_channels, classes_list=flat_label_list)
+    format_data(input_dir, output_dir, fake_name, effective_sample_num, num_channels=num_channels, classes_list=flat_label_list, domain=domain)
     formatted_dataset_path = os.path.join(output_dir, fake_name)
 
     # run baseline
