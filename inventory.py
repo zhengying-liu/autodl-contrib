@@ -2,6 +2,10 @@
 # Author: Adrien Pavao
 # Date: 10 May 2019
 
+# Remarks about TFrecords format:
+# - Not easy to loop over data and labels
+# - Train and test labels are separated in an unintuitive way
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -30,7 +34,7 @@ class Stats():
         self.output_size = metadata.get_output_size()
         self.num_channels = metadata.get_num_channels()
         # Initialize variables that needs the loop over data
-        self.is_multiclass = False
+        self.is_multilabel = False
         self.labels_sum = np.zeros(self.output_size)
         self.ones_sum = 0
         self.average_labels = None
@@ -40,30 +44,43 @@ class Stats():
         return'{},{},{},{},{},{},{},{}\n'.format(self.name,self.size,
                                                  str(self.tensor_shape).replace(',', ';'), # let's avoid commas because of CSV format
                                                  self.output_size,self.num_channels,
-                                                 self.is_multiclass, self.average_labels,
+                                                 self.is_multilabel, self.average_labels,
                                                  self.min_cardinality_label)
 
-def load_dataset(input_dir, name, padding=False, batch_size=1):
+    def update(self):
+        """ Update average and minimum from already computed statitics.
+        """
+        # class balance TODO
+        # average #labels per example or distribution of #labels per example
+        self.average_labels = float(self.ones_sum) / self.size
+        # min cardinality of classes per label
+        self.min_cardinality_label = min(self.labels_sum)
+
+def load_dataset(input_dir, name):
     """ Load a TFRecords dataset (AutoDL format).
     """
     input_dir = os.path.join(input_dir, name)
+    test_labels_file = os.path.join(input_dir, name+'.solution')
+    test_labels = np.array(pd.read_csv(test_labels_file, header=None, sep=' '))
     data_dir = name + '.data'
     train = AutoDLDataset(os.path.join(input_dir, data_dir, 'train'))
     test = AutoDLDataset(os.path.join(input_dir, data_dir, 'test'))
-    return name, train, test #, labels
+    return name, train, test, test_labels
 
 def compute_statistics(dataset):
     """ Compute statitics of the dataset, with and without train/test split.
      Raise a warning if pathological case,
      e.g. no ex. of one class in one label column after the split.
     """
-    name, train, test = dataset
+    name, train, test, test_labels = dataset
     train_dataset = train.get_dataset()
     test_dataset = test.get_dataset()
     train_stats = Stats(name + ' train', train) # read metadata and initialize variables
     test_stats = Stats(name + ' test', test)
     all_stats = Stats(name, train, test) # stats before train/test split
-    for dataset, stats in [(train_dataset, train_stats), (test_dataset, test_stats)]:
+
+    # loop over train set (labels are attached with data points)
+    for dataset, stats in [(train_dataset, train_stats)]: #, (test_dataset, test_stats)]:
         # Loop over the dataset to compute statistics
         iterator = dataset.make_one_shot_iterator()
         next_element = iterator.get_next()
@@ -71,22 +88,26 @@ def compute_statistics(dataset):
             for _ in range(stats.size):
              _, labels = sess.run(next_element)
              one_num = np.count_nonzero(labels)
-             if (not stats.is_multiclass) and (one_num > 1):
-                 # is multiclass
-                 stats.is_multiclass = True
+             if (not stats.is_multilabel) and (one_num > 1):
+                 stats.is_multilabel = True # is multilabel
              stats.ones_sum += one_num
              stats.labels_sum += labels
-        # class balance TODO
-        # average #labels per example or distribution of #labels per example
-        stats.average_labels = stats.ones_sum / stats.size
-        # min cardinality of classes per label
-        stats.min_cardinality_label = min(stats.labels_sum)
+        stats.update()
+
+    # loop over test set (labels are in solution file)
+    for labels in test_labels:
+        one_num = np.count_nonzero(labels)
+        if (not test_stats.is_multilabel) and (one_num > 1):
+            test_stats.is_multilabel = True # is multilabel
+        test_stats.ones_sum += one_num
+        test_stats.labels_sum += labels
+    test_stats.update()
 
     # re-compute for the dataset before train/test split
+    all_stats.is_multilabel =  train_stats.is_multilabel or test_stats.is_multilabel
     all_stats.ones_sum = train_stats.ones_sum + test_stats.ones_sum
     all_stats.labels_sum = train_stats.labels_sum + test_stats.labels_sum
-    all_stats.average_labels = all_stats.ones_sum / all_stats.size
-    all_stats.min_cardinality_label = min(stats.labels_sum)
+    all_stats.update()
 
     return all_stats, train_stats, test_stats
 
@@ -100,7 +121,7 @@ def write_csv(filename):
     """ Loop over formatted datasets
     """
     output = open(filename, 'w')
-    output.write('name,size,tensor_shape,output_size,num_channels,is_multiclass,average_labels,min_cardinality_label\n')
+    output.write('name,size,tensor_shape,output_size,num_channels,is_multilabel,average_labels,min_cardinality_label\n')
     for domain in DOMAINS:
         print('\nDomain: {}\n'.format(domain))
         input_dir = '../autodl-data/{}/formatted_datasets'.format(domain)
