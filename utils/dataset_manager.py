@@ -32,7 +32,6 @@ INGESTION_DIR = os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program')
 sys.path.append(INGESTION_DIR)
 
 from dataset import AutoDLDataset
-from data_browser import DataBrowser
 
 def get_hash_value(some_bytes):
   return hashlib.md5(some_bytes).hexdigest()
@@ -105,6 +104,23 @@ def labels_df_to_dict(labels_df):
                 for labels in all_labels]
   hash_labels_dict = {h:l for h, l in zip(hash_values, all_labels)}
   return hash_labels_dict
+
+def get_intersection_of_train_and_test(tfrecord_dataset_dir, write_files=True):
+  """Get the common examples in training set and test set of a dataset.
+
+  Args:
+    tfrecord_dataset_dir: string, path of the dataset in TFRecord format
+  Returns:
+    a Pandas data frame with rows being the common examples in training and test
+  """
+  tfrecord_format_dataset = TFRecordFormatDataset(tfrecord_dataset_dir)
+  dataset_name = tfrecord_format_dataset.get_dataset_name()
+  labels_df = tfrecord_format_dataset.get_labels_df(write_files=write_files)
+  examples_train = labels_df[labels_df['Subset'] == 'train']
+  examples_test = labels_df[labels_df['Subset'] == 'test']
+  examples_common = pd.merge(examples_train, examples_test,
+                             on='HashValue', how='inner')
+  return examples_common
 
 def compare_labels(labels_df_1, labels_df_2):
   """Given two data frames of labels, compare if the same examples have the
@@ -442,13 +458,15 @@ class TFRecordFormatDataset(object):
       label_confidence_pairs = to_label_confidence_pairs(solution_array)
       return label_confidence_pairs
 
-  def get_labels_df(self):
+  def get_labels_df(self, write_files=False):
     """Construct a `labels.csv` file just as in File Format."""
     if self.domain != 'image':
       raise NotImplementedError("This functionality is not implemented for " +
                               "the domain {} yet.".format(browser.domain))
 
     dataset_name = self.dataset_name
+    if write_files and not os.path.exists(dataset_name):
+      os.mkdir(dataset_name)
 
     output_dim = self.get_output_size()
 
@@ -496,6 +514,10 @@ class TFRecordFormatDataset(object):
               indices.append(index)
               hash_values.append(get_hash_value(image_bytes))
               count += 1
+              if write_files:
+                file_path = os.path.join(dataset_name, file_name)
+                with open(file_path, 'wb') as f:
+                  f.write(image_bytes)
             except tf.errors.OutOfRangeError:
               break
       else: # subset == 'train'
@@ -525,6 +547,10 @@ class TFRecordFormatDataset(object):
               indices.append(index)
               hash_values.append(get_hash_value(image_bytes))
               count += 1
+              if write_files:
+                file_path = os.path.join(dataset_name, file_name)
+                with open(file_path, 'wb') as f:
+                  f.write(image_bytes)
             except tf.errors.OutOfRangeError:
               break
 
