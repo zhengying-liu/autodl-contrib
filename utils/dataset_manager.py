@@ -443,7 +443,7 @@ class TFRecordFormatDataset(object):
     label_score = contexts['label_score'].values
     return label_index, label_score
 
-  def get_test_labels(self):
+  def get_test_labels(self, return_array=False):
     """Get test solution as NumPy array if exists.
 
     Returns:
@@ -455,8 +455,11 @@ class TFRecordFormatDataset(object):
       return None
     else:
       solution_array = np.loadtxt(path_to_solution)
-      label_confidence_pairs = to_label_confidence_pairs(solution_array)
-      return label_confidence_pairs
+      if return_array:
+        return solution_array
+      else:
+        label_confidence_pairs = to_label_confidence_pairs(solution_array)
+        return label_confidence_pairs
 
   def get_labels_df(self, write_files=False):
     """Construct a `labels.csv` file just as in File Format."""

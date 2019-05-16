@@ -9,6 +9,17 @@ In the directory containing your personal projects (e.g. `~/projects/`), clone t
 git clone http://github.com/zhengying-liu/autodl-contrib
 git clone http://github.com/zhengying-liu/autodl
 ```
+Add the directory `autodl-contrib` to `PYTHONPATH`
+```bash
+cd autodl-contrib
+export PYTHONPATH=$PYTHONPATH:$(pwd)
+```
+and test using
+```bash
+python -c "import utils.dataset_manager"
+```
+If no error message is produced, you are good to go.
+
 Then you can choose to
 1. work on your local machine (and make local changes); or
 2. work in a Docker container (in the same environment as AutoCV/AutoDL challenge).
