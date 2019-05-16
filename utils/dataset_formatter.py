@@ -2,10 +2,14 @@
 # Creation date: 30 Sep 2018
 # Description: API for formatting AutoDL datasets
 
-import tensorflow as tf
-import os
-import numpy as np
 from pprint import pprint
+import numpy as np
+import logging
+import os
+import tensorflow as tf
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 verbose = True
 
@@ -81,6 +85,17 @@ def label_sparse_to_dense(li_label_nums, output_dim):
     dense_label[label_num] = 1
   return dense_label
 
+def label_dense_to_sparse(label_array):
+  """Given an array of label vector, return two lists of labels and confidences.
+  """
+  labels = []
+  confidences = []
+  for i, c in enumerate(label_array):
+    if not np.isclose(label_array[i], 0):
+      labels.append(i)
+      confidences.append(c)
+  return labels, confidences
+
 def feature_sparse_to_dense(features): # TODO
   return features
 
@@ -120,7 +135,8 @@ class UniMediaDatasetFormatter():
                sequence_size_func=percentile_95,
                new_dataset_name=None,
                classes_dict=None,
-               classes_list=None):
+               classes_list=None,
+               is_label_array=False):
     # Dataset basename, e.g. `adult`
     self.dataset_name = dataset_name
     if new_dataset_name:
@@ -179,6 +195,9 @@ class UniMediaDatasetFormatter():
     self.dataset_dir = self.get_dataset_dir()
     self.dataset_data_dir = self.get_dataset_data_dir()
 
+    # Indicate whether the label is an array (otherwise the label is a list of
+    # integers)
+    self.is_label_array = is_label_array
 
   def get_dataset_dir(self):
     dataset_dir = os.path.join(self.output_dir, self.new_dataset_name)
@@ -299,6 +318,8 @@ matrix_spec {
     has_confidences = False
     with tf.python_io.TFRecordWriter(path_to_tfrecord) as writer:
       for features, labels in data:
+        if self.is_label_array:
+          labels = label_dense_to_sparse(labels)
         # in the case where `labels` is actually (labels, confidences)
         if has_confidences or isinstance(labels, tuple):
           assert(len(labels) == 2)
