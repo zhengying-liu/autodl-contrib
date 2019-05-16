@@ -41,11 +41,14 @@ class Stats():
         self.min_cardinality_label = None
 
     def to_string(self):
-        return'{},{},{},{},{},{},{},{}\n'.format(self.name,self.size,
+        labels_sum = np.sort(self.labels_sum)[::-1]
+        labels_sum = np.around(labels_sum / labels_sum.min(), decimals=2)
+        return'{},{},{},{},{},{},{},{},{}\n'.format(self.name,self.size,
                                                  str(self.tensor_shape).replace(',', ';'), # let's avoid commas because of CSV format
-                                                 self.output_size,self.num_channels,
+                                                 self.output_size, self.num_channels,
                                                  self.is_multilabel, self.average_labels,
-                                                 self.min_cardinality_label)
+                                                 self.min_cardinality_label,
+                                                 str(labels_sum))
 
     def update(self):
         """ Update average and minimum from already computed statitics.
@@ -118,7 +121,7 @@ def write_csv(filename):
     """ Loop over formatted datasets
     """
     output = open(filename, 'w')
-    output.write('name,size,tensor_shape,output_size,num_channels,is_multilabel,average_labels,min_cardinality_label\n')
+    output.write('name,size,tensor_shape,output_size,num_channels,is_multilabel,average_labels,min_cardinality_label,class_balance\n')
     for domain in DOMAINS:
         print('\nDomain: {}\n'.format(domain))
         input_dir = '../autodl-data/{}/formatted_datasets'.format(domain)
@@ -132,9 +135,14 @@ def write_csv(filename):
                 print(row)
                 output.write(row)
     output.close()
+    
+def print_statistics(input_dir, name):
+    for stats in compute_statistics(load_dataset(input_dir, name)):
+        print(stats.to_string())
 
 def main():
     write_csv('inventory.csv')
+    #print_statistics('../autodl-data/image/formatted_datasets', 'loukoum')
 
 if __name__ == "__main__":
     main()
