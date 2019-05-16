@@ -31,7 +31,6 @@
 # FOR THE CHALLENGE.
 ################################################################################
 
-from scipy.io import loadmat
 import logging
 import numpy as np
 import os
@@ -61,6 +60,7 @@ def get_module(module_name='inception_v3'):
                      "{}.".format(list(MODULE_URLS)))
   module_url = MODULE_URLS[module_name]
   module = hub.Module(module_url)
+  logger.info("Successfully loaded module {}.".format(module_name))
   return module
 
 def adjust_image(tensor_4d, expected_image_size=(299, 299)):
@@ -258,7 +258,7 @@ def main(*argv):
   # test_get_feature_labels_arrays()
 
 if __name__ == '__main__':
-  default_dataset_dir = '../../formatted_datasets/miniciao'
+  default_dataset_dir = os.path.join(REPO_DIR, 'formatted_datasets/miniciao')
 
   tf.flags.DEFINE_string('dataset_dir', default_dataset_dir,
                         "Directory containing the content (e.g. adult.data/ + "
@@ -268,4 +268,4 @@ if __name__ == '__main__':
   FLAGS = tf.flags.FLAGS
   dataset_dir = FLAGS.dataset_dir
 
-  main(sys.argv)
+  format_preprocessed_dataset(dataset_dir)
