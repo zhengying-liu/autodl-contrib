@@ -11,6 +11,7 @@ import pandas as pd
 import tensorflow as tf
 import os
 import sys
+from math import sqrt
 INGESTION_PATH = '../autodl/codalab_competition_bundle/AutoDL_starting_kit/AutoDL_ingestion_program/'
 sys.path.append(INGESTION_PATH)
 from dataset import AutoDLDataset
@@ -32,6 +33,7 @@ class Stats():
             self.size = metadata.size() + subset2.metadata_.size()
         self.tensor_shape = metadata.get_tensor_shape()
         self.output_size = metadata.get_output_size()
+        self.label_indicator = int(5000 / sqrt(self.output_size))
         self.num_channels = metadata.get_num_channels()
         # Initialize variables that needs the loop over data
         self.is_multilabel = False
@@ -41,14 +43,18 @@ class Stats():
         self.min_cardinality_label = None
 
     def to_string(self):
-        labels_sum = np.sort(self.labels_sum)[::-1]
-        labels_sum = np.around(labels_sum / labels_sum.min(), decimals=2)
-        return'{},{},{},{},{},{},{},{},{}\n'.format(self.name,self.size,
-                                                 str(self.tensor_shape).replace(',', ';'), # let's avoid commas because of CSV format
-                                                 self.output_size, self.num_channels,
-                                                 self.is_multilabel, self.average_labels,
-                                                 self.min_cardinality_label,
-                                                 str(labels_sum))
+        tensor_shape = str(self.tensor_shape).replace(',', ';') # let's avoid commas because of CSV format
+        labels_sum = str(np.sort(self.labels_sum)[::-1])        # more readable if sorted
+        #labels_sum = np.around(labels_sum / labels_sum.min(), decimals=2) # ratio
+        return'{},{},{},{},{},{},{},{},{},{}\n'.format(self.name,self.size,
+                                                       tensor_shape,
+                                                       self.output_size, 
+                                                       self.num_channels,
+                                                       self.is_multilabel, 
+                                                       self.average_labels,
+                                                       self.min_cardinality_label,
+                                                       self.label_indicator,
+                                                       labels_sum)
 
     def update(self):
         """ Update average and minimum from already computed statitics.
@@ -121,7 +127,7 @@ def write_csv(filename):
     """ Loop over formatted datasets
     """
     output = open(filename, 'w')
-    output.write('name,size,tensor_shape,output_size,num_channels,is_multilabel,average_labels,min_cardinality_label,class_balance\n')
+    output.write('name,size,tensor_shape,output_size,num_channels,is_multilabel,average_labels,min_cardinality_label,5000/sqrt(#labels),class_distribution\n')
     for domain in DOMAINS:
         print('\nDomain: {}\n'.format(domain))
         input_dir = '../autodl-data/{}/formatted_datasets'.format(domain)
