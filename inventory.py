@@ -44,7 +44,7 @@ class Stats():
 
     def to_string(self):
         tensor_shape = str(self.tensor_shape).replace(',', ';') # let's avoid commas because of CSV format
-        labels_sum = str(np.sort(self.labels_sum)[::-1])        # more readable if sorted
+        labels_sum = str(np.sort(self.labels_sum)[::-1]).replace('\n', ' ') # more readable if sorted
         #labels_sum = np.around(labels_sum / labels_sum.min(), decimals=2) # ratio
         return'{},{},{},{},{},{},{},{},{},{}\n'.format(self.name,self.size,
                                                        tensor_shape,

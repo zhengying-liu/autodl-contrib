@@ -40,6 +40,7 @@ def count_labels(series):
                 s.add(int(e))
         else:
             s.add(line)
+    s = {x for x in s if x==x} # remove NaN (example without label)
     return len(s)
 
 
