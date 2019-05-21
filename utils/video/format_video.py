@@ -82,7 +82,7 @@ def get_labels(labels, confidence_pairs=False):
       labels = [int(x) for i, x in enumerate(l_split) if i%2 == 0]
       confidences = [float(x) for i, x in enumerate(l_split) if i%2 == 1]
   else:
-      labels = [int(x) for x in l_split]
+      labels = [int(x) for x in l_split if x==x] # x==x to remove NaN values
       confidences = [1 for _ in l_split]
 
   return labels, confidences
