@@ -86,8 +86,8 @@ Each dataset in File Format can be attached with a file under the name `label.na
 In multi-label classification tasks, each example can belong to several classes (i.e. have several labels).
 If you have a regression task, contact us and we'll probably turn it into a classification task (categorical regression).
 
-## Label confidence pairs
-You can also provide labels as **label confidence pairs** as in the following example [NOT RECOMMENDED]:
+## Label confidence pairs [NOT RECOMMENDED]
+You can also provide labels as **label confidence pairs** as in the following example:
 ```
 FileName, LabelConfidencePairs
 n0159.jpg, 2 0.488458 9 0.48776 0 0.486832
