@@ -33,9 +33,9 @@ etc.
 The `labels.csv` file should have two comma separated columns: `FileName` and `Labels`.
 ```
 FileName, Labels
-n0159.jpg, 0 9
-n0165.jpg, 0 1 7
-n0167.jpg, 5
+n0159.jpg,0 9
+n0165.jpg,0 1 7
+n0167.jpg,5
 etc.
 ```
 The second column is a space separated list of numerical labels (since all problems are multi-label problems). Labels are numbered 0 to c-1, where c is the total number of categories. 
