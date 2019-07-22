@@ -32,15 +32,16 @@ def get_labels_df(dataset_dir, shuffling=True):
   return labels_df
 
 def get_merged_df(labels_df, train_size=0.8):
-  """Do train/test split by generating random number in [0,1]."""
-  np.random.seed(42)
+  """Do train/test split (if needed) by generating random number in [0,1]."""
   merged_df = labels_df.copy()
-  def get_subset(u):
-    if u < train_size:
-      return 'train'
-    else:
-      return 'test'
-  merged_df['subset'] = merged_df.apply(lambda x: get_subset(np.random.rand()), axis=1)
+  if 'subset' not in labels_df:
+      np.random.seed(42)
+      def get_subset(u):
+        if u < train_size:
+          return 'train'
+        else:
+          return 'test'
+      merged_df['subset'] = merged_df.apply(lambda x: get_subset(np.random.rand()), axis=1)
   return merged_df
 
 def image_to_bytes(image, num_channels=3, tmp_filename='TMP-a78h2.jpg'):

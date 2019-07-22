@@ -56,7 +56,8 @@ def compute_stats(labels_df, label_name=None):
     else:
         raise Exception('No labels found, please check labels.csv file.')
     if label_name is not None:
-        assert(label_name.shape[0] == res['label_num'])
+        if(label_name.shape[0] != res['label_num']):
+            raise Exception('Number of labels found in label.name and computed manually is not the same: {} != {}'.format(label_name.shape[0], res['label_num']))
     res['domain'] = 'image'
     return res
 
