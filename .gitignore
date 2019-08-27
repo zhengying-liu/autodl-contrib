@@ -8,3 +8,5 @@
 *formatted*
 *.pyc
 *.tex
+*log.txt
+*inventory.csv
