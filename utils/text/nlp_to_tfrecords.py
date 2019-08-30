@@ -111,7 +111,7 @@ if __name__=="__main__":
     num_channels = len(vocabulary)
     num_examples_train = len(train_data)
     num_examples_test = len(test_data)
-    new_dataset_name = 'New_text_dataset'
+    new_dataset_name = name # same name
     classes_list = None
     channels_list = vocabulary_to_list(vocabulary) # not optimized, initially the dict had a bad structure (d['word'] = index)
     dataset_formatter =  UniMediaDatasetFormatter(name,
