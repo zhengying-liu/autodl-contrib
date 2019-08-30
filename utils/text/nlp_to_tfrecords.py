@@ -55,12 +55,21 @@ def vocabulary_to_list(vocabulary):
     return channels_list
 
 def get_features(row, vocabulary, language='EN'):
+    """
+    Args:
+      row: string, a sentence in certain language (e.g. EN or ZH)
+      vocabulary: dict, mapping from token to its index
+      language: string, can be 'EN' or 'ZH'
+    Returns:
+      a list of 4-tuples of form (row_index, col_index, channel_index, value)
+        for a sparse representation of a 3-D Tensor.
+    """
     features = []
     if language != 'ZH':
         row = row.split(' ')
     for e in row:
-        features.append(vocabulary[e])
-    return [features]
+        features.append((0, 0, vocabulary[e], 1))
+    return features
 
 def get_labels(row):
     labels = row.split(' ')
@@ -129,7 +138,7 @@ if __name__=="__main__":
                                                   is_sequence_row='false',
                                                   has_locality_col='true',
                                                   has_locality_row='true',
-                                                  format='DENSE',
+                                                  format='SPARSE',
                                                   label_format='DENSE',
                                                   is_sequence='false',
                                                   sequence_size_func=None,

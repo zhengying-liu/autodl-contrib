@@ -54,7 +54,11 @@ def dict_to_text_format(python_dict, map_name='label_to_index_map'):
   template = template.replace('<label_to_index_map>', map_name)
   text_format = ''
   for k, v in python_dict.items():
-    item = template.replace('<key>', "'" + str(k) + "'")
+    if "'" in k:
+      quote = '"'
+    else:
+      quote = "'"
+    item = template.replace('<key>', quote + str(k) + quote)
     item = item.replace('<value>', str(v))
     text_format += item
   return text_format
@@ -96,8 +100,13 @@ def label_dense_to_sparse(label_array):
       confidences.append(c)
   return labels, confidences
 
-def feature_sparse_to_dense(features): # TODO
-  return features
+def feature_sparse_to_dense(features):
+  """Not really sparse to dense. But the code should be clear."""
+  sparse_col_index = [x[0] for x in features]
+  sparse_row_index = [x[1] for x in features]
+  sparse_channel_index = [x[2] for x in features]
+  sparse_value = [x[3] for x in features]
+  return sparse_row_index, sparse_col_index, sparse_channel_index, sparse_value
 
 def avg_length_times_two(li):
   """To be used as callable for `sequence_size_func` in
@@ -359,12 +368,14 @@ matrix_spec {
             'label_score': label_score
         }
 
+        # For SPARSE format, `features` should be a list of 4-tuples. Each
+        # tuple has shape (row_index, col_index, channel_index, value)
         if self.format == 'SPARSE':
-          sparse_col_index, sparse_row_index, sparse_channel_index, sparse_value =\
-              feature_sparse_to_dense(features) # TODO
+          sparse_row_index, sparse_col_index, sparse_channel_index, sparse_value =\
+              feature_sparse_to_dense(features)
           feature_list_dict = {
-            '0_sparse_col_index': _feature_list([_int64_feature(sparse_col_index)]),
             '0_sparse_row_index': _feature_list([_int64_feature(sparse_row_index)]),
+            '0_sparse_col_index': _feature_list([_int64_feature(sparse_col_index)]),
             '0_sparse_channel_index': _feature_list([_int64_feature(sparse_channel_index)]),
             '0_sparse_value': _feature_list([_float_feature(sparse_value)])
           }
