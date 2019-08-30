@@ -360,11 +360,12 @@ matrix_spec {
         }
 
         if self.format == 'SPARSE':
-          sparse_col_index, sparse_row_index, sparse_value =\
+          sparse_col_index, sparse_row_index, sparse_channel_index, sparse_value =\
               feature_sparse_to_dense(features) # TODO
           feature_list_dict = {
             '0_sparse_col_index': _feature_list([_int64_feature(sparse_col_index)]),
             '0_sparse_row_index': _feature_list([_int64_feature(sparse_row_index)]),
+            '0_sparse_channel_index': _feature_list([_int64_feature(sparse_channel_index)]),
             '0_sparse_value': _feature_list([_float_feature(sparse_value)])
           }
         elif self.format == 'DENSE':
