@@ -131,6 +131,7 @@ class UniMediaDatasetFormatter():
                has_locality_col='true',
                has_locality_row='true',
                format='DENSE',
+               label_format='SPARSE',
                is_sequence='false',
                sequence_size_func=percentile_95,
                new_dataset_name=None,
@@ -172,6 +173,7 @@ class UniMediaDatasetFormatter():
     self.has_locality_col = has_locality_col
     self.has_locality_row = has_locality_row
     self.format = format
+    self.label_format = label_format
     # When no info is given on `num_channels`, the default value is set to 3
     # for compressed images and 1 other wise
     if num_channels is None:
@@ -337,7 +339,10 @@ matrix_spec {
         if is_test_set:
           label_index = _int64_feature([])
           label_score = _float_feature([])
-          labels_array[counter] = label_sparse_to_dense(labels, self.output_dim)
+          if self.label_format == 'SPARSE':
+              labels_array[counter] = label_sparse_to_dense(labels, self.output_dim)
+          else:
+              labels_array[counter] = labels
         else:
           label_index = _int64_feature(labels)
           label_score = _float_feature(confidences)

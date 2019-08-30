@@ -121,7 +121,6 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8,
     else:
         raise Exception('No labels found, please check labels.csv file.')
 
-
   all_classes = get_all_classes(merged_df)
 
   features_labels_pairs_train =\
