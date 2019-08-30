@@ -59,7 +59,7 @@ def dict_to_text_format(python_dict, map_name='label_to_index_map'):
     text_format += item
   return text_format
 
-def list_to_text_format(classes):
+def list_to_text_format(classes, map_name='label_to_index_map'):
   """Convert a list to string.
 
   Args:
@@ -77,7 +77,7 @@ def list_to_text_format(classes):
       }
   """
   python_dict = {s:i for i, s in enumerate(classes)}
-  return dict_to_text_format(python_dict)
+  return dict_to_text_format(python_dict, map_name=map_name)
 
 def label_sparse_to_dense(li_label_nums, output_dim):
   dense_label = np.zeros(output_dim)
@@ -137,6 +137,7 @@ class UniMediaDatasetFormatter():
                new_dataset_name=None,
                classes_dict=None,
                classes_list=None,
+               channels_list=None,
                is_label_array=False):
     # Dataset basename, e.g. `adult`
     self.dataset_name = dataset_name
@@ -162,6 +163,10 @@ class UniMediaDatasetFormatter():
       self.label_to_index_map = list_to_text_format(classes_list) # Convert list to string
     else:
       self.label_to_index_map = '' # Empty if no information is provided
+    if channels_list is not None:
+        self.channel_to_index_map = list_to_text_format(channels_list, map_name='channel_to_index_map')
+    else:
+        self.channel_to_index_map = ''
     self.col_count = col_count
     self.row_count = row_count
     if isinstance(sequence_size, int):
@@ -261,6 +266,7 @@ matrix_spec {
   format: <format>
 }
 <label_to_index_map>
+<channel_to_index_map>
 """
     if subset == 'train':
       sample_count = self.num_examples_train
@@ -272,6 +278,7 @@ matrix_spec {
     metadata = metadata.replace('<output_dim>', str(self.output_dim))
     metadata = metadata.replace('<num_channels>', str(self.num_channels))
     metadata = metadata.replace('<label_to_index_map>', str(self.label_to_index_map))
+    metadata = metadata.replace('<channel_to_index_map>', str(self.channel_to_index_map))
     metadata = metadata.replace('<col_count>', str(self.col_count))
     metadata = metadata.replace('<row_count>', str(self.row_count))
     metadata = metadata.replace('<is_sequence_col>', str(self.is_sequence_col))
@@ -341,7 +348,7 @@ matrix_spec {
           label_score = _float_feature([])
           if self.label_format == 'SPARSE':
               labels_array[counter] = label_sparse_to_dense(labels, self.output_dim)
-          else:
+          else: # elif DENSE
               labels_array[counter] = labels
         else:
           label_index = _int64_feature(labels)
