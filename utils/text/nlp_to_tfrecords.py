@@ -34,25 +34,15 @@ def read_file(filename):
     return output
 
 def create_vocabulary(data, language='EN'):
-    vocabulary = dict()
-    i = 0
+    vocabulary = []
     for row in data:
         if language != 'ZH':
             row = row.split(' ')
         for token in row:
             # Split (EN or ZH)
             if token not in vocabulary:
-                vocabulary[token] = i
-                i += 1
+                vocabulary.append(token)
     return vocabulary
-
-def vocabulary_to_list(vocabulary):
-    channels_list = []
-    for i in range(len(vocabulary)):
-        for k in vocabulary.keys():
-            if vocabulary[k] == i:
-                channels_list.append(k)
-    return channels_list
 
 def get_features(row, vocabulary, language='EN'):
     """
@@ -68,7 +58,7 @@ def get_features(row, vocabulary, language='EN'):
     if language != 'ZH':
         row = row.split(' ')
     for e in row:
-        features.append((0, 0, vocabulary[e], 1))
+        features.append((0, 0, vocabulary.index(e), 1))
     return features
 
 def get_labels(row):
@@ -122,7 +112,7 @@ if __name__=="__main__":
     num_examples_test = len(test_data)
     new_dataset_name = name # same name
     classes_list = None
-    channels_list = vocabulary_to_list(vocabulary) # not optimized, initially the dict had a bad structure (d['word'] = index)
+    channels_list = vocabulary # mapping between words and integers
     dataset_formatter =  UniMediaDatasetFormatter(name,
                                                   output_dir,
                                                   features_labels_pairs_train,
