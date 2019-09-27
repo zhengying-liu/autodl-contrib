@@ -16,7 +16,7 @@ INGESTION_PATH = '../autodl/codalab_competition_bundle/AutoDL_starting_kit/AutoD
 sys.path.append(INGESTION_PATH)
 from dataset import AutoDLDataset
 
-DOMAINS = ['image', 'video']
+DOMAINS = ['image', 'video', 'text', 'time']
 
 class Stats():
 

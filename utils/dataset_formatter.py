@@ -336,7 +336,8 @@ matrix_spec {
     has_confidences = False
     with tf.python_io.TFRecordWriter(path_to_tfrecord) as writer:
       for features, labels in data:
-        if self.is_label_array:
+        if self.is_label_array or (self.label_format == 'DENSE'):
+          # labels are stored in sparse format in TFRecords
           labels = label_dense_to_sparse(labels)
         # in the case where `labels` is actually (labels, confidences)
         if has_confidences or isinstance(labels, tuple):
@@ -355,10 +356,8 @@ matrix_spec {
         if is_test_set:
           label_index = _int64_feature([])
           label_score = _float_feature([])
-          if self.label_format == 'SPARSE':
-              labels_array[counter] = label_sparse_to_dense(labels, self.output_dim)
-          else: # elif DENSE
-              labels_array[counter] = labels
+          # labels are stored in dense format in solution file
+          labels_array[counter] = label_sparse_to_dense(labels, self.output_dim)
         else:
           label_index = _int64_feature(labels)
           label_score = _float_feature(confidences)
