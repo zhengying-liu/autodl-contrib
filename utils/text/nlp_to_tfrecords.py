@@ -44,31 +44,41 @@ def create_vocabulary(data, language='EN'):
                 vocabulary.append(token)
     return vocabulary
 
-def get_features(row, vocabulary, language='EN'):
+def get_features(row, vocabulary, language='EN', format='DENSE'):
     """
     Args:
       row: string, a sentence in certain language (e.g. EN or ZH)
       vocabulary: dict, mapping from token to its index
       language: string, can be 'EN' or 'ZH'
     Returns:
-      a list of 4-tuples of form (row_index, col_index, channel_index, value)
+      if DENSE format:
+        a list of 4-tuples of form (row, col, channel)
+      if SPARSE format:
+        a list of 4-tuples of form (row_index, col_index, channel_index, value)
         for a sparse representation of a 3-D Tensor.
     """
     features = []
     if language != 'ZH':
         row = row.split(' ')
     for e in row:
-        features.append((0, 0, vocabulary.index(e), 1))
+        if format=='DENSE':
+            one_hot_word = [0]*len(vocabulary)
+            one_hot_word[vocabulary.index(e)] = 1
+            features.append(one_hot_word)
+        elif format=='SPARSE':
+            features.append((0, 0, vocabulary.index(e), 1))
+        else:
+            raise Exception('Unknown format: {}'.format(format))
     return features
 
 def get_labels(row):
     labels = row.split(' ')
     return list(map(int, labels))
 
-def get_features_labels_pairs(data, solution, vocabulary, language):
+def get_features_labels_pairs(data, solution, vocabulary, language, format='DENSE'):
     # Function that returns a generator of pairs (features, labels)
     def func(i):
-        features = get_features(data[i], vocabulary, language)
+        features = get_features(data[i], vocabulary, language, format=format)
         labels = get_labels(solution[i])
         return features, labels
     g = iter(range(len(data)))
@@ -89,6 +99,8 @@ if __name__=="__main__":
         print('Please enter a dataset directory. Usage: `python3 nlp_to_tfrecords path/to/dataset`')
         exit()
 
+    format = 'DENSE'
+
     # Read data
     language = get_language(os.path.join(input_dir, name+'.data', 'meta.json'))
     train_data = read_file(os.path.join(input_dir, name+'.data', 'train.data'))
@@ -100,8 +112,10 @@ if __name__=="__main__":
     vocabulary = create_vocabulary(train_data+test_data, language)
 
     # Convert data into sequences of integers
-    features_labels_pairs_train = get_features_labels_pairs(train_data, train_solution, vocabulary, language)
-    features_labels_pairs_test = get_features_labels_pairs(test_data, test_solution, vocabulary, language)
+    features_labels_pairs_train = get_features_labels_pairs(train_data, train_solution, 
+                                                            vocabulary, language, format=format)
+    features_labels_pairs_test = get_features_labels_pairs(test_data, test_solution, 
+                                                           vocabulary, language, format=format)
 
     # Write data in TFRecords and vocabulary in metadata
     output_dim = get_output_dim(train_solution)
@@ -128,7 +142,7 @@ if __name__=="__main__":
                                                   is_sequence_row='false',
                                                   has_locality_col='true',
                                                   has_locality_row='true',
-                                                  format='SPARSE',
+                                                  format=format,
                                                   label_format='DENSE',
                                                   is_sequence='false',
                                                   sequence_size_func=None,
