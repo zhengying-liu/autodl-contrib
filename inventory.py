@@ -73,7 +73,8 @@ def write_csv(filename):
                 print(row)
                 output.write(row)
             except:
-                print('FAILED.')
+                print('FAILED.\n')
+                output.write('{},{},FAILED,--,--,--\n'.format(name, domain))
     output.close()
     
 def print_statistics(input_dir, name):
