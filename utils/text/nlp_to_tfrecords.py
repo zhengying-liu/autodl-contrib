@@ -99,7 +99,7 @@ if __name__=="__main__":
         print('Please enter a dataset directory. Usage: `python3 nlp_to_tfrecords path/to/dataset`')
         exit()
 
-    format = 'DENSE'
+    format = 'SPARSE'
 
     # Read data
     language = get_language(os.path.join(input_dir, name+'.data', 'meta.json'))
@@ -121,7 +121,7 @@ if __name__=="__main__":
     output_dim = get_output_dim(train_solution)
     col_count, row_count = 1, 1
     sequence_size = -1
-    num_channels = len(vocabulary)
+    num_channels = 1 #len(vocabulary)
     num_examples_train = len(train_data)
     num_examples_test = len(test_data)
     new_dataset_name = name # same name
