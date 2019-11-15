@@ -32,6 +32,14 @@ def read_file(filename):
         output.remove('')
     f.close()
     return output
+    
+def clean_token(token):
+    res = token.replace('\\', '')
+    res = res.replace('|', '')
+    res = res.replace(',', '')
+    res = res.replace('"', '')
+    res = res.replace("'", '')
+    return res
 
 def create_vocabulary(data, language='EN'):
     vocabulary = []
@@ -40,8 +48,9 @@ def create_vocabulary(data, language='EN'):
             row = row.split(' ')
         for token in row:
             # Split (EN or ZH)
-            if token not in vocabulary:
-                vocabulary.append(token)
+            cleaned_token = clean_token(token)
+            if cleaned_token not in vocabulary:
+                vocabulary.append(cleaned_token)
     return vocabulary
 
 def get_features(row, vocabulary, language='EN', format='DENSE'):
@@ -61,12 +70,13 @@ def get_features(row, vocabulary, language='EN', format='DENSE'):
     if language != 'ZH':
         row = row.split(' ')
     for e in row:
+        token = clean_token(e)
         if format=='DENSE':
             one_hot_word = [0]*len(vocabulary)
-            one_hot_word[vocabulary.index(e)] = 1
+            one_hot_word[vocabulary.index(token)] = 1
             features.append(one_hot_word)
         elif format=='SPARSE':
-            features.append((0, 0, vocabulary.index(e), 1))
+            features.append((0, 0, vocabulary.index(token), 1))
         else:
             raise Exception('Unknown format: {}'.format(format))
     return features
