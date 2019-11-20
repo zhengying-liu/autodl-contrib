@@ -54,11 +54,8 @@ def dict_to_text_format(python_dict, map_name='label_to_index_map'):
   template = template.replace('<label_to_index_map>', map_name)
   text_format = ''
   for k, v in python_dict.items():
-    if "'" in k:
-      quote = '"'
-    else:
-      quote = "'"
-    item = template.replace('<key>', quote + str(k) + quote)
+    k = repr(str(k))
+    item = template.replace('<key>', k)
     item = item.replace('<value>', str(v))
     text_format += item
   return text_format
@@ -146,6 +143,7 @@ class UniMediaDatasetFormatter():
                new_dataset_name=None,
                classes_dict=None,
                classes_list=None,
+               channels_dict=None,
                channels_list=None,
                is_label_array=False):
     # Dataset basename, e.g. `adult`
@@ -172,7 +170,9 @@ class UniMediaDatasetFormatter():
       self.label_to_index_map = list_to_text_format(classes_list) # Convert list to string
     else:
       self.label_to_index_map = '' # Empty if no information is provided
-    if channels_list is not None:
+    if channels_dict is not None:
+        self.channel_to_index_map = dict_to_text_format(channels_dict, map_name='channel_to_index_map')
+    elif channels_list is not None:
         self.channel_to_index_map = list_to_text_format(channels_list, map_name='channel_to_index_map')
     else:
         self.channel_to_index_map = ''

@@ -34,15 +34,12 @@ def read_file(filename):
     return output
     
 def clean_token(token):
-    res = token.replace('\\', '')
-    res = res.replace('|', '')
-    res = res.replace(',', '')
-    res = res.replace('"', '')
-    res = res.replace("'", '')
-    return res
+    return token #repr(repr(token))[2:-2]
 
 def create_vocabulary(data, language='EN'):
-    vocabulary = []
+    print('Creating vocabulary...')
+    vocabulary = {}
+    i = 0
     for row in data:
         if language != 'ZH':
             row = row.split(' ')
@@ -50,7 +47,8 @@ def create_vocabulary(data, language='EN'):
             # Split (EN or ZH)
             cleaned_token = clean_token(token)
             if cleaned_token not in vocabulary:
-                vocabulary.append(cleaned_token)
+                vocabulary[cleaned_token] = i
+                i += 1
     return vocabulary
 
 def get_features(row, vocabulary, language='EN', format='DENSE'):
@@ -71,14 +69,15 @@ def get_features(row, vocabulary, language='EN', format='DENSE'):
         row = row.split(' ')
     for e in row:
         token = clean_token(e)
-        if format=='DENSE':
-            one_hot_word = [0]*len(vocabulary)
-            one_hot_word[vocabulary.index(token)] = 1
-            features.append(one_hot_word)
-        elif format=='SPARSE':
-            features.append((0, 0, vocabulary.index(token), 1))
-        else:
-            raise Exception('Unknown format: {}'.format(format))
+        #if format=='DENSE':
+        #    one_hot_word = [0]*len(vocabulary)
+        #    one_hot_word[vocabulary[token]] = 1
+        #    features.append(one_hot_word)
+        #elif format=='SPARSE':
+            #features.append((0, 0, vocabulary[token], 1)) 
+        features.append([vocabulary[token]])
+        #else:
+        #    raise Exception('Unknown format: {}'.format(format))
     return features
 
 def get_labels(row):
@@ -109,8 +108,6 @@ if __name__=="__main__":
         print('Please enter a dataset directory. Usage: `python3 nlp_to_tfrecords path/to/dataset`')
         exit()
 
-    format = 'SPARSE'
-
     # Read data
     language = get_language(os.path.join(input_dir, name+'.data', 'meta.json'))
     train_data = read_file(os.path.join(input_dir, name+'.data', 'train.data'))
@@ -136,7 +133,6 @@ if __name__=="__main__":
     num_examples_test = len(test_data)
     new_dataset_name = name # same name
     classes_list = None
-    channels_list = vocabulary # mapping between words and integers
     dataset_formatter =  UniMediaDatasetFormatter(name,
                                                   output_dir,
                                                   features_labels_pairs_train,
@@ -152,11 +148,11 @@ if __name__=="__main__":
                                                   is_sequence_row='false',
                                                   has_locality_col='true',
                                                   has_locality_row='true',
-                                                  format=format,
+                                                  format='DENSE',
                                                   label_format='DENSE',
                                                   is_sequence='false',
                                                   sequence_size_func=None,
                                                   new_dataset_name=new_dataset_name,
                                                   classes_list=classes_list,
-                                                  channels_list=channels_list)
+                                                  channels_dict=vocabulary)
     dataset_formatter.press_a_button_and_give_me_an_AutoDL_dataset()
