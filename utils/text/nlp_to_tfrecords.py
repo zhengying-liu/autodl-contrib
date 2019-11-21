@@ -34,7 +34,7 @@ def read_file(filename):
     return output
     
 def clean_token(token):
-    return token #repr(repr(token))[2:-2]
+    return repr(token)[1:-1] #repr(repr(token))[2:-2]
 
 def create_vocabulary(data, language='EN'):
     print('Creating vocabulary...')
