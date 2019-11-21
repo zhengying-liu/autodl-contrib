@@ -189,8 +189,37 @@ def to_label_confidence_pairs(confidences):
           for labels_proba in confidences]
 
 class TFRecordFormatDataset(object):
+  """A class for managing datasets formatted in AutoDL TFRecord format.
+  Each dataset is a directory similar to
+    .
+    ├── adult.data
+    │   ├── test
+    │   │   ├── metadata.textproto
+    │   │   └── sample-adult-test.tfrecord
+    │   └── train
+    │       ├── metadata.textproto
+    │       └── sample-adult-train.tfrecord
+    ├── adult.solution
+    ├── adult_private.info (optional)
+    └── adult_public.info (optional)
+  """
 
   def __init__(self, dataset_dir):
+    """
+    Args:
+      dataset_dir: str, the path to the dataset directory which should be like
+        adult/
+        ├── adult.data
+        │   ├── test
+        │   │   ├── metadata.textproto
+        │   │   └── sample-adult-test.tfrecord
+        │   └── train
+        │       ├── metadata.textproto
+        │       └── sample-adult-train.tfrecord
+        ├── adult.solution
+        ├── adult_private.info (optional)
+        └── adult_public.info (optional)
+    """
     self.dataset_dir = os.path.abspath(os.path.expanduser(dataset_dir))
     self.dataset_name = self.get_dataset_name()
     self.domain = self.get_domain()
