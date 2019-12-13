@@ -1,4 +1,4 @@
-# Format Datasets for AutoCV/AutoDL Challenges
+# Format Datasets for AutoDL Challenges
 We provide instructions and examples to format your own datasets for the AutoCV and [AutoDL](http://autodl.chalearn.org) challenges in the generic TF records format being used.
 
 
