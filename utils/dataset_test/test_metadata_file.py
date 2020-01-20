@@ -3,14 +3,20 @@ from google.protobuf import text_format
 from tensorflow import gfile
 import argparse
 import sys
+import time
 sys.path.append(STARTING_KIT_DIR)
 from AutoDL_ingestion_program.data_pb2 import DataSpecification
 
 def test_metadata_textproto(path_to_textproto):
     metadata_ = DataSpecification()
+    begin = time.time()
+    print("Begin reading metadata.textproto file at {}..."\
+            .format(path_to_textproto))
     with gfile.GFile(path_to_textproto, "r") as f:
         text_format.Merge(f.read(), metadata_)
+    end = time.time()
     print("Successfully read metadata file with DataSpecification")
+    print("Time used: {} seconds".format(end - begin))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Test if a metadata file is valid.')
