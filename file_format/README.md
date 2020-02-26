@@ -50,7 +50,7 @@ Gorilla
 ```
 
 ## What to do next?
-You can convert these files into TFRecords using `check_n_format.py` (currently images only) or `data_manager.py`. See [INSTRUCTIONS](https://github.com/zhengying-liu/autodl-contrib).
+You can convert these files into TFRecords using `check_n_format.py` (currently images and videos only) or `data_manager.py`. See [INSTRUCTIONS](https://github.com/zhengying-liu/autodl-contrib).
 
 ## Providing More Info Is Always Well-received
 You are of course welcome to add more informations in your dataset directory. 
