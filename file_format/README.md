@@ -32,7 +32,7 @@ etc.
 
 The `labels.csv` file should have two comma separated columns: `FileName` and `Labels`.
 ```
-FileName, Labels
+FileName,Labels
 n0159.jpg,0 9
 n0165.jpg,0 1 7
 n0167.jpg,5
@@ -50,7 +50,7 @@ Gorilla
 ```
 
 ## What to do next?
-You can convert these files into TFRecords using `check_n_format.py` (currently images only) or `data_manager.py`. See [INSTRUCTIONS](https://github.com/zhengying-liu/autodl-contrib).
+You can convert these files into TFRecords using `check_n_format.py` (currently images and videos only) or `data_manager.py`. See [INSTRUCTIONS](https://github.com/zhengying-liu/autodl-contrib).
 
 ## Providing More Info Is Always Well-received
 You are of course welcome to add more informations in your dataset directory. 
@@ -89,8 +89,8 @@ If you have a regression task, contact us and we'll probably turn it into a clas
 ## Label confidence pairs [NOT RECOMMENDED]
 You can also provide labels as **label confidence pairs** as in the following example:
 ```
-FileName, LabelConfidencePairs
-n0159.jpg, 2 0.488458 9 0.48776 0 0.486832
-n7031.jpg, 1 0.544249 0 0.53526 7 0.490038 3 0.48924 2 0.485278 6 0.481826
+FileName,LabelConfidencePairs
+n0159.jpg,2 0.488458 9 0.48776 0 0.486832
+n7031.jpg,1 0.544249 0 0.53526 7 0.490038 3 0.48924 2 0.485278 6 0.481826
 ...
 ```
