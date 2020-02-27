@@ -15,9 +15,14 @@ def get_features(dataset_dir, filename):
   """ Read a file
   """
   filepath = os.path.join(dataset_dir, filename)
-  _, bytes = wavfile.read(filepath)
-  features = [bytes]
+  _, row = wavfile.read(filepath)
+  # Less optimized but it should work
+  features = []
+  for e in row:
+      features.append([e])
   return features
+  #features = [[row]]
+  #return features
 
 def get_features_labels_pairs(merged_df, dataset_dir, subset='train'):
   def func(x):
@@ -115,7 +120,7 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.7,
                                                 has_locality_col='true',
                                                 has_locality_row='true',
                                                 format='DENSE',
-                                                is_sequence='true',
+                                                is_sequence='false',
                                                 sequence_size_func=None,
                                                 new_dataset_name=new_dataset_name,
                                                 classes_list=classes_list)
