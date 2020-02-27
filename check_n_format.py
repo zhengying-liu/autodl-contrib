@@ -10,6 +10,7 @@ import tensorflow as tf
 path.append('utils')
 path.append('utils/image')
 path.append('utils/video')
+path.append('utils/series')
 STARTING_KIT_DIR = '../autodl/codalab_competition_bundle/AutoDL_starting_kit'
 LOG_FILE = 'baseline_log.txt'
 path.append(STARTING_KIT_DIR)
@@ -18,6 +19,7 @@ import dataset_manager
 import pandas as pd
 import format_image
 import format_video
+import format_series
 import run_local_test
 import data_browser
 
@@ -81,7 +83,7 @@ def find_file(input_dir, name):
 # This are the 3 main functions: format, baseline and check
 
 def format_data(input_dir, output_dir, fake_name, effective_sample_num,
-                train_size=0.8,
+                train_size=0.65,
                 num_channels=3,
                 classes_list=None,
                 domain='image'):
@@ -101,6 +103,12 @@ def format_data(input_dir, output_dir, fake_name, effective_sample_num,
                                      max_num_examples=effective_sample_num,
                                      num_channels=num_channels,
                                      classes_list=classes_list)
+        elif domain == 'series':
+            format_series.format_data(input_dir, output_dir, fake_name,
+                                     train_size=train_size,
+                                     max_num_examples=effective_sample_num,
+                                     num_channels=num_channels,
+                                     classes_list=classes_list)
         else:
             raise Exception('Unknown domain: {}'.format(domain))
     print('format_data: done.')
@@ -113,10 +121,10 @@ def run_baseline(data_dir, code_dir):
     print('run_baseline: done.')
 
 
-def manual_check(data_dir, num_examples=5):
+def manual_check(browser, num_examples=5):
     print('manual_check: Checking manually...')
     print('Samples of the dataset are going to be displayed. Please check that the display is correct. Click on the cross after looking at the images.')
-    data_browser.show_examples(data_dir, num_examples=num_examples)
+    browser.show_examples(num_examples=num_examples)
     print('manual_check: done.')
     # TODO: ask for check
 
@@ -149,14 +157,14 @@ if __name__=="__main__":
     label_name = None
     label_file = os.path.join(input_dir, 'label.name')
     if os.path.exists(label_file):
-        label_name = pd.read_csv(label_file, header=None)
         print('First rows of label names:')
+        label_name = pd.read_csv(label_file, header=None)
         print(label_name.head())
         print()
 
     # Compute simple statistics about the data (file number, etc.) and check consistency with the CSV file containing the labels.
-    res = compute_stats(labels_df, label_name=label_name)
     print('Some statistics:')
+    res = compute_stats(labels_df, label_name=label_name)
     print(res)
     print()
 
@@ -187,7 +195,7 @@ if __name__=="__main__":
         os.mkdir(output_dir)
 
     # domain (image, video, text, etc.)
-    domain = input("Domain? 'image' or 'video' [Default='image'] ")
+    domain = input("Domain? 'image', 'video' or 'series' [Default='image'] ")
     if domain == '':
         domain = 'image'
 
@@ -223,10 +231,11 @@ if __name__=="__main__":
         # TODO: save results in log file
 
     # manual check
+    browser = data_browser.DataBrowser(formatted_dataset_path)
     if do_manual_check:
-        manual_check(formatted_dataset_path, num_examples=10)
+        manual_check(browser, num_examples=10)
 
     # Write metadata
-    res['tensor_shape'] = data_browser.get_tensor_shape(formatted_dataset_path)
+    res['tensor_shape'] = browser.get_tensor_shape()
     public_info_file = os.path.join(output_dir, fake_name, 'public.info')
     write_info(public_info_file, res)

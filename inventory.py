@@ -13,7 +13,7 @@ INGESTION_PATH = '../autodl/codalab_competition_bundle/AutoDL_starting_kit/AutoD
 sys.path.append(INGESTION_PATH)
 from dataset import AutoDLDataset
 
-DOMAINS = ['image', 'video', 'text', 'time']
+DOMAINS = ['text'] #['image', 'video', 'text', 'time', 'tabular']
 HEADER = 'name,domain,size,train_ratio,tensor_shape,output_size\n'
 OUTPUT_FILE = 'inventory.csv'
 
@@ -28,6 +28,10 @@ def compute_statistics(dataset, domain='unknown'):
     # TODO is_multilabel
     train_size, test_size = metadata.size(), test.metadata_.size()
     size = train_size + test_size
+    #print('train size')
+    #print(train_size)
+    #print('test size')
+    #print(test_size)
     tensor_shape = metadata.get_tensor_shape()
     tensor_shape = str(tensor_shape).replace(',', ';') # let's avoid commas because of CSV format
     return'{},{},{},{},{},{}\n'.format(name,
@@ -86,7 +90,8 @@ def print_statistics(input_dir, name):
 
 def main():
     write_csv(OUTPUT_FILE)
-    #print_statistics('../autodl-data/image/formatted_datasets', 'munster')
+    print_statistics('../autodl-data/tabular/formatted_datasets', 'adult')
+    #print_statistics('../autodl-data/video/formatted_datasets', 'Yolo')
 
 if __name__ == "__main__":
     main()
