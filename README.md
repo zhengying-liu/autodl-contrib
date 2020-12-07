@@ -82,6 +82,7 @@ If you look at `metadata.textproto` files of the formatted datasets, you should 
 
 If your dataset exceed 10 GB or if you have a regression task please [Contact us](mailto:autodl@chalearn.org).
 
+To convert tabular datasets from a csv format to the AutoDL format, see the [utils/automl_format folder](https://github.com/zhengying-liu/autodl-contrib/tree/master/utils/automl_format).
 
 ## Where to submit
 
