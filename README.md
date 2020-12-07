@@ -1,5 +1,5 @@
 # Format Datasets for AutoDL Challenges
-We provide instructions and examples to format your own datasets for the AutoCV and [AutoDL](http://autodl.chalearn.org) challenges in the generic TF records format being used.
+We provide instructions and examples to format your own datasets for the [AutoDL](http://autodl.chalearn.org) challenges in the generic TF records format being used.
 
 
 ## Quickstart
@@ -91,11 +91,30 @@ To convert tabular datasets from a csv format to the AutoDL format, see the [uti
 
 ## Formats
 
+There are three formats from which you can transform your data into AutoDL's format.
+
+#### 1. File format
 * Each image is an independent file (jpg, png).
 * Labels are contained in a separate `labels.csv` file.
 * Meta-data in `private.info`. Please edit by hand to supply information needed.
 
 Examples are provided in [file_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format) folder.
+
+_Works for images, videos, sounds (time series)._
+
+#### 2. AutoML format
+
+Examples are provided in [matrix_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format) folder.
+
+_Creates a tabular dataset._
+
+#### 3. Raw text/speech format
+
+\[To describe\]
+
+It's the format used in AutoSpeech and AutoNLP challenge. We have script that converts the data from this format to the AutoDL (TFRecords) format.
+
+_Works for text and time series._
 
 
 ### Understanding check_n_format.py
