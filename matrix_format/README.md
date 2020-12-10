@@ -58,7 +58,7 @@ Actually the labels don't always need to be 0-1 vectors. They can be more genera
 
 is valid.
 
-Once again, sparse representation is accepted. This means that in `labels.csv`, we can have **label-confidence pairs**. For example,
+Sparse representation is accepted. This means that in `labels.csv`, we can have **label-confidence pairs**. For example,
 ```
 Id,LabelConfidencePairs
 JVEF,2377 0.488458 2105 0.48776 3346 0.486832
@@ -76,7 +76,8 @@ iris-AutoML/
 ├── iris.data
 ├── iris.solution
 ├── iris_feat.name
-├── iris_info.m
+├── iris_public.info
+├── iris_private.info
 ├── iris_label.name
 └── iris_sample.name
 ```
