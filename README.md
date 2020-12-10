@@ -25,7 +25,7 @@ Then you can choose to
 2. work in a Docker container (in the same environment as AutoCV/AutoDL challenge).
 
 ### Option 1: Work on Your Local Machine
-Install [Python 3](https://www.anaconda.com/distribution/) (Anaconda 3) and install Tensorflow 1.12 by:
+Install [Python 3](https://www.anaconda.com/distribution/) (Anaconda 3) and install **Tensorflow >= 1.12 and < 2** by:
 ```
 conda install tensorflow
 ```
@@ -33,7 +33,7 @@ If you have any doubt about your version of Tensorflow:
 ```
 python3 -c "import tensorflow as tf; print(tf.__version__)"
 ```
-make sure the version >= 1.12.0. Then install necessary packages
+make sure the version >= 1.12.0 and < 2. Then install necessary packages
 ```
 pip3 install -r requirements.txt
 ```
