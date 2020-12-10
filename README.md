@@ -66,27 +66,19 @@ To create your own dataset, create a new directory at the same level than mini-c
 
 NB: The script `check_n_format.py` also accepts other arguments to customize dataset parameters. For example, say if you have an image dataset of 4 channels instead of the default 3 RGB channels, you can run:
 ```
-python3 check_n_format.py -raw_dataset_dir=path/to/your/dataset -num_channels=4
+python3 check_n_format.py path/to/your/dataset
 ```
-This will generate a dataset containing 4-D tensors of shape
-```
-(sequence_size, row_count, col_count, num_channels) = (1, ?, ?, 4)
-```
-If you look at `metadata.textproto` files of the formatted datasets, you should notice the difference.
+This will generate a dataset containing 4-D tensors of shape `(sequence_size, row_count, col_count, num_channels)`.
+
 
 ## What is needed?
 
-* **Multi-label (or multi-class) classification tasks.**
-* **Video, image, text, speech or time series datasets.**
+* **Multi-label (or multi-class) classification tasks**
+* **Video, image, text, speech or time series datasets**
 * **No size limit**
+* **Prepare your dataset in one of the 3 formats presented below**
 
 If your dataset exceed 10 GB or if you have a regression task please [Contact us](mailto:autodl@chalearn.org).
-
-To convert tabular datasets from a csv format to the AutoDL format, see the [utils/automl_format folder](https://github.com/zhengying-liu/autodl-contrib/tree/master/utils/automl_format).
-
-## Where to submit
-
-[Email us](mailto:autodl@chalearn.org) a URL to an on-line storage place (e.g. dropbox or Google drive) where we can pull your data from.
 
 
 ## Formats
@@ -133,6 +125,9 @@ TFRecord format is the final format of the AutoDL challenge, following [Sequence
 
 More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format/mini-mnist) in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
 
+## Where to submit
+
+If you wish to share your dataset with us, simply [Email us](mailto:autodl@chalearn.org) a URL to an on-line storage place (e.g. dropbox or Google drive) where we can pull your data from.
 
 ## Credits
 AutoDL is a project in collaboration with Google, ChaLearn and Inria.
