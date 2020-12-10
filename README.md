@@ -36,11 +36,11 @@ pip3 install -r requirements.txt
 Then you should have a work environment ready for formatting datasets and preparing baseline methods (and make submissions).
 
 ### Option 2: Work in Docker
-Instead of installing packages and make local changes, you can also choose to work in the Docker image that is used for AutoDL challenge: `evariste/autodl:cpu`. Thus, by using in this Docker image, you are working in the exact same environment in which participants' submissions are handled.
+Instead of installing packages and make local changes, you can also choose to work in the Docker image that is used for AutoDL challenge: `evariste/autodl:cpu-latest`. Thus, by using in this Docker image, you are working in the exact same environment in which participants' submissions are handled.
 
 To do this, you first need to [setup Docker](https://www.docker.com/products/docker-desktop). Then go to `~/projects/` and run
 ```bash
-docker run --memory=4g -it -u root -v $(pwd):/app/codalab evariste/autodl:cpu bash
+docker run --memory=4g -it -u root -v $(pwd):/app/codalab evariste/autodl:cpu-latest bash
 ```
 In the Docker container session, you can check the version of tensorflow by running
 ```
