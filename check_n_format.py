@@ -232,7 +232,7 @@ if __name__=="__main__":
     print('\nDataset fake name: {}\n'.format(fake_name))
 
     # domain (image, video, text, etc.)
-    domain = input("Domain? 'image', 'video', 'series', 'text' or 'tabular' [Default='image'] ")
+    domain = input("Domain? 'image', 'video', 'series', 'text' (AutoNLP format) or 'tabular' [Default='image'] ")
     if domain == '':
         domain = 'image'
 
