@@ -46,7 +46,7 @@ In the Docker container session, you can check the version of tensorflow by runn
 ```
 python3 -c "import tensorflow as tf; print(tf.__version__)"
 ```
-and you should get `1.12.0`.
+and you should get `1.13.1`.
 
 ### Now Let's Format a Dataset!
 
