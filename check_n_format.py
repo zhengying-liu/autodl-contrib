@@ -71,13 +71,13 @@ def compute_stats(labels_df, label_name=None):
     res['domain'] = 'image'
     return res
 
-def compute_stats_tabular_or_text(samples_num, label_name=None):
+def compute_stats_tabular_or_text(samples_num, label_name=None, domain='tabular'):
     """ Compute simple statistics (sample num, label num) for tabular datasets
     """
     res = {}
     res['sample_num'] = samples_num
 
-    res['domain'] = 'tabular'
+    res['domain'] = domain
     return res
 
 def write_info(info_file, res):
@@ -309,7 +309,7 @@ if __name__=="__main__":
             print()
 
         effective_sample_num=s
-        res = compute_stats_tabular_or_text(s, label_name=label_name)
+        res = compute_stats_tabular_or_text(s, label_name=label_name, domain='text')
         print(res)
         print()
     else:
