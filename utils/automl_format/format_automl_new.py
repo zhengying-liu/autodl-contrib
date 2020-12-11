@@ -52,9 +52,13 @@ import scipy
 import os
 import sys
 from pprint import pprint
-sys.path.append('./ingestion_program/')
+
+CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+sys.path.append(os.path.dirname(CURRENT_DIR))
+sys.path.append(os.path.join(CURRENT_DIR, "ingestion_program/"))
+
 from data_manager import DataManager
-sys.path.append('../')
 from dataset_formatter import UniMediaDatasetFormatter
 from shutil import copyfile
 
