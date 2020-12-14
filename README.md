@@ -58,10 +58,9 @@ python3 check_n_format.py file_format/mini-cifar
 To answer [Y] to all questions, just keep hitting "return": this should be good enough to check that everything is running smoothly.
 When you see images pop-up, check that they are displayed properly and the labels correspond well. You may also see an HTML file with a learning curve pop-up in your browser. Your formatted data (in the AutoDL format) ends up in `file_format/mini-cifar_formatted`.
 
-To create your own dataset, create a new directory at the same level than mini-cifar a fill it with your own data, then re-run the same script.
+To create your own dataset, create a new directory at the same level than mini-cifar a fill it with your own data, then re-run the same script:
 
-NB: The script `check_n_format.py` also accepts other arguments to customize dataset parameters. For example, say if you have an image dataset of 4 channels instead of the default 3 RGB channels, you can run:
-```
+```bash
 python3 check_n_format.py path/to/your/dataset
 ```
 This will generate a dataset containing 4-D tensors of shape `(sequence_size, row_count, col_count, num_channels)`.
