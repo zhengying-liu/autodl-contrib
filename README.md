@@ -85,23 +85,23 @@ There are three formats from which you can transform your data into AutoDL's for
 * Labels are contained in a separate `labels.csv` file.
 * Meta-data in `private.info`. Please edit by hand to supply information needed.
 
-Examples are provided in [file_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format) folder.
+Examples and documentation are provided in [file_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format) folder.
 
 _Works for images, videos, sounds (time series)._
 
 #### 2. AutoML format
 
-Examples are provided in [matrix_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format) folder.
+Examples and documentation are provided in [matrix_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format) folder.
 
 _Creates a tabular dataset._
 
-#### 3. Raw text/speech format
+#### 3. AutoNLP format
 
-\[To describe\]
+Examples and documentation are provided in [nlp_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/nlp_format) folder.
 
-It's the format used in AutoSpeech and AutoNLP challenge. We have script that converts the data from this format to the AutoDL (TFRecords) format.
+It's the format used in AutoNLP challenge. We have a script that converts the data from this format to the AutoDL (TFRecords) format.
 
-_Works for text and time series._
+_Works for text data._
 
 
 ### Understanding check_n_format.py
