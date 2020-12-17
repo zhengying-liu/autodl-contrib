@@ -58,10 +58,9 @@ python3 check_n_format.py file_format/mini-cifar
 To answer [Y] to all questions, just keep hitting "return": this should be good enough to check that everything is running smoothly.
 When you see images pop-up, check that they are displayed properly and the labels correspond well. You may also see an HTML file with a learning curve pop-up in your browser. Your formatted data (in the AutoDL format) ends up in `file_format/mini-cifar_formatted`.
 
-To create your own dataset, create a new directory at the same level than mini-cifar a fill it with your own data, then re-run the same script.
+To create your own dataset, create a new directory at the same level than mini-cifar a fill it with your own data, then re-run the same script:
 
-NB: The script `check_n_format.py` also accepts other arguments to customize dataset parameters. For example, say if you have an image dataset of 4 channels instead of the default 3 RGB channels, you can run:
-```
+```bash
 python3 check_n_format.py path/to/your/dataset
 ```
 This will generate a dataset containing 4-D tensors of shape `(sequence_size, row_count, col_count, num_channels)`.
@@ -86,23 +85,23 @@ There are three formats from which you can transform your data into AutoDL's for
 * Labels are contained in a separate `labels.csv` file.
 * Meta-data in `private.info`. Please edit by hand to supply information needed.
 
-Examples are provided in [file_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format) folder.
+Examples and documentation are provided in [file_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format) folder.
 
 _Works for images, videos, sounds (time series)._
 
 #### 2. AutoML format
 
-Examples are provided in [matrix_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format) folder.
+Examples and documentation are provided in [matrix_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format) folder.
 
 _Creates a tabular dataset._
 
-#### 3. Raw text/speech format
+#### 3. AutoNLP format
 
-\[To describe\]
+Examples and documentation are provided in [nlp_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/nlp_format) folder.
 
-It's the format used in AutoSpeech and AutoNLP challenge. We have script that converts the data from this format to the AutoDL (TFRecords) format.
+It's the format used in AutoNLP challenge. We have a script that converts the data from this format to the AutoDL (TFRecords) format.
 
-_Works for text and time series._
+_Works for text data._
 
 
 ### Understanding check_n_format.py
