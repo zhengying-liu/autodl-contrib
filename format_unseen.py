@@ -297,8 +297,9 @@ if __name__=="__main__":
     elif domain == 'tabular':
         format_data(input_dir, output_dir, fake_name, effective_sample_num, num_channels=num_channels, classes_list=flat_label_list, domain=domain, output_dim=output_dim, input_name="unlabelled")
         os.remove(os.path.join(output_dir,"unlabelled","unlabelled.solution"))
-        files_to_remove = [f for f in os.listdir('../datasets/testo2') if re.search(r'(valid|train|test)', f)]
+        files_to_remove = [os.path.join(input_dir, f) for f in os.listdir(input_dir) if re.search(r'(valid|train|test)', f)]
 
+        print(os.listdir(input_dir))
         for file in files_to_remove:
         	if os.path.exists(file):
         		os.remove(file)
