@@ -8,7 +8,7 @@ path.append('utils/video')
 path.append('utils/series')
 path.append('utils/automl_format')
 path.append('utils/text')
-STARTING_KIT_DIR = '../bundles/autodl_starting_kit'
+STARTING_KIT_DIR = '../autodl/codalab_competition_bundle/AutoDL_starting_kit'
 LOG_FILE = 'baseline_log.txt'
 path.append(STARTING_KIT_DIR)
 path.append(os.path.join(STARTING_KIT_DIR, 'AutoDL_ingestion_program'))
