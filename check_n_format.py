@@ -102,7 +102,8 @@ def format_data(input_dir, output_dir, fake_name, effective_sample_num,
                 train_size=0.65,
                 num_channels=3,
                 classes_list=None,
-                domain='image'):
+                domain='image',
+                quick_check=False):
     """ Transform data into TFRecords
     """
     print('format_data: Formatting... {} samples'.format(effective_sample_num))
@@ -112,19 +113,22 @@ def format_data(input_dir, output_dir, fake_name, effective_sample_num,
                                      train_size=train_size,
                                      max_num_examples=effective_sample_num,
                                      num_channels=num_channels,
-                                     classes_list=classes_list)
+                                     classes_list=classes_list,
+                                     quick_check=quick_check)
         elif domain == 'video':
             format_video.format_data(input_dir, output_dir, fake_name,
                                      train_size=train_size,
                                      max_num_examples=effective_sample_num,
                                      num_channels=num_channels,
-                                     classes_list=classes_list)
+                                     classes_list=classes_list,
+                                     quick_check=quick_check)
         elif domain == 'series':
             format_series.format_data(input_dir, output_dir, fake_name,
                                      train_size=train_size,
                                      max_num_examples=effective_sample_num,
                                      num_channels=num_channels,
-                                     classes_list=classes_list)
+                                     classes_list=classes_list,
+                                     quick_check=quick_check)
         elif domain == 'tabular':
             max_num_examples_train = int(effective_sample_num*train_size)
             max_num_examples_test = effective_sample_num-max_num_examples_train
@@ -316,11 +320,13 @@ if __name__=="__main__":
         raise Exception('Unknown domain: {}'.format(domain))
 
     quick_check = 1 # just for display purpose
+    is_quick_check=False
     if not input('Quick check? [Y/n] (creating a mini-dataset, only available for image, video and speech/time series) ') in ['n', 'N']:
         # quick check
         print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
         output_dir = output_dir + '_mini'
         effective_sample_num = min(effective_sample_num, 1)
+        is_quick_check=True
         #quick_check = res['label_num'] # just for display purpose
 
     if is_formatted(output_dir):
@@ -366,7 +372,7 @@ if __name__=="__main__":
         label_list = label_name.values.tolist()
         flat_label_list = [item for sublist in label_list for item in sublist]
     print(flat_label_list)
-    format_data(input_dir, output_dir, fake_name, effective_sample_num, num_channels=num_channels, classes_list=flat_label_list, domain=domain)
+    format_data(input_dir, output_dir, fake_name, effective_sample_num, num_channels=num_channels, classes_list=flat_label_list, domain=domain, quick_check=is_quick_check)
     formatted_dataset_path = os.path.join(output_dir, fake_name)
 
     # run baseline
