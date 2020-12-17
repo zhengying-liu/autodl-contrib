@@ -68,6 +68,7 @@ def im_size(input_dir, filenames):
     for filename in filenames:
         vid = cv2.VideoCapture(os.path.join(input_dir, filename))
         _, image = vid.read()
+        print(os.path.join(input_dir, filename))
         s.add((image.shape[0], image.shape[1]))
 
     if len(s) == 1:
@@ -101,7 +102,9 @@ def seq_size(input_dir, filenames):
 def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8,
                 max_num_examples=None,
                 num_channels=3,
-                classes_list=None):
+                classes_list=None,
+                output_dim=None,
+                quick_check=False):
   print(input_dir)
   input_dir = os.path.normpath(input_dir)
   dataset_name = os.path.basename(input_dir)
@@ -111,7 +114,7 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8,
   labels_df = get_labels_df(input_dir)
   merged_df = get_merged_df(labels_df, train_size=train_size)
 
-  if max_num_examples and max_num_examples<=4: # if quick check, it'll be the number of examples to format for each class
+  if quick_check: # if quick check, it'll be the number of examples to format for each class
     # Need at least one example of each class (tensorflow)
     #merged_df = merged_df.sample(n=max_num_examples)
     if 'LabelConfidencePairs' in list(merged_df):
@@ -120,15 +123,17 @@ def format_data(input_dir, output_dir, new_dataset_name, train_size=0.8,
         merged_df = merged_df.groupby('Labels').apply(lambda x: x.sample(n=1))
     else:
         raise Exception('No labels found, please check labels.csv file.')
-
+  
   all_classes = get_all_classes(merged_df)
 
   features_labels_pairs_train =\
     get_features_labels_pairs(merged_df, input_dir, subset='train', num_channels=num_channels)
   features_labels_pairs_test =\
     get_features_labels_pairs(merged_df, input_dir, subset='test', num_channels=num_channels)
+  
+  if output_dim is None:
+      output_dim = len(all_classes)
 
-  output_dim = len(all_classes)
   num_examples_train = merged_df[merged_df['subset'] == 'train'].shape[0]
   num_examples_test = merged_df[merged_df['subset'] == 'test'].shape[0]
 
