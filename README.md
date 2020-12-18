@@ -94,10 +94,13 @@ Examples and documentation are provided in [file_format](https://github.com/zhen
 _Works for images, videos, sounds (time series)._
 
 #### 2. AutoML format
+* All the data is provided in a csv format, with space as a delimiter and with no header.
+* The dataset is already divided in train, valid (can be void) and test sets.
+* Labels for each set are provided in separated `.solution` files.
 
 Examples and documentation are provided in [matrix_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format) folder.
 
-_Creates a tabular dataset._
+_Works for tabular dataset._
 
 #### 3. AutoNLP format
 
