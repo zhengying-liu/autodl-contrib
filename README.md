@@ -95,7 +95,7 @@ _Works for images, videos, sounds (time series)._
 
 #### 2. AutoML format
 * All the data is provided in a csv format, with space as a delimiter and with no header.
-* The dataset is already divided in train, valid (can be void) and test sets.
+* The dataset is already divided in train, valid (can be empty) and test sets.
 * Labels for each set are provided in separated `.solution` files.
 
 Examples and documentation are provided in [matrix_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format) folder.
