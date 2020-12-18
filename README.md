@@ -42,11 +42,15 @@ To do this, you first need to [setup Docker](https://www.docker.com/products/doc
 ```bash
 docker run --memory=4g -it -u root -v $(pwd):/app/codalab evariste/autodl:cpu-latest bash
 ```
+Make sure not to run it directly in the `autodl-contrib/` folder, because you will need to access the `autodl/` folder to run the scripts.
+
 In the Docker container session, you can check the version of tensorflow by running
 ```
 python3 -c "import tensorflow as tf; print(tf.__version__)"
 ```
 and you should get `1.13.1`.
+
+This option may not work at the moment when it comes to formatting video datasets (if so, option 1 is recommended).
 
 ### Now Let's Format a Dataset!
 
