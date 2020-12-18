@@ -73,7 +73,7 @@ This will generate a dataset containing 4-D tensors of shape `(sequence_size, ro
 ## What is needed?
 
 * **Multi-label (or multi-class) classification tasks**
-* **Video, image, text, speech or time series datasets**
+* **Video, image, text, speech (or time series) or tabular datasets**
 * **No size limit**
 * **Prepare your dataset in one of the 3 formats presented below**
 
