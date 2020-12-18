@@ -81,7 +81,7 @@ If your dataset exceed 10 GB or if you have a regression task please [Contact us
 There are three formats from which you can transform your data into AutoDL's format.
 
 #### 1. File format
-* Each image is an independent file (jpg, png).
+* Each data is an independent file (jpg, png, bmp, gif or wav, mp3 or avi, mp4).
 * Labels are contained in a separate `labels.csv` file.
 * Meta-data in `private.info`. Please edit by hand to supply information needed.
 
