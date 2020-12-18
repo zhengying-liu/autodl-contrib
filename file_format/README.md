@@ -5,7 +5,7 @@ Raw data must be supplied in **file format**.
 Under the file format, each example is an independent file and all labels are contained in a separate CSV file.
 
 ## Supported File Types
-For images and videos, preferred file types are:
+For images, videos and audios (time series), preferred file types are:
 - images: `.jpg`, `.bmp`, `.png`, `.gif`
 - videos: `.avi`, `.mp4`
 - audios: `.mp3`, `.wav`
