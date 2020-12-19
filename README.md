@@ -42,11 +42,15 @@ To do this, you first need to [setup Docker](https://www.docker.com/products/doc
 ```bash
 docker run --memory=4g -it -u root -v $(pwd):/app/codalab evariste/autodl:cpu-latest bash
 ```
+Make sure not to run it directly in the `autodl-contrib/` folder, because you will need to access the `autodl/` folder to run the scripts.
+
 In the Docker container session, you can check the version of tensorflow by running
 ```
 python3 -c "import tensorflow as tf; print(tf.__version__)"
 ```
 and you should get `1.13.1`.
+
+This option may not work at the moment when it comes to formatting video datasets (if so, option 1 is recommended).
 
 ### Now Let's Format a Dataset!
 
@@ -69,7 +73,7 @@ This will generate a dataset containing 4-D tensors of shape `(sequence_size, ro
 ## What is needed?
 
 * **Multi-label (or multi-class) classification tasks**
-* **Video, image, text, speech or time series datasets**
+* **Video, image, text, speech (or time series) or tabular datasets**
 * **No size limit**
 * **Prepare your dataset in one of the 3 formats presented below**
 
@@ -81,7 +85,7 @@ If your dataset exceed 10 GB or if you have a regression task please [Contact us
 There are three formats from which you can transform your data into AutoDL's format.
 
 #### 1. File format
-* Each image is an independent file (jpg, png).
+* Each data is an independent file (jpg, png, bmp, gif or wav, mp3 or avi, mp4).
 * Labels are contained in a separate `labels.csv` file.
 * Meta-data in `private.info`. Please edit by hand to supply information needed.
 
@@ -90,10 +94,13 @@ Examples and documentation are provided in [file_format](https://github.com/zhen
 _Works for images, videos, sounds (time series)._
 
 #### 2. AutoML format
+* All the data is provided in a csv format, with space as a delimiter and with no header.
+* The dataset is already divided in train, valid (can be empty) and test sets.
+* Labels for each set are provided in separated `.solution` files.
 
 Examples and documentation are provided in [matrix_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format) folder.
 
-_Creates a tabular dataset._
+_Works for tabular dataset._
 
 #### 3. AutoNLP format
 

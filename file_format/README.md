@@ -5,15 +5,12 @@ Raw data must be supplied in **file format**.
 Under the file format, each example is an independent file and all labels are contained in a separate CSV file.
 
 ## Supported File Types
-For images and videos, preferred file types are:
+For images, videos and audios (time series), preferred file types are:
 - images: `.jpg`, `.bmp`, `.png`, `.gif`
 - videos: `.avi`, `.mp4`
 - audios: `.mp3`, `.wav`
 
 The images or videos may be of a **fixed size** (height and width) or **irregular size** (each example has its own dimensions).
-
-For text data, you may contribute text files with a `.txt` extension. We prefer **tokenized data**, after some typical pre-processing in NLP (stemming, lemmatization, stopwords removing, argumentation, etc). Each examples is represented by a **series of integers** which are indexes of words. We provide [an example](https://github.com/zhengying-liu/autodl-contrib/tree/master/file_format/randomtext) of such text datasets.
-
 
 ## How Should These Files Look Like?
 
