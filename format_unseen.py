@@ -1,3 +1,5 @@
+# Usage: `python3 format_unseen.py path/to/dataset output_dim path/to/ouput/folder`
+
 from sys import argv, path
 import argparse
 import glob, os, yaml
@@ -299,7 +301,6 @@ if __name__=="__main__":
         os.remove(os.path.join(output_dir,"unlabelled","unlabelled.solution"))
         files_to_remove = [os.path.join(input_dir, f) for f in os.listdir(input_dir) if re.search(r'(valid|train|test)', f)]
 
-        print(os.listdir(input_dir))
         for file in files_to_remove:
         	if os.path.exists(file):
         		os.remove(file)
