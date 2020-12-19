@@ -1,7 +1,7 @@
 # Authors: Isabelle Guyon, Adrien Pavao and Zhengying Liu
 # Date: Feb 6 2019
 
-# Usage: `python3 check_n_format path/to/dataset`
+# Usage: `python3 check_n_format.py path/to/dataset`
 
 from sys import argv, path
 import argparse
