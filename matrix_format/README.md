@@ -28,7 +28,7 @@ defines a valid dataset contribution. Here `iris_train.data` will be understood 
 
 ## How Should These Files Look Like?
 
-For the dataset `iris`, each example in `iris.data` is characterized by 4 numeric values (i.e. a vector of dimension 4). So this CSV file looks like
+For the dataset `iris`, each example in `iris_train.data` is characterized by 4 numeric values (i.e. a vector of dimension 4). So this CSV file looks like
 ```
 5.1 3.5 1.4 0.2
 4.9 3 1.4 0.2
@@ -39,7 +39,7 @@ For the dataset `iris`, each example in `iris.data` is characterized by 4 numeri
 
 Categorical variables and sparse representation are accepted too.
 
-And `iris.solution` could be something like
+And `iris_train.solution` could be something like
 ```
 1 0 0
 0 0 1
@@ -76,8 +76,12 @@ In this case, an additional column of `Id` is also contained.
 You are of course welcome to add more informations in your dataset directory, for example,
 ```
 iris-AutoML/
-├── iris.data
-├── iris.solution
+├── iris_train.data
+└── iris_train.solution
+└── iris_test.data
+└── iris_test.solution
+└── iris_valid.data
+└── iris_valid.solution
 ├── iris_feat.name
 ├── iris_public.info
 ├── iris_private.info
