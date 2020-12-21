@@ -127,6 +127,8 @@ TFRecord format is the final format of the AutoDL challenge, following [Sequence
 
 More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format/mini-mnist) in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
 
+## Format unlabelled data
+
 ## Where to submit
 
 If you wish to share your dataset with us, simply [Email us](mailto:autodl@chalearn.org) a URL to an on-line storage place (e.g. dropbox or Google drive) where we can pull your data from.
