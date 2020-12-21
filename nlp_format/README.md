@@ -18,7 +18,7 @@ dataset/
 └── dataset.solution
 ```
 
-The train set and the test set must already be separated in two files. A `.data` file is a list of examples, each example being a line of text. It sould indeed look like (*extracted from the O1 dataset*)
+You can replace the "dataset" word in the example above by a name you think adequate for your text dataset. The train set and the test set must already be separated in two files. A `.data` file is a list of examples, each example being a line of text. It sould indeed look like (*extracted from the O1 dataset*)
 ```
 a stirring , funny and finally transporting re-imagining of beauty and the beast and 1930s horror films 
 apparently reassembled from the cutting-room floor of any given daytime soap . 
