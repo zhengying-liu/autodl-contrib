@@ -17,10 +17,10 @@ Remember, you need to be careful about naming your files in a dataset. According
 ```
 iris/
 ├── iris_train.data
-└── iris_train.solution
-└── iris_test.data
-└── iris_test.solution
-└── iris_valid.data
+├── iris_train.solution
+├── iris_test.data
+├── iris_test.solution
+├── iris_valid.data
 └── iris_valid.solution
 ```
 
@@ -77,11 +77,11 @@ You are of course welcome to add more informations in your dataset directory, fo
 ```
 iris-AutoML/
 ├── iris_train.data
-└── iris_train.solution
-└── iris_test.data
-└── iris_test.solution
-└── iris_valid.data
-└── iris_valid.solution
+├── iris_train.solution
+├── iris_test.data
+├── iris_test.solution
+├── iris_valid.data
+├── iris_valid.solution
 ├── iris_feat.name
 ├── iris_public.info
 ├── iris_private.info
