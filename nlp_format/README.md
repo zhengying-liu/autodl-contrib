@@ -56,3 +56,15 @@ A solution file must look like
 ```
 
 In these files, the labels must be one-hot encoded : each column corresponds to a class and a 1 means that the example is in the corresponding class, while the 0 means that it's not.
+
+You must also add a `meta.json` file to the subdirectory `dataset.data`, containing some useful metadatas. Example of a `meta.json` file for the O1 dataset :
+```
+{
+    "class_num": 2,
+    "train_num": 7792,
+    "test_num": 1821,
+    "language": "EN",
+    "time_budget": 2400
+}
+```
+You must fill those five fields with the values corresponding to your dataset. The language can be either "EN" (english) or "CH" (chinese). The time_budget parameter was a parameter used in the AutoDL challenge. You can leave it at 2400.
