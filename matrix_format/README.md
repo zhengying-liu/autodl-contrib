@@ -1,13 +1,12 @@
 # Matrix Format (AutoML Format)
 
-In the matrix format, each example is represented as a *feature vector*. If you are familiar with `scikit-learn`, you should be familiar with this matrix representation of datasets (e.g. `X`, `y`). So if you want to contribute data in this format, the minimum kit would be **two text files**: `dataset.data` and `dataset.solution`, containing respectively a matrix (`X`) with feature vectors and a matrix (`Y`) with labels, examples in lines and features in columns.
+In the matrix format, each example is represented as a *feature vector*. If you are familiar with `scikit-learn`, you should be familiar with this matrix representation of datasets (e.g. `X`, `y`). So if you want to convert data from this format, the minimum kit would be **text files**: to begin with, `dataset_train.data` and `dataset_train.solution`, containing respectively a matrix (`X`) with feature vectors and a matrix (`Y`) with labels, examples in lines and features in columns. You must also provide similar `dataset_test.data` and `dataset_test.solution` files, and `dataset_valid.data` and `dataset_valid.solution` (which can be empty, because the validation set and the train set will be merged, but the files must exist for the script to work).
 
 This follows the standard [AutoML format](https://github.com/codalab/chalab/wiki/Help:-Wizard-%E2%80%90-Challenge-%E2%80%90-Data) used in prior AutoML challenges, from [2015](https://competitions.codalab.org/competitions/2321) to [2018](http://prada-research.net/pakdd18/index.php/call-for-competition/). The format includes metadata that we encourage you to provide.
 
 More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format/iris-AutoML) in matrix format can be found in the sub-directory [`matrix_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/matrix_format).
 
 **Isabelle: I think this is confusing and error prone to have both AutoML and CSV formats. We should stick to the AutoML format. It is more general. There is also a sparse matrix version. We also need more metadata. This should NOT be optional**
-
 
 We accept dataset contributions under **matrix format**. More specifically, we accept the standard **AutoML format** used in prior AutoML challenges. There exist [detailed guidance](https://github.com/codalab/chalab/wiki/Help:-Wizard-%E2%80%90-Challenge-%E2%80%90-Data) on how to format dataset into AutoML format.
 
@@ -17,8 +16,12 @@ Under matrix format, each example is represented as a *feature vector*, as is th
 Remember, you need to be careful about naming your files in a dataset. According to our [file naming rules](https://github.com/zhengying-liu/autodl-contrib#carefully-name-your-files), you may name these `.csv` files differently. For example, this directory
 ```
 iris/
-├── iris.data
-└── iris.solution
+├── iris_train.data
+└── iris_train.solution
+└── iris_test.data
+└── iris_test.solution
+└── iris_valid.data
+└── iris_valid.solution
 ```
 
 defines a valid dataset contribution. Here `iris.data` will be understood as `examples.csv` and `iris.solution` as `labels.csv`.
