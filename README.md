@@ -103,6 +103,10 @@ Examples and documentation are provided in [matrix_format](https://github.com/zh
 _Works for tabular dataset._
 
 #### 3. AutoNLP format
+* All the data is provided in a txt format : each line of text is an example in the dataset.
+* The dataset is already divided in train and test sets with separated `.data` files corresponding to each set.
+* Labels for each set are provided in separated `.solution` files.
+* A `meta.json` metadata file is necessary in order to specify the number of train and test samples, the number of classes and the language (english or chinese) 
 
 Examples and documentation are provided in [nlp_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/nlp_format) folder.
 
