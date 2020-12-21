@@ -34,3 +34,25 @@ the film is strictly routine .
 ```
 
 The `.solution` files are specifying the labels corresponding to each line of the corresponding `.data` file (`train.solution` corresponds to the labels of the examples contained in `train.data` while `dataset.solution` corresponds to `test.data`).
+
+A solution file must look like
+```
+0 1
+1 0
+1 0
+0 1
+0 1
+0 1
+1 0
+0 1
+1 0
+1 0
+0 1
+1 0
+1 0
+0 1
+0 1
+0 1
+```
+
+In these files, the labels must be one-hot encoded : each column corresponds to a class and a 1 means that the example is in the corresponding class, while the 0 means that it's not.
