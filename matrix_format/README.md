@@ -24,7 +24,7 @@ iris/
 └── iris_valid.solution
 ```
 
-defines a valid dataset contribution. Here `iris.data` will be understood as `examples.csv` and `iris.solution` as `labels.csv`.
+defines a valid dataset contribution. Here `iris_train.data` will be understood as `examples.csv` and `iris_train.solution` as `labels.csv`.
 
 ## How Should These Files Look Like?
 
