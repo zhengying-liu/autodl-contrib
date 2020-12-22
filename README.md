@@ -184,7 +184,7 @@ For text datasets, your unlabelled data must be in the form of a text file listi
     "time_budget": 2400
 }
 ```
-And all this files must in one single directory, there is no need for a `dataset.data` subdirectory here.
+And all this files must remain in one single directory, there is no need for a `dataset.data` subdirectory here.
 
 ```
 unlabelled_data/
