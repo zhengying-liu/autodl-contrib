@@ -158,7 +158,7 @@ n0167.jpg
 ...
 ```
 
-This will allow the script to make the arrangement you want for your unseen data. Note that there is no header, as there should be one in a `labels.csv`.
+This will allow the script to make the arrangement you want for your unseen data. Note that there is no header, while there should be one in a `labels.csv`.
 
 ### Under AutoML format (tabular)
 
