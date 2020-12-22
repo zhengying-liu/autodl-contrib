@@ -161,6 +161,16 @@ n0167.jpg
 This will allow the script to make the arrangement you want for your unseen data. Note that there is no header, while there should be one in a `labels.csv`.
 
 ### Under AutoML format (tabular)
+If you are working with tabular datasets, your input directory should contain only one file : your unlabelled data in a single csv file named `data.csv`. Your features must be separated with a space and no header must be provided. Thus, it should look like :
+
+```
+1 2 3 4 
+5 6 7 8
+9 10 11 12
+...
+```
+if you had four features.
+
 
 ### Under AutoNLP format (text) 
 
