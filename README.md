@@ -103,6 +103,10 @@ Examples and documentation are provided in [matrix_format](https://github.com/zh
 _Works for tabular dataset._
 
 #### 3. AutoNLP format
+* All the data is provided in a txt format : each line of text is an example in the dataset.
+* The dataset is already divided in train and test sets with separated `.data` files corresponding to each set.
+* Labels for each set are provided in separated `.solution` files.
+* A `meta.json` metadata file is necessary in order to specify the number of train and test samples, the number of classes and the language (english or chinese) 
 
 Examples and documentation are provided in [nlp_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/nlp_format) folder.
 
@@ -126,6 +130,39 @@ This script does the following:
 TFRecord format is the final format of the AutoDL challenge, following [SequenceExample](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L92) proto (see [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)).
 
 More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format/mini-mnist) in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
+
+## Format unlabelled data
+You may want to format unseen data, i.e. data for which you do not have labels yet. These missing labels could then be predicted by the [AutoDL Self-Service](https://competitions.codalab.org/competitions/27082). If your data has no label files, you can use the `format_unseen.py` script to turn it into TFRecords and then be able use it in the AutoDL Self-Service for making predictions :
+
+```
+cd autodl-contrib
+python3 format_unseen.py path/to/your/data output_dim path/to/output/directory
+```
+
+You must provide a `output_dim` parameter which corresponds to the number of classes of the dataset (we still work with multilabel classification task). The `path/to/output/directory` is optionnal, but it may be judicious to put the path to your dataset formatted with `check_n_format.py`. It will create a `unlabelled` directory in the output folder, containing two files :
+
+* A `.tfrecords` file with your data
+* A `metadata.textproto` file
+
+Two questions will be asked while the script is running : the domain of your dataset and the number of channels (especially for images and videos, for other domains there is only one channel).
+
+The script can convert unlabelled data from the five domains mentionned above : images, videos, series (or speech), tabular and text. The data must be formatted in one of the three formats mentionned above, with little variation due to absence of labels.
+
+### Under File format (image, video, speech/series)
+The file format for unlabelled data is very simple : it's the same as the one required by `check_n_format.py`, except that there is no `labels.csv` file, but you must provide in your input directory a file `data.csv` which will list all the files which form your unseen data, e.g.
+
+```
+n0159.jpg
+n0165.jpg
+n0167.jpg
+...
+```
+
+This will allow the script to make the arrangement you want for your unseen data. Note that there is no header, while there should be one in a `labels.csv`.
+
+### Under AutoML format (tabular)
+
+### Under AutoNLP format (text) 
 
 ## Where to submit
 
