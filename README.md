@@ -148,7 +148,17 @@ Two questions will be asked while the script is running : the domain of your dat
 
 The script can convert unlabelled data from the five domains mentionned above : images, videos, series (or speech), tabular and text. The data must be formatted in one of the three formats mentionned above, with little variation due to absence of labels.
 
-### Under file format (image, videos, speech/series)
+### Under File format (image, video, speech/series)
+The file format for unlabelled data is very simple : it's the same as the one required by `check_n_format.py`, except that there is no `labels.csv` file, but you must provide in your input directory a file `data.csv` which will list all the files which form your unseen data, e.g.
+
+```
+n0159.jpg
+n0165.jpg
+n0167.jpg
+...
+```
+
+This will allow the script to make the arrangement you want for your unseen data.
 
 ### Under AutoML format (tabular)
 
