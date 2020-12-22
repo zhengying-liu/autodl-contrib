@@ -229,16 +229,20 @@ if __name__=="__main__":
         print('Please enter a dataset directory. Usage: `python3 check_n_format path/to/dataset`')
         exit()
 
-    # Read the meta-data in private.info.
-    print(input_dir)
-    metadata = read_metadata(input_dir)
-    fake_name = metadata['name']
-    print('\nDataset fake name: {}\n'.format(fake_name))
-
     # domain (image, video, text, etc.)
     domain = input("Domain? 'image', 'video', 'series', 'text' (AutoNLP format) or 'tabular' [Default='image'] ")
     if domain == '':
         domain = 'image'
+    
+    file_format = ['image', 'video', 'series']
+
+    if domain in file_format:
+        # Read the meta-data in private.info.
+        print(input_dir)
+        metadata = read_metadata(input_dir)
+
+        fake_name = metadata['name']
+        print('\nDataset fake name: {}\n'.format(fake_name))
 
     effective_sample_num=0
 
@@ -270,9 +274,12 @@ if __name__=="__main__":
 
     elif domain == 'tabular':
         print("Domain: tabular. AutoML format required.")
+        fake_name = input('Name of the dataset? ')
         label_name = None
-        label_file = [file for file in glob.glob(os.path.join(input_dir, '*label.name'))][0]
-        if os.path.exists(label_file):
+        label_files = [file for file in glob.glob(os.path.join(input_dir, '*label.name'))]
+
+        if len(label_files)>0:
+            label_file = label_files[0]
             print('First rows of label names:')
 
             label_name = pd.read_csv(label_file, header=None)
