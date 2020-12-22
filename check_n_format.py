@@ -236,18 +236,17 @@ if __name__=="__main__":
     
     file_format = ['image', 'video', 'series']
 
-    if domain in file_format:
+    effective_sample_num=0
+
+    if domain in ['image', 'video', 'series']:
+        print("Domain: {}. File format required.".format(domain))
+
         # Read the meta-data in private.info.
         print(input_dir)
         metadata = read_metadata(input_dir)
 
         fake_name = metadata['name']
         print('\nDataset fake name: {}\n'.format(fake_name))
-
-    effective_sample_num=0
-
-    if domain in ['image', 'video', 'series']:
-        print("Domain: {}. File format required.".format(domain))
 
         labels_df = format_image.get_labels_df(input_dir) # same function in format_video
         print('First rows of labels file:')
@@ -304,8 +303,9 @@ if __name__=="__main__":
 
     elif domain == 'text':
         print("Domain: text. AutoNLP format required.")
-        name = fake_name
-
+        fake_name = input('Name of the dataset? ')
+        name=fake_name
+        
         train_data = nlp_to_tfrecords.read_file(os.path.join(input_dir, name+'.data', 'train.data'))
         test_data = nlp_to_tfrecords.read_file(os.path.join(input_dir, name+'.data', 'test.data'))
         s=len(train_data)+len(test_data)
