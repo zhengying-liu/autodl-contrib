@@ -132,11 +132,11 @@ TFRecord format is the final format of the AutoDL challenge, following [Sequence
 More details and [an example dataset](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format/mini-mnist) in TFRecord format can be found in the sub-directory [`tfrecord_format`](https://github.com/zhengying-liu/autodl-contrib/tree/master/tfrecord_format).
 
 ## Format unlabelled data
-You may want to format unseen data, i.e. data for which you do not have labels yet. These missing labels could then be predicted by the [AutoDL Self-Service](https://competitions.codalab.org/competitions/27082). If your data has no label files, you can use the `format_unseen.py` to turn it into TFRecords and use it in the AutoDL Self-Service :
+You may want to format unseen data, i.e. data for which you do not have labels yet. These missing labels could then be predicted by the [AutoDL Self-Service](https://competitions.codalab.org/competitions/27082). If your data has no label files, you can use the `format_unseen.py` script to turn it into TFRecords and then be able use it in the AutoDL Self-Service for making predictions :
 
 ```
 cd autodl-contrib
-python3 check_n_format.py path/to/your/data output_dim path/to/output/directory
+python3 format_unseen.py path/to/your/data output_dim path/to/output/directory
 ```
 
 You must provide a `output_dim` parameter which corresponds to the number of classes of the dataset (we still work with multilabel classification task). The `path/to/output/directory` is optionnal, but it may be judicious to put the path to your dataset formatted with `check_n_format.py`. It will create a `unlabelled` directory in the output folder, containing two files :
