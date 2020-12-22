@@ -146,6 +146,14 @@ You must provide a `output_dim` parameter which corresponds to the number of cla
 
 Two questions will be asked while the script is running : the domain of your dataset and the number of channels (especially for images and videos, for other domains there is only one channel).
 
+The script can convert unlabelled data from the five domains mentionned above : images, videos, series (or speech), tabular and text. The data must be formatted in one of the three formats mentionned above, with little variation due to absence of labels.
+
+### Under file format (image, videos, speech/series)
+
+### Under AutoML format (tabular)
+
+### Under AutoNLP format (text) 
+
 ## Where to submit
 
 If you wish to share your dataset with us, simply [Email us](mailto:autodl@chalearn.org) a URL to an on-line storage place (e.g. dropbox or Google drive) where we can pull your data from.
