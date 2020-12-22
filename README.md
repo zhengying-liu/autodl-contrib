@@ -173,7 +173,7 @@ if you had four features.
 
 
 ### Under AutoNLP format (text) 
-For text datasets, your unlabelled data must be in the form of a text files listing examples as text lines : the name of the file should be `unlabelled.data`. You must also provide the same `train.data` and `train.solution` files you used for converting your train and test sets with `check_n_format.py`. It will allow the script to know the vocabulary of your NLP dataset. You must also provide a `meta.json` file similar to the one you provided to `check_n_format.py`. You will fill it with :
+For text datasets, your unlabelled data must be in the form of a text file listing examples as text lines : the name of the file should be `unlabelled.data`. You must also provide the same `train.data` and `train.solution` files you used for converting your train and test sets with `check_n_format.py`. It will allow the script to know the vocabulary of your NLP dataset. You must also provide a `meta.json` file similar to the one you provided to `check_n_format.py`. You will fill it with :
 
 ```
 {
