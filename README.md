@@ -103,14 +103,14 @@ Examples and documentation are provided in [matrix_format](https://github.com/zh
 _Works for tabular dataset._
 
 #### 3. AutoNLP format
-* All the data is provided in a txt format : each line of text is an example in the dataset.
+* All the data is provided in txt files : each line of text is an example in the dataset.
 * The dataset is already divided in train and test sets with separated `.data` files corresponding to each set.
 * Labels for each set are provided in separated `.solution` files.
 * A `meta.json` metadata file is necessary in order to specify the number of train and test samples, the number of classes and the language (english or chinese) 
 
 Examples and documentation are provided in [nlp_format](https://github.com/zhengying-liu/autodl-contrib/tree/master/nlp_format) folder.
 
-It's the format used in AutoNLP challenge. We have a script that converts the data from this format to the AutoDL (TFRecords) format.
+It's the format used in AutoNLP challenge.
 
 _Works for text data._
 
@@ -144,12 +144,12 @@ You must provide a `output_dim` parameter which corresponds to the number of cla
 * A `.tfrecords` file with your data
 * A `metadata.textproto` file
 
-Two questions will be asked while the script is running : the domain of your dataset and the number of channels (especially for images and videos, for other domains there is only one channel).
+You will be asked two questions while the script is running : the domain of your dataset and the number of channels (especially for images and videos, for other domains there is only one channel).
 
 The script can convert unlabelled data from the five domains mentionned above : images, videos, series (or speech), tabular and text. The data must be formatted in one of the three formats mentionned above, with little variation due to absence of labels.
 
 ### Under File format (image, video, speech/series)
-The file format for unlabelled data is very simple : it's the same as the one required by `check_n_format.py`, except that there is no `labels.csv` file, but you must provide in your input directory a file `data.csv` which will list all the files which form your unseen data, e.g.
+The file format for unlabelled data is very simple : it's the same as the one required by `check_n_format.py`, except that there is no `labels.csv` file, but you must provide in your input directory a file `data.csv` which list all the files that form your unseen data, e.g.
 
 ```
 n0159.jpg
@@ -184,7 +184,7 @@ For text datasets, your unlabelled data must be in the form of a text file listi
     "time_budget": 2400
 }
 ```
-And all this files must remain in one single directory, there is no need for a `dataset.data` subdirectory here.
+And all these files must remain in one single directory, there is no need for a `dataset.data` subdirectory here.
 
 ```
 unlabelled_data/
