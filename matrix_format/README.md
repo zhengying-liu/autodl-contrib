@@ -10,7 +10,7 @@ More details and [an example dataset](https://github.com/zhengying-liu/autodl-co
 
 We accept dataset contributions under **matrix format**. More specifically, we accept the standard **AutoML format** used in prior AutoML challenges. There exist [detailed guidance](https://github.com/codalab/chalab/wiki/Help:-Wizard-%E2%80%90-Challenge-%E2%80%90-Data) on how to format dataset into AutoML format.
 
-Under matrix format, each example is represented as a *feature vector*, as is the case in many classic machine learning settings. If you want to contribute data in this format, the minimum package would be two CSV files: `examples.csv` and `labels.csv`, containing respectively a matrix with feature vectors and a matrix with labels.
+<!-- Under matrix format, each example is represented as a *feature vector*, as is the case in many classic machine learning settings. If you want to contribute data in this format, the minimum package would be two CSV files: `examples.csv` and `labels.csv`, containing respectively a matrix with feature vectors and a matrix with labels. -->
 
 ## Carefully Name Your Files
 Remember, you need to be careful about naming your files in a dataset. According to our [file naming rules](https://github.com/zhengying-liu/autodl-contrib#carefully-name-your-files), you may name these `.csv` files differently. For example, this directory
