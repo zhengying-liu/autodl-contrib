@@ -238,7 +238,7 @@ if __name__=="__main__":
 
     effective_sample_num=0
 
-    if domain in ['image', 'video', 'series']:
+    if domain in file_format:
         print("Domain: {}. File format required.".format(domain))
 
         # Read the meta-data in private.info.
@@ -305,7 +305,7 @@ if __name__=="__main__":
         print("Domain: text. AutoNLP format required.")
         fake_name = input('Name of the dataset? ')
         name=fake_name
-        
+
         train_data = nlp_to_tfrecords.read_file(os.path.join(input_dir, name+'.data', 'train.data'))
         test_data = nlp_to_tfrecords.read_file(os.path.join(input_dir, name+'.data', 'test.data'))
         s=len(train_data)+len(test_data)
@@ -328,13 +328,15 @@ if __name__=="__main__":
 
     quick_check = 1 # just for display purpose
     is_quick_check=False
-    if not input('Quick check? [Y/n] (creating a mini-dataset, only available for image, video and speech/time series) ') in ['n', 'N']:
-        # quick check
-        print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
-        output_dir = output_dir + '_mini'
-        effective_sample_num = min(effective_sample_num, 1)
-        is_quick_check=True
-        #quick_check = res['label_num'] # just for display purpose
+
+    if domain in file_format:
+        if not input('Quick check? [Y/n] (creating a mini-dataset, only available for image, video and speech/time series) ') in ['n', 'N']:
+            # quick check
+            print('Quick check enabled: running script on a small subset of data to check if everything works as it should.')
+            output_dir = output_dir + '_mini'
+            effective_sample_num = min(effective_sample_num, 1)
+            is_quick_check=True
+            #quick_check = res['label_num'] # just for display purpose
 
     if is_formatted(output_dir):
         # Already exists
@@ -352,20 +354,17 @@ if __name__=="__main__":
         print('No formatted version found, creating {} folder.'.format(output_dir))
         os.mkdir(output_dir)
 
-    """# domain (image, video, text, etc.)
-    domain = input("Domain? 'image', 'video', 'series' or 'tabular' [Default='image'] ")
-    if domain == '':
-        domain = 'image'
-    """
     # num channels
-    num_channels = input('Number of channels? [Default=3] ')
-    if num_channels == '':
-        num_channels = 3
-    try:
-        num_channels = int(num_channels)
-    except Exception as e:
-        print('Number of channels must be an Integer:', e)
-        exit()
+    num_channels = 1
+    if domain in file_format:
+        num_channels = input('Number of channels? [Default=3] ')
+        if num_channels == '':
+            num_channels = 3
+        try:
+            num_channels = int(num_channels)
+        except Exception as e:
+            print('Number of channels must be an Integer:', e)
+            exit()
 
     # booleans
     do_run_baseline = not input('Run baseline on formatted data? [Y/n] ') in ['n', 'N']
