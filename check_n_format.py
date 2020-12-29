@@ -380,7 +380,9 @@ if __name__=="__main__":
     print(flat_label_list)
     format_data(input_dir, output_dir, fake_name, effective_sample_num, num_channels=num_channels, classes_list=flat_label_list, domain=domain, quick_check=is_quick_check)
     formatted_dataset_path = os.path.join(output_dir, fake_name)
-
+    
+    open(os.path.join(formatted_dataset_path, 'metadata'), 'a').close()
+    
     # run baseline
     if do_run_baseline:
         code_dir = os.path.join(STARTING_KIT_DIR, 'AutoDL_sample_code_submission')
